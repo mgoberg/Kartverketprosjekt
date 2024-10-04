@@ -1,6 +1,5 @@
 using kartverketprosjekt.Models;
 using Microsoft.AspNetCore.Mvc;
-using prosjekt_kartverket.Models;
 using System.Diagnostics;
 
 namespace prosjekt_kartverket.Controllers
