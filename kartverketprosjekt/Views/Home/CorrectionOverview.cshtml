@@ -1,0 +1,46 @@
+﻿@model List<Kartvertketprosjekt
+    .Models.PositionModel>
+
+<h2>Registered Corrections</h2>
+
+<div>
+    @foreach (var position in Model)
+
+    {
+
+        <p><strong>Latitude:</strong>@position.Latitude</p>
+        <p><strong>Longitude:</strong>@position.Longitude</p>
+        <p><strong>Description:</strong>@position.Description</p>
+
+    }
+</div>
+<div id="map" style="height: 500px;"></div>
+
+@section Scripts{
+
+    <script>
+        var map = L.map ('map').setView([0, 0], 2);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        var positions =  @Json.Serialize(Model);
+
+        positions.forEach(function (position) {
+            var marker = L.marker([position.latitude, position.longitude]).addTo(map);
+            var url = 'https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.latitude}&lon=${position.longitude}';
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data =>) {
+                var address = data.display_name ? data.display_name : "Address not found";
+                marker.bindPopup('${position.description}<br>Address: ${address}').openPopup();
+            })
+            .catch(error => {
+                marker.bindPopup('${position.description}<br>Address: Not available').openPopup();
+            });
+
+});
+    </script>
+
+}
