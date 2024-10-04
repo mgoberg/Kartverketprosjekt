@@ -1,22 +1,418 @@
+:root {
+    /* variables for lightmode/normal colorscheme*/
+    --background-color: #f3f1f1;
+    --text-color: #000000;
+    --navbar-background-color: #ffffff;
+    --navbar-text-color: #000;
+    --button-text-hover-color: #1a833b;
+    --button-text-hover-color-alternate: #ffffff;
+    --form-background-color: #f9f9f9;
+    --form-text-color: #000000;
+    --button-background-color: #e6e6e6;
+    --button-text-color: #505050;
+    --footer-text-color: #ffffff;
+    --footer-background-gradient: linear-gradient(0deg, rgba(26, 131, 59, 1) 27%, rgba(39, 40, 42, 0) 100%);
+    --footer-h1: white;
+}
+
+body.dark-mode {
+    /* variables for darkmode colorscheme*/
+    --background-color: #27282a;
+    --text-color: #e9e9e9;
+    --navbar-background-color: #ffffff;
+    --navbar-text-color: #000000;
+    --button-text-hover-color: #1a833b;
+    --button-text-hover-color-alternate: #ffffff;
+    --form-background-color: #3e3f41;
+    --form-text-color: #000000;
+    --button-background-color: #d4d4d4;
+    --button-text-color: #000000;
+    --footer-text-color: #000000;
+    --footer-background-gradient: linear-gradient(0deg, rgba(100, 221, 138, 1) 57%, rgba(39, 40, 42, 0) 100%);
+    --footer-h1: black;
+}
+
 html {
-  font-size: 14px;
+    font-family: "Ubuntu", Verdana, sans-serif;
+    scroll-behavior: smooth;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+::selection {
+    background: rgba(100, 221, 138, 1);
+    /*changes highlight color*/
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+.alert {
+    color: var(--button-text-hover-color);
+}
+/* font styles*/
+.ubuntu-light {
+    font-family: "Ubuntu", sans-serif;
+    font-weight: 300;
+    font-style: normal;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+.ubuntu-regular {
+    font-family: "Ubuntu", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.ubuntu-medium {
+    font-family: "Ubuntu", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+}
+
+.ubuntu-bold {
+    font-family: "Ubuntu", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+.ubuntu-light-italic {
+    font-family: "Ubuntu", sans-serif;
+    font-weight: 300;
+    font-style: italic;
+}
+
+.ubuntu-regular-italic {
+    font-family: "Ubuntu", sans-serif;
+    font-weight: 400;
+    font-style: italic;
+}
+
+.ubuntu-medium-italic {
+    font-family: "Ubuntu", sans-serif;
+    font-weight: 500;
+    font-style: italic;
+}
+
+.ubuntu-bold-italic {
+    font-family: "Ubuntu", sans-serif;
+    font-weight: 700;
+    font-style: italic;
 }
 
 body {
-  margin-bottom: 60px;
+    opacity: 0;
+    /* Start with the h1 hidden */
+    transition: opacity 2.5s ease-in-out;
+    /* Add transition for smooth fade-in */
+    margin: 0;
+    /* Remove default margin */
+    padding: 0;
+    /* Remove default padding */
+    font-size: large;
+    padding-top: 75px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+main {
+    width: 100%; /* or a specific width like 800px */
+    max-width: 100%; /* Ensure it doesn't have a restrictive max-width */
+    padding: 0; /* Adjust padding if necessary */
+    margin: 0 auto; /* Center the main element if needed */
+}
+
+#map {
+    width: 100%;
+    /* Make the map take the full width of the viewport */
+    height: 100%;
+    /* Make the map take the full height of the viewport */
+    position: relative;
+    /* Establish a positioning context for absolutely positioned children */
+    min-height: 600px;
+    /* Set a minimum height for the map */
+}
+
+#darkModeToggle {
+    color: var(--navbar-text-color);
+    border: none;
+    cursor: pointer;
+}
+
+    #darkModeToggle:hover {
+        transform: translateY(-2px);
+        /* Move button up on hover */
+        cursor: pointer;
+        /* Change cursor to pointer */
+        color: var(--button-text-hover-color);
+    }
+
+h2 {
+    text-align: left;
+    /* Align text to the left */
+    width: 100%;
+    /* Ensure the h2 takes the full width of its container */
+    margin: 0;
+    /* Remove any default margin */
+    padding-top: 15px;
+    /* Remove any default padding */
+}
+
+#navbar {
+    background-color: var(--navbar-background-color);
+    overflow: hidden;
+    position: fixed;
+    /* Make the navbar fixed */
+    top: -100px;
+    /* Start the navbar off-screen */
+    width: 100%;
+    z-index: 2000;
+    /* Ensure it appears above other elements */
+    transition: top 2s ease-in-out;
+    /* Add transition for smooth animation */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+    /* Add shadow for 3D effect */
+}
+
+    #navbar ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        /* Vertically align items */
+    }
+
+
+        #navbar ul li {
+            display: inline-block;
+            list-style-type: none;
+        }
+
+            #navbar ul li:first-child {
+                margin-right: auto;
+            }
+
+            #navbar ul li > * {
+                color: var(--navbar-text-color);
+                display: block;
+                padding: 1em 3em;
+                text-decoration: none;
+                transition-duration: 0.3s;
+            }
+
+                #navbar ul li > *:hover {
+                    transform: scale(1.1);
+                    transition-timing-function: ease-in-out;
+                    /* Move button up on hover */
+                    cursor: pointer;
+                    /* Change cursor to pointer */
+                    color: var(--button-text-hover-color);
+                }
+
+#menuButton {
+    background-color: var(--navbar-background-color);
+    /* Semi-transparent background */
+    border: none;
+}
+
+
+/* Media query for fullscreen mode */
+@media (min-width: 1024px) {
+    #navbar ul {
+        margin: 0 250px; /* Adjust the margin as needed */
+    }
+}
+
+@media (max-width: 700px) {
+    #navbar ul a {
+        display: none;
+    }
+}
+
+#kartverketLogo {
+    height: 40px;
+    /* Adjust the height as needed */
+    margin-right: 20px;
+    /* Space between the logo and the nav items */
+}
+
+#menu {
+    font-size: 30px;
+}
+
+#container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 20px;
+    /* Adjust the padding value as needed */
+    box-sizing: border-box;
+    /* Include padding in the element's total width and height */
+    background-color: var(--background-color);
+}
+
+h1 {
+    padding-bottom: 20px;
+    padding-top: 20px;
+    width: 100%;
+    /* Ensure the h2 takes the full width of its container */
+    margin: 0;
+    /* Remove any default margin */
+
+    font-weight: 800;
+}
+
+p {
+    margin-bottom: 12px;
+}
+
+@media (min-width: 1024px) {
+    #container {
+        padding: 10px 300px;
+        /* Add side padding for larger screens */
+    }
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    /* Align elements vertically */
+    width: 100%;
+    /* Ensure the form takes the full width of its container */
+    max-width: 400px;
+    /* Optional: Set a maximum width for the form */
+    margin: 0 auto;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    /* Center the form horizontally */
+    padding: 20px;
+    /* Add padding around the form */
+    background-color: var(--form-background-color);
+    /* Optional: Set a background color */
+    border-radius: 5px;
+    /* Optional: Add rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    /* Optional: Add a shadow for better visibility */
+}
+
+@media (min-width: 1024px) {
+    form {
+        max-width: 600px;
+    }
+}
+
+form label {
+    margin-bottom: 5px;
+    /* Space between label and input */
+    font-weight: bold;
+    /* Make labels bold */
+}
+
+form textarea {
+    margin-bottom: 15px;
+    /* Space between form elements */
+    padding: 10px;
+    /* Add padding inside inputs */
+    border: 1px solid #ccc;
+    /* Add a border to inputs */
+    border-radius: 3px;
+    /* Add rounded corners to inputs */
+    width: 100%;
+    /* Make inputs take the full width of the form */
+    box-sizing: border-box;
+    /* Ensure padding and border are included in the element's total width and height */
+    resize: none;
+}
+
+form input[type="submit"] {
+    padding: 10px 20px;
+    /* Add padding inside the submit button */
+    background-color: var(--button-background-color);
+    /* Set background color */
+    color: var(--button-text-color);
+    /* Set text color */
+    border: none;
+    /* Remove border */
+    border-radius: 3px;
+    /* Add rounded corners */
+    cursor: pointer;
+    /* Change cursor to pointer */
+    font-size: 16px;
+    /* Increase font size */
+    transition: 0.3s;
+}
+
+    form input[type="submit"]:hover {
+        transition-timing-function: ease-in-out;
+        background-color: var(--button-text-hover-color);
+        color: var(--button-text-hover-color-alternate);
+        /* Change background color on hover */
+    }
+
+#footer {
+    /*background-color: #0d1b2a; /* ikke gradient */
+    background: var(--footer-background-gradient);
+    color: var(--footer-text-color);
+    text-align: center;
+    /* Center the text */
+    padding-top: 50px;
+    /* Add padding around the footer */
+    padding-bottom: 50px;
+    position: relative;
+    /* Ensure the footer is positioned relative to its parent */
+    width: 100%;
+    /* Make the footer take the full width of its container */
+}
+
+#footerContainer {
+    display: flex;
+    /* Use flexbox for layout */
+    flex-direction: row;
+    justify-content: space-between;
+    /* Distribute space evenly */
+    flex-wrap: nowrap;
+    padding: 50px 120px;
+    /* Add padding around the container */
+    margin: 10vw 15vw;
+    box-sizing: border-box;
+    /* Include padding in the element's total width and height */
+    border: none;
+    /* Remove default border */
+    border-radius: 15px;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1), /* Inner shadow for recessed look */
+    0 4px 3px rgba(0, 0, 0, 0.1); /* Outer shadow for raised look */
+}
+
+@media (max-width: 800px) {
+    #footerContainer {
+        flex-direction: column;
+        /* make items align in column on phone-screen */
+    }
+}
+
+#footer-h1 {
+    color: var(--footer-h1);
+    margin-top: 200px;
+}
+
+.bx {
+    font-size: 100px;
+}
+
+.footer-btn {
+    transform: translateY(0);
+    /* Reset any previous transform */
+    transition: transform 0.2s ease-in-out;
+    /* Add smooth transition for transform */
+}
+
+    .footer-btn:hover {
+        transform: translateY(-5px);
+        /* Move button up on hover */
+        cursor: pointer;
+        /* Change cursor to pointer */
+    }
+
+a {
+    text-decoration: none;
+    /* Remove underline from links */
+    color: inherit;
+    /* Inherit text color */
 }
