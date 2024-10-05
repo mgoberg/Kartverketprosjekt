@@ -1,44 +1,51 @@
 ﻿@model kartverketprosjekt.Models.PositionModel
 
-<h2>Register a Position</h2>
+@{
+    ViewData["Title"] = "Correction Page";
+}
+
+<h2>Korriger ved å trykke i kartet:</h2>
+
+<div id="map"></div>
 
 <form asp-action="CorrectMap" method="post">
-    <div class="form-group">
-        <label for="latitude">Latitude</label>
-        <input type="text" id="latitude" name="Latitude" class="form-control" readonly />
-    </div>
-    <div class="form-group">
-        <label for="longitude">Longitude</label>
-        <input type="text" id="longitude" name="Longitude" class="form-control" readonly />
-    </div>
-
-    <div class="form-group">
-        <label for="description">Description</label>
-        <textarea id="description" name="Description" class="form-control"></textarea>
-    </div>
+    <label for="latitude">Latitude:</label>
+    <input type="text" class="form-control" id="latitude" name="Latitude" readonly>
+    <label for="longitude">Longitude:</label>
+    <input type="text" class="form-control" id="longitude" name="Longitude" readonly>
+    <label for="description">Description:</label>
+    <textarea class="form-control" id="description" name="description" required></textarea>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 
 
-<div id="map" style="height: 400px;"></div>
-
 @section Scripts {
-    <script>var map = L.map('map').setView([51.505, -0, 09], 15);
+    <script>
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(map);
+        var map = L.map('map').setView([65, 12], 4);
 
-    map.on('click', function (e) {
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="http://www.openstreetmap.org/">OpenStreetMap</a>' }).addTo(map);
 
-        var lat = e.latlng.lat;
-        var lng = e.latlng.lng;
+        map.on('click', function (e) {
+            // Get clicked position
+            var lat = e.latlng.lat;
+            var lng = e.latlng.lng;
 
-        document.getElementById('latitude').value = lat;
-        document.getElementById('longitude').value = lng;
+            // Remove all previous markers
+            map.eachLayer(function (layer) {
+                if (layer instanceof L.Marker) {
+                    map.removeLayer(layer);
+                }
+            });
 
-        L.marker([lat, lng]).addTo(map);
+            // Set the latitude and longitude fields in the form
+            document.getElementById('latitude').value = lat;
+            document.getElementById('longitude').value = lng;
 
-    });</script>
+            // Add a marker to the map
+            L.marker([lat, lng]).addTo(map);
+        });
 
-
-
+    </script>
 }
+

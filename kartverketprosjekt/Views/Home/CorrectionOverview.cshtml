@@ -1,45 +1,71 @@
 ﻿@model List<kartverketprosjekt.Models.PositionModel>
 
-<h2>Registered Corrections</h2>
+@{
+    ViewData["Title"] = "Korrigeringsoversikt";
+}
+
+<h2>Korrigeringsoversikt</h2>
 
 <div>
     @foreach (var position in Model)
-
     {
-
-        <p><strong>Latitude:</strong>@position.Latitude</p>
-        <p><strong>Longitude:</strong>@position.Longitude</p>
-        <p><strong>Description:</strong>@position.Description</p>
-
+        <p>
+            <strong>Latitude: </strong> @position.Latitude
+        </p>
+        <p>
+            <strong>Longitude: </strong> @position.Longitude
+        </p>
+        <p>
+            <strong>Beskrivelse: </strong> @position.Description
+        </p>
     }
 </div>
-<div id="map" style="height: 500px;"></div>
 
-@section Scripts{
+<div id="map"></div>
 
+
+@section Scripts {
     <script>
-        var map = L.map ('map').setView([0, 0], 2);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
+        /**
+         * Initializes the map and sets the initial view.
+         */
+        var map = L.map('map').setView([65, 12], 4);
 
-        var positions =  @Json.Serialize(Model);
+        /**
+         * Adds the OpenStreetMap tile layer to the map.
+         */
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="http://www.openstreetmap.org/">OpenStreetMap</a>' }).addTo(map);
 
+        /**
+         * Serializes the list of positions to JSON format.
+         */
+        var positions = @Json.Serialize(Model);
+
+        /**
+         * Iterates over each position and adds a marker to the map.
+         */
         positions.forEach(function (position) {
             var marker = L.marker([position.latitude, position.longitude]).addTo(map);
-            var url = 'https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.latitude}&lon=${position.longitude}';
 
+            var url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.latitude}&lon=${position.longitude}`;
+
+            /**
+             * Fetches the address information for the given latitude and longitude using the Nominatim API.
+             * Binds a popup to the marker with the position description and address information.
+             * If the address information is not available, displays a default message.
+             */
             fetch(url)
                 .then(response => response.json())
-                .then(data =>) {
-                var address = data.display_name ? data.display_name : "Address not found";
-                marker.bindPopup('${position.description}<br>Address: ${address}').openPopup();
-            })
-            .catch(error => {
-                marker.bindPopup('${position.description}<br>Address: Not available').openPopup();
-            });
-
-});
+                .then(data => {
+                    var address = data.display_name ? data.display_name : "No address found";
+                    marker.bindPopup(`${position.description} <br>Address: ${address}`).openPopup();
+                    map.flyTo([position.latitude, position.longitude], 12); // Add this line to fly to the coordinates
+                })
+                .catch(error => {
+                    marker.bindPopup(`${position.description} <br>Address: Not available`).openPopup();
+                });
+        });
     </script>
-
 }
+
+
