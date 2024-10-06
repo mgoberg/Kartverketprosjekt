@@ -15,6 +15,7 @@
     --footer-background-gradient: linear-gradient(0deg, rgba(26, 131, 59, 1) 10%, rgba(39, 40, 42, 0) 100%);
     --footer-h1: white;
     --box-background-color: #ffffff;
+    --box-background-color-alternate: #f9f9f9;
 }
 
 body.dark-mode {
@@ -33,6 +34,7 @@ body.dark-mode {
     --footer-background-gradient: linear-gradient(0deg, rgba(100, 221, 138, 1) 57%, rgba(39, 40, 42, 0) 100%);
     --footer-h1: black;
     --box-background-color: #3e3f41;
+    --box-background-color-alternate: #1a833b;
 }
 body, html {
     margin: 0;
@@ -255,9 +257,10 @@ h1 {
 }
 
 p {
+    line-height: 1.6; /* Increase line height for better readability */
     margin-bottom: 12px;
 }
-
+    
 @media (min-width: 1024px) {
     #container {
         padding: 10px 300px;
@@ -463,43 +466,61 @@ a {
     justify-content: space-evenly;
     gap: 50px;
     width: 100%;
-    height: 100vh; /* Full viewport height */
+    height: 100%; 
 }
 
 .box {
     flex: 1;
-    height: 50%;
+    height: 35vh;
     padding: 25px;
     justify-content: center;
-        align-items: center;
-        background-color: var(--box-background-color);
+    align-items: center;
+    background-color: var(--box-background-color);
     border-radius: 10px;
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
+   
 }
 
     .box p {
         
-        padding-bottom: 50px;
+        padding-bottom: 30px;
 
-    }   
-    .box a {
-       
-    }
-    .box:nth-child(2) {
-        height: 100vh;
-        background-color: var(--background-color);
-        background-image: url('/images/Capture-left.png');
-        background-size: 80%;
-        background-position: top;
-        background-repeat: no-repeat;
-        border-radius: 10px;
-        border: 0px solid;
-        border-color: rgb(213, 220, 226) rgb(213, 220, 226) rgb(184, 194, 204);
-        transition: transform 0.7s ease-in-out;
     }
 
-    .box:nth-child(2):hover {
-        transform: translateY(-10px)    
+#phone-img {
+    flex: 1;
+    padding: 25px;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--background-color);
+    border-radius: 10px;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    height: 80vh;
+    background-image: url('/images/Capture-left.png');
+    background-size: 70%;
+    background-position: top;
+    background-repeat: no-repeat;
+    border-radius: 10px;
+    border: 0px solid;
+    border-color: rgb(213, 220, 226) rgb(213, 220, 226) rgb(184, 194, 204);
+    transition: transform 0.7s ease-in-out;
+    position: relative;
+    top: -50px; /* Adjust the value to move the box higher up */
+   
+}
+
+    #phone-img:hover {
+        transform: translateY(-10px);
     }
 
-        
+.text-section {
+    background-color: var(--box-background-color-alternate);
+    max-width: 800px; /* Set a maximum width for readability */
+    margin: 0 auto; /* Center the text section */
+    padding: 30px 50px; /* Add some padding for better spacing */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    border-radius: 10px;
+    border: 0px solid;
+    border-color: rgb(213, 220, 226) rgb(213, 220, 226) rgb(184, 194, 204);
+}
+
