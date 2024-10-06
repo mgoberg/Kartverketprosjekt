@@ -1,24 +1,28 @@
 ﻿@model kartverketprosjekt.Models.PositionModel
 
 @{
-    ViewData["Title"] = "Correction Page";
+    ViewData["Title"] = "Innmelding";
 }
 
-<div id="container">
-    <h2>Korriger ved å trykke i kartet:</h2>
 
-<div id="map"></div>
-
+<div id="wide-container">
+    <div class="box-container">
+        <div class="box">
 <form asp-action="CorrectMap" method="post">
+        <h2>Korriger ved å trykke i kartet:</h2>
     <label for="latitude">Latitude:</label>
     <input type="text" class="form-control" id="latitude" name="Latitude" readonly>
     <label for="longitude">Longitude:</label>
     <input type="text" class="form-control" id="longitude" name="Longitude" readonly>
     <label for="description">Description:</label>
     <textarea class="form-control" id="description" name="description" required></textarea>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Send inn</button>
 </form>
-
+</div>
+<div class="box">
+        <div id="map"></div>
+    </div>
+</div>
 
 @section Scripts {
     <script>
@@ -49,5 +53,5 @@
 
     </script>
 }
+  </div>
 
-</div>
