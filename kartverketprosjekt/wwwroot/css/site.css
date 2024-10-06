@@ -105,7 +105,7 @@ html {
 body {
     opacity: 0;
     /* Start with the h1 hidden */
-    transition: opacity 2.5s ease-in-out;
+    transition: opacity 0s ease-in-out;
     /* Add transition for smooth fade-in */
     margin: 0;
     /* Remove default margin */
@@ -161,7 +161,7 @@ main {
     width: 100%;
     z-index: 2000;
     /* Ensure it appears above other elements */
-    transition: top 2s ease-in-out;
+    transition: top 0s ease-in-out;
     /* Add transition for smooth animation */
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
     /* Add shadow for 3D effect */
