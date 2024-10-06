@@ -1,0 +1,80 @@
+﻿#map {
+    width: 100%;
+    /* Make the map take the full width of the viewport */
+    height: 100%;
+    /* Make the map take the full height of the viewport */
+    position: relative;
+    /* Establish a positioning context for absolutely positioned children */
+    min-height: 500px;
+    /* Set a minimum height for the map */
+}
+
+
+#verticalButtonContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: flex-end;
+    /* Center items vertically */
+    flex-wrap: wrap;
+    /* Allow buttons to wrap to the next line if needed */
+    padding: 20px;
+    /* Add padding around the container */
+}
+
+    #verticalButtonContainer button:hover {
+        transition-timing-function: ease-in-out;
+        transform: scale(1.1);
+        background-color: var(--button-text-hover-color);
+        color: var(--button-text-hover-color-alternate);
+    }
+
+
+
+#layers {
+    font-size: 30px;
+}
+
+#geolocateButton {
+    margin: 10px 5px;
+    padding: 10px 10px;
+    background-color: var(--background-color);
+    box-shadow: 2px 3px 2px rgba(0, 0, 0, 0.3);
+    /* Add shadow for 3D effect */
+    color: var(--text-color);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    z-index: 1001;
+    /* Ensure it appears above other elements */
+    transition: 0.2s;
+}
+
+#cross {
+    font-size: 30px;
+}
+
+#fullscreenButton {
+    margin: 10px 5px;
+    padding: 10px 10px;
+    background-color: var(--background-color);
+    box-shadow: 2px 3px 2px rgba(0, 0, 0, 0.3);
+    /* Add shadow for 3D effect */
+    color: var(--text-color);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    z-index: 1001;
+    /* Ensure it appears above other elements */
+    transition: 0.2s;
+}
+
+#fullscreen {
+    font-size: 30px;
+}
+
+
+
+
+
+

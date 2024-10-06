@@ -105,7 +105,7 @@ html {
 body {
     opacity: 0;
     /* Start with the h1 hidden */
-    transition: opacity 0s ease-in-out;
+    transition: opacity 1s ease-in-out;
     /* Add transition for smooth fade-in */
     margin: 0;
     /* Remove default margin */
@@ -124,16 +124,6 @@ main {
     margin: 0 auto; /* Center the main element if needed */
 }
 
-#map {
-    width: 600px;
-    /* Make the map take the full width of the viewport */
-    height: 500px;
-    /* Make the map take the full height of the viewport */
-    position: relative;
-    /* Establish a positioning context for absolutely positioned children */
-    min-height: 500px;
-    /* Set a minimum height for the map */
-}
 
 #darkModeToggle {
     color: var(--navbar-text-color);
@@ -161,7 +151,7 @@ main {
     width: 100%;
     z-index: 2000;
     /* Ensure it appears above other elements */
-    transition: top 0s ease-in-out;
+    transition: top 1.2s ease-in-out;
     /* Add transition for smooth animation */
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
     /* Add shadow for 3D effect */
@@ -302,7 +292,25 @@ form {
         max-width: 600px;
     }
 }
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly; /* Adjust as needed: space-between, space-around, space-evenly, etc. */
+    align-items: center; /* Adjust as needed: center, flex-start, flex-end, etc. */
+    gap: 5%;
+}
+.element1 {
+    width: 100%;
+}
+.element2 {
+    width: 100%;
+}
 
+@media (max-width: 1024px) {
+    .flex-row {
+        flex-wrap: wrap;
+    }
+}
 form label {
     margin-bottom: 5px;
     /* Space between label and input */
@@ -427,7 +435,7 @@ a {
     /* Set background color */
     color: var(--button-text-color);
     /* Set text color */
-    padding: 20px 40px;
+    padding: 15px 20px;
     /* Add padding inside the button */
     border: none;
     /* Remove border */
@@ -435,10 +443,8 @@ a {
     /* Add rounded corners */
     cursor: pointer;
     /* Change cursor to pointer */
-    font-size: 16px;
-    /* Increase font size */
     transition: 0.3s;
-    margin-top: 50px;
+    
 
 }
 
@@ -462,44 +468,38 @@ a {
 
 .box {
     flex: 1;
-    height: 500px;
+    height: 50%;
     padding: 25px;
     justify-content: center;
-    align-items: center;
-    background-color: var(--box-background-color);
+        align-items: center;
+        background-color: var(--box-background-color);
     border-radius: 10px;
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 
     .box p {
         
-        padding-bottom: 200px;
+        padding-bottom: 50px;
 
     }   
     .box a {
+       
+    }
+    .box:nth-child(2) {
+        height: 100vh;
+        background-color: var(--background-color);
+        background-image: url('/images/Capture-left.png');
+        background-size: 80%;
+        background-position: top;
+        background-repeat: no-repeat;
+        border-radius: 10px;
+        border: 0px solid;
+        border-color: rgb(213, 220, 226) rgb(213, 220, 226) rgb(184, 194, 204);
+        transition: transform 0.7s ease-in-out;
+    }
+
+    .box:nth-child(2):hover {
+        transform: translateY(-10px)    
+    }
 
         
-
-        margin-left: 35%;
-    }
-    .box:nth-child(1) {
-
-        background-size: cover;
-        background-position: center;
-
-        border-radius: 10px;
-        border: 0px solid;
-        border-color: rgb(213, 220, 226) rgb(213, 220, 226) rgb(184, 194, 204);
-    }
-    
-    #index-img {
-        width: auto;
-        height: auto;
-        max-width: 100%;
-        max-height: 100%;
-        border-radius: 10px;
-        border: 0px solid;
-        border-color: rgb(213, 220, 226) rgb(213, 220, 226) rgb(184, 194, 204);
-    }
-    
-       

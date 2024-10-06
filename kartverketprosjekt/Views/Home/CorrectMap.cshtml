@@ -5,24 +5,38 @@
 }
 
 
-<div id="wide-container">
-    <div class="box-container">
-        <div class="box">
-<form asp-action="CorrectMap" method="post">
-        <h2>Korriger ved å trykke i kartet:</h2>
-    <label for="latitude">Latitude:</label>
-    <input type="text" class="form-control" id="latitude" name="Latitude" readonly>
-    <label for="longitude">Longitude:</label>
-    <input type="text" class="form-control" id="longitude" name="Longitude" readonly>
-    <label for="description">Description:</label>
-    <textarea class="form-control" id="description" name="description" required></textarea>
-    <button type="submit" class="btn btn-primary">Send inn</button>
-</form>
-</div>
-<div class="box">
-        <div id="map"></div>
+    
+
+<h2>Korriger ved å trykke i kartet:</h2>
+
+
+    <div class="flex-row">
+        <div class="element1">
+            <div id="map">
+                <div id="verticalButtonContainer">
+                
+                    <button id="geolocateButton">
+                        <i class='bx bx-current-location' id="cross"></i>
+                    </button>
+                    <button id="fullscreenButton">
+                        <i class='bx bx-fullscreen' id="fullscreen"></i>
+                    </button>
+                </div>
+            
+            </div>
+        </div>
+        <div class="element2">
+            <form asp-action="CorrectMap" method="post">       
+                <input type="hidden" class="form-control" id="latitude" name="Latitude" readonly>
+                <input type="hidden" class="form-control" id="longitude" name="Longitude" readonly>
+                <label for="description">Beskrivelse:</label>
+                <textarea class="form-control" id="description" name="description" required></textarea>
+                <button type="submit" class="btn-primary">Send inn</button>
+            </form>
+        </div>
     </div>
-</div>
+
+
 
 @section Scripts {
     <script>
@@ -53,5 +67,6 @@
 
     </script>
 }
-  </div>
+
+
 
