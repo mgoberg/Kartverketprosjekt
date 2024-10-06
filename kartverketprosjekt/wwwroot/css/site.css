@@ -201,7 +201,10 @@ main {
     /* Semi-transparent background */
     border: none;
 }
-
+#menu {
+    font-size: 30px;
+    background-color: var(--navbar-background-color);
+}
 
 /* Media query for fullscreen mode */
 @media (min-width: 1024px) {
@@ -214,6 +217,19 @@ main {
     #navbar ul a {
         display: none;
     }
+    #navbar {
+        background-color: var(--background-color);
+        box-shadow: 0 0px 0px rgba(0, 0, 0, 0);
+    }
+    #menu {
+        background-color: var(--background-color);
+    }
+    #menuButton {
+        background-color: var(--background-color);
+        /* Semi-transparent background */
+        border: none;
+    }
+
 }
 
 #kartverketLogo {
@@ -223,9 +239,7 @@ main {
     /* Space between the logo and the nav items */
 }
 
-#menu {
-    font-size: 30px;
-}
+
 
 #container {
     display: flex;
@@ -239,21 +253,14 @@ main {
     background-color: var(--background-color);
 }
 
-#wide-container {
-    width: 100vh; /* Adjust the width as needed */
-    max-width: 1200px; /* Example max width */
-    margin: 0 auto; /* Center the container */
-}
-
 h1 {
-    padding-bottom: 20px;
-    padding-top: 20px;
+    padding-bottom: 15px;
+    padding-top: 15px;
     width: 100%;
     /* Ensure the h2 takes the full width of its container */
     margin: 0;
     /* Remove any default margin */
-
-    font-weight: 800;
+    
 }
 
 p {
@@ -478,7 +485,7 @@ a {
     background-color: var(--box-background-color);
     border-radius: 10px;
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
-   
+    box-shadow: 0 7px 30px -10px rgba(150,170,180,0.5);
 }
 
     .box p {
@@ -522,5 +529,6 @@ a {
     border-radius: 10px;
     border: 0px solid;
     border-color: rgb(213, 220, 226) rgb(213, 220, 226) rgb(184, 194, 204);
+    box-shadow: rgba(100, 221, 138, 0.4) 5px 5px, rgba(100, 221, 138, 0.3) 10px 10px, rgba(100, 221, 138, 0.2) 15px 15px, rgba(100, 221, 138, 0.1) 20px 20px, rgba(100, 221, 138, 0.05) 25px 25px;
 }
 
