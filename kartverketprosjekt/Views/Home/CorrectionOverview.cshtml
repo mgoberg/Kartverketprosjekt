@@ -3,25 +3,31 @@
 @{
     ViewData["Title"] = "Korrigeringsoversikt";
 }
-<div id="container"> 
+
 <h2>Korrigeringsoversikt</h2>
 
-<div>
-    @foreach (var position in Model)
-    {
-        <p>
-            <strong>Latitude: </strong> @position.Latitude
-        </p>
-        <p>
-            <strong>Longitude: </strong> @position.Longitude
-        </p>
-        <p>
-            <strong>Beskrivelse: </strong> @position.Description
-        </p>
-    }
-</div>
 
-<div id="map"></div>
+<div class="flex-row">
+    <div class="element1">  
+        <div id="map"></div>
+    </div>
+        <div class="element2">
+            
+                @foreach (var position in Model)
+                {
+                    <p>
+                        <strong>Latitude: </strong> @position.Latitude
+                    </p>
+                    <p>
+                        <strong>Longitude: </strong> @position.Longitude
+                    </p>
+                    <p>
+                        <strong>Beskrivelse: </strong> @position.Description
+                    </p>
+                }
+           
+        </div>
+</div>
 
 
 @section Scripts {
@@ -67,5 +73,5 @@
         });
     </script>
 }
+           
 
-</div>
