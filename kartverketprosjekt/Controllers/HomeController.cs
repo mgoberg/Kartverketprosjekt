@@ -91,6 +91,32 @@ namespace prosjekt_kartverket.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        // New Contact-related actions
+        [HttpGet]
+        public IActionResult Contact()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Contact(ContactModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // TODO: Process the form submission (e.g., send email, save to database)
+                // For now, we'll just redirect to a thank you page
+                return RedirectToAction("ThankYou");
+            }
+
+            // If the model is not valid, return to the form with validation errors
+            return View(model);
+        }
+
+        public IActionResult ThankYou()
+        {
+            return View();
+        }
     }
 }
 
