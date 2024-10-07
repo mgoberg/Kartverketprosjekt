@@ -54,3 +54,72 @@ function redirectToCorrectMap(event) {
     window.location.href = '/Home/CorrectMap'; // Redirect to /CorrectMap
 }
 
+$('#register-form').submit(function (event) {
+    event.preventDefault(); // Prevent default form submission
+
+    $.ajax({
+        url: '/Bruker/Register',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            Brukernavn: $('#brukernavn').val(),
+            Passord: $('#passord').val(),
+            Epost: $('#epost').val()
+        }),
+        success: function (response) {
+            // Handle success response
+            console.log(response);
+        },
+        error: function (xhr) {
+            // Handle error response
+            console.log(xhr.responseJSON.errors);
+        }
+    });
+});
+
+
+document.getElementById('register-form').onsubmit = async function (event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Create FormData from the form element
+    const formData = new FormData(this);
+
+    // Construct the JSON object from form data
+    const jsonData = {
+        Brukernavn: formData.get("Brukernavn"),
+        Passord: formData.get("Passord"),
+        Epost: formData.get("Epost")
+    };
+
+    try {
+        const response = await fetch('/Bruker/Register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(jsonData) // Use jsonData here
+        });
+
+        // Check if the response is OK (status 200)
+        if (!response.ok) {
+            const errorResponse = await response.json(); // Get error response
+            throw new Error(errorResponse.message || "Network response was not ok");
+        }
+
+        const result = await response.json(); // Parse JSON response
+        if (result.success) {
+            alert(result.message); // Display success message
+            // Optionally redirect after registration
+            window.location.href = "/Home/CorrectMap"; // Redirect after registration
+        } else {
+            alert("Errors: " + result.errors.join(', ')); // Show validation errors
+        }
+    } catch (error) {
+        console.error("Error during registration:", error);
+        alert("An error occurred during registration."); // Notify user
+    }
+};
+
+
+
+

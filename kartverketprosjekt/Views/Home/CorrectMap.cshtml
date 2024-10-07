@@ -9,7 +9,12 @@
 
 <h2>Korriger ved å trykke i kartet:</h2>
 
-
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Message"]
+    </div>
+}
     <div class="flex-row">
         <div class="element1">
             <div id="map">
