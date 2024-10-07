@@ -478,6 +478,7 @@ a {
 
 .box {
     flex: 1;
+    margin-bottom: 75px;
     height: 35vh;
     padding: 25px;
     justify-content: center;
@@ -486,6 +487,8 @@ a {
     border-radius: 10px;
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
     box-shadow: 0 7px 30px -10px rgba(150,170,180,0.5);
+    max-width: 600px;
+    width: 100%;
 }
 
     .box p {
@@ -513,6 +516,10 @@ a {
     transition: transform 0.7s ease-in-out;
     position: relative;
     top: -50px; /* Adjust the value to move the box higher up */
+    min-width: 300px; /* Minimum size for the "small" version */
+    max-width: 500px; /* Maximum size for the "large" version */
+    width: 100%; /* Let the width adjust freely between the min and max sizes */
+}
    
 }
 
