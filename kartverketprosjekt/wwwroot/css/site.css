@@ -617,6 +617,10 @@ button {
     width: 200px;
 }
 
+#email-form {
+    width: 100%
+}
+
 #register-form {
     width: 200px;
 }
