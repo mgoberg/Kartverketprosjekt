@@ -105,9 +105,9 @@ html {
 }
 
 body {
-    opacity: 0;
+    /*opacity: 0;*/
     /* Start with the h1 hidden */
-    transition: opacity 1s ease-in-out;
+   /* transition: opacity 1s ease-in-out;*/
     /* Add transition for smooth fade-in */
     margin: 0;
     /* Remove default margin */
@@ -148,12 +148,12 @@ main {
     overflow: hidden;
     position: fixed;
     /* Make the navbar fixed */
-    top: -100px;
+   /* top: -100px;*/
     /* Start the navbar off-screen */
     width: 100%;
     z-index: 2000;
     /* Ensure it appears above other elements */
-    transition: top 1.2s ease-in-out;
+    /*transition: top 1.2s ease-in-out;*/
     /* Add transition for smooth animation */
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
     /* Add shadow for 3D effect */

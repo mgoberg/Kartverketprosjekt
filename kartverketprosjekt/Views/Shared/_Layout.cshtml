@@ -8,16 +8,19 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    
 
     @if (ViewContext.RouteData.Values["action"].ToString() == "CorrectMap" || ViewContext.RouteData.Values["action"].ToString() == "CorrectionOverview")
     {
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+              integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
         <link rel="stylesheet" href="~/css/mapstyle.css" asp-append-version="true" />
        
 
-        <link rel="stylesheet" type="text/css"
-              href="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.css">
+       @*  <link rel="stylesheet" type="text/css"
+              href="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.css"> *@
 
         
                 /*geoman library*/
@@ -25,6 +28,23 @@
     href="https://unpkg.com/@@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" /> *@
 
         @* <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css" /> *@
+    }
+
+    @if (ViewContext.RouteData.Values["action"].ToString() == "RegisterAreaChange" || ViewContext.RouteData.Values["action"].ToString() == "AreaChangeOverview")
+    {
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+              integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+        <link rel="stylesheet" href="~/css/mapstyle.css" asp-append-version="true" />
+
+
+        @* <link rel="stylesheet" type="text/css"
+              href="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.css"> *@
+
+
+   
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css" /> 
     }
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -99,11 +119,12 @@
 
 
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
 
     @if (ViewContext.RouteData.Values["action"].ToString() == "CorrectMap")
     {
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+                integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
                 /*geoman library*/
         @* <script src="https://unpkg.com/@@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.js"></script> *@
@@ -117,6 +138,15 @@
         <script src="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.js"></script> *@
 
        
+    }
+    @if (ViewContext.RouteData.Values["action"].ToString() == "RegisterAreaChange" || ViewContext.RouteData.Values["action"].ToString() == "AreaChangeOverview")
+    {
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+                integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+
+        <script src="/js/mapstuff.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>
     }
     @await RenderSectionAsync("Scripts", required: false)
     
