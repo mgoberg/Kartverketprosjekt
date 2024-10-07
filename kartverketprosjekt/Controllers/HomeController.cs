@@ -40,15 +40,17 @@ namespace prosjekt_kartverket.Controllers
         /// Registers a new area change with the specified GeoJSON and description.
         /// <returns>The action result for the area change overview view.</returns>
         [HttpPost]
-        public IActionResult RegisterAreaChange(string geoJson, string description)
+        public IActionResult RegisterAreaChange(string geoJson, string description, string mapUrl)
         {
             var newChange = new AreaChangeModel
             {
                 ID = Guid.NewGuid().ToString(), // genererer en unik ID for endringen
                 GeoJSON = geoJson,
-                Description = description
+                Description = description,
+                LayerUrl = mapUrl
             };
             changes.Add(newChange);
+            
 
             return RedirectToAction("AreaChangeOverview");
         }

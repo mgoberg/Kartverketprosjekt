@@ -15,7 +15,7 @@
             <h1>Kartverkets nye rapporteringstjeneste</h1>
             <p>Bidra med å forbedre kartgrunnlaget til Kartverkets offentlige kart</p>
             <a class="btn-primary" onclick="showModal()">Til Kartet</a>
-          <a asp-action="RegisterAreaChange" class="btn-primary">ny</a>
+          <a asp-action="CorrectMap" class="btn-primary">Oblig 1</a>
         </div>
 
         <div id="phone-img">
@@ -71,7 +71,7 @@
 
             <!-- Fortsett uten å logge inn -->
             <div id="continue-without-login">
-                <a href="/Home/CorrectMap" class="btn-primary" style="text-align: center; display: block; margin: 10px 0;">(PH) Til kartet</a>
+                <a asp-action="RegisterAreaChange" class="btn-primary" style="text-align: center; display: block; margin: 10px 0;">(PH) Til kartet</a>
             </div>
 
             <div id="toggle-form">

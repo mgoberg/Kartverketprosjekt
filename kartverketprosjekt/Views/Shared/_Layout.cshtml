@@ -38,8 +38,8 @@
         <link rel="stylesheet" href="~/css/mapstyle.css" asp-append-version="true" />
 
 
-        @* <link rel="stylesheet" type="text/css"
-              href="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.css"> *@
+        <link rel="stylesheet" type="text/css"
+              href="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.css"> 
 
 
    
@@ -121,7 +121,7 @@
 
     
 
-    @if (ViewContext.RouteData.Values["action"].ToString() == "CorrectMap")
+    @if (ViewContext.RouteData.Values["action"].ToString() == "CorrectMap" || ViewContext.RouteData.Values["action"].ToString() == "CorrectionOverview")
     {
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
                 integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -131,12 +131,12 @@
 
         @*  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script> *@
 
-        <script src="/js/mapstuff.js"></script>
+        
 
         @* <script src="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet/0.0.1-beta.5/esri-leaflet.js"></script>
 
         <script src="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.js"></script> *@
-
+        <script src="/js/mapstuff.js"></script>
        
     }
     @if (ViewContext.RouteData.Values["action"].ToString() == "RegisterAreaChange" || ViewContext.RouteData.Values["action"].ToString() == "AreaChangeOverview")
@@ -144,9 +144,13 @@
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
                 integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
+        <script src="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet/0.0.1-beta.5/esri-leaflet.js"></script>
+
+        <script src="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>
 
         <script src="/js/mapstuff.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>
     }
     @await RenderSectionAsync("Scripts", required: false)
     

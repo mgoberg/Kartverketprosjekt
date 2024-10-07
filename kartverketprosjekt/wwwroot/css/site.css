@@ -580,11 +580,11 @@ input[type="text"], input[type="password"] {
     border-radius: 4px;
 }
 
-button {
+#modal button {
     width: 100%; /* Button takes up full width of the modal */
     padding: 10px; /* Add padding for the button */
     box-sizing: border-box; /* Include padding in width */
-    background-color: #007bff;
+    background-color: var(--button-background-color);
     color: white;
     border: none;
     border-radius: 4px;
@@ -625,9 +625,33 @@ button {
     width: 200px;
 }
 
-#geolocateButton {
-    width: 50px;
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 18px;
+    text-align: left;
 }
-#fullscreenButton {
-    width: 50px;
+
+.styled-table thead tr {
+    background-color: var(--button-background-color);
+    color: #ffffff;
+    text-align: left;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:nth-child(even) {
+    background-color: var(--box-background-color-alternate);
+}
+
+.styled-table tbody tr:nth-child(odd) {
+    background-color: var(--box-background-color);
 }
