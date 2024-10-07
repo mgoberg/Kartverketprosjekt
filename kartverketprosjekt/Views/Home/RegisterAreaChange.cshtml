@@ -1,0 +1,84 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Registrer endring";
+}
+
+<h2>Korriger ved å tegne i kartet:</h2>
+
+
+<div class="flex-row">
+    <div class="element1">
+        <div id="map">
+            <div id="verticalButtonContainer">
+
+                <button id="geolocateButton">
+                    <i class='bx bx-current-location' id="cross"></i>
+                </button>
+                <button id="fullscreenButton">
+                    <i class='bx bx-fullscreen' id="fullscreen"></i>
+                </button>
+            </div>
+
+        </div>
+    </div>
+    <div class="element2">
+        <form asp-action="RegisterAreaChange" method="post">
+
+            <input type="hidden" class="form-control" id="geoJsonInput" name="GeoJSON" readonly>
+
+            <label for="description">Beskrivelse:</label>
+            <textarea class="form-control" id="description" name="description" required></textarea>
+
+            <button type="submit" class="btn-primary">Send inn</button>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+
+    <script>
+
+        var map = L.map('map').setView([65, 12], 4);
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="http://www.openstreetmap.org/">OpenStreetMap</a>' }).addTo(map);
+
+        var drawnItems = new L.FeatureGroup();
+        map.addLayer(drawnItems);
+
+        var drawControl = new L.Control.Draw({
+            draw: {
+                polygon: true,
+                polyline: true,
+                rectangle: true,
+                circle: false,
+                marker: true,
+                circlemarker: false
+            },
+            edit: {
+                featureGroup: drawnItems
+            }
+        });
+        map.addControl(drawControl);
+
+        map.on(L.Draw.Event.CREATED, function (e) {
+            var type = e.layerType,
+                layer = e.layer;
+
+            drawnItems.addLayer(layer);
+
+            var geoJsonData = layer.toGeoJSON();
+            var geoJsonString = JSON.stringify(geoJsonData);
+
+            document.getElementById('geoJsonInput').value = geoJsonString;
+        });
+        
+
+    </script>
+}
+
+
+

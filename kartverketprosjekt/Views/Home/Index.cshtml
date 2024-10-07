@@ -1,5 +1,7 @@
-﻿<!DOCTYPE html>
-<html lang="no">
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Home Page";
+}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +15,7 @@
             <h1>Kartverkets nye rapporteringstjeneste</h1>
             <p>Bidra med å forbedre kartgrunnlaget til Kartverkets offentlige kart</p>
             <a class="btn-primary" onclick="showModal()">Til Kartet</a>
+          <a asp-action="RegisterAreaChange" class="btn-primary">ny</a>
         </div>
 
         <div id="phone-img">

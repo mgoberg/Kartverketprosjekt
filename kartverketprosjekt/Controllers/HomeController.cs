@@ -8,7 +8,11 @@ namespace prosjekt_kartverket.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         // Liste som holder på alle posisjoner som blir lagt til
+
         private static List<PositionModel> positions = new List<PositionModel>();
+
+        private static List<AreaChangeModel> changes = new List<AreaChangeModel>();
+
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
@@ -23,6 +27,38 @@ namespace prosjekt_kartverket.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        public IActionResult RegisterAreaChange()
+        {
+            return View();
+        }
+
+       
+
+
+        /// Registers a new area change with the specified GeoJSON and description.
+        /// <returns>The action result for the area change overview view.</returns>
+        [HttpPost]
+        public IActionResult RegisterAreaChange(string geoJson, string description)
+        {
+            var newChange = new AreaChangeModel
+            {
+                ID = Guid.NewGuid().ToString(), // genererer en unik ID for endringen
+                GeoJSON = geoJson,
+                Description = description
+            };
+            changes.Add(newChange);
+
+            return RedirectToAction("AreaChangeOverview");
+        }
+
+        [HttpGet]
+        public IActionResult AreaChangeOverview()
+        {
+            return View(changes);
+        }
+
         // Action metode som håndterer GET request til /Home/CorrectMap
         [HttpGet]
         public IActionResult CorrectMap()
@@ -57,3 +93,4 @@ namespace prosjekt_kartverket.Controllers
         }
     }
 }
+
