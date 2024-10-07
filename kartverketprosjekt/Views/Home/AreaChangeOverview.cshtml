@@ -6,7 +6,9 @@
 
 <h2>Korrigeringsoversikt</h2>
 
-<table class="table">
+<div id="map"></div>
+
+<table class="styled-table">
     <thead>
         <tr>
             <th>ID</th>
@@ -41,13 +43,46 @@
 
 </table>
 
-<div id="map"></div>
 
 @section Scripts {
     <script>
-        var map = L.map('map').setView([65, 12], 4);
 
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="http://www.openstreetmap.org/">OpenStreetMap</a>' }).addTo(map);
+
+         // Removes any previous layer
+    map.eachLayer(function (layer) {
+        map.removeLayer(layer);
+    });
+
+    @if (Model.Count > 0)
+    {
+        var layerUrl = Model[Model.Count - 1].LayerUrl;  // Gets the layer URL for the last item in the Model list.
+    
+        <text>
+        map.eachLayer(function (layer) {
+            if (!(layer instanceof L.FeatureGroup)) { 
+                map.removeLayer(layer);
+            }
+        });
+    
+        L.tileLayer('@layerUrl', {
+            attribution: '&copy; Denne må også sendes sammen med url!'
+        }).addTo(map);
+            </text>
+        }
+
+        else
+        {
+             <text>
+             L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png', { 
+            attribution: '&copy; <a href="http://www.kartverket.no/">Kartverket</a>' 
+            }).addTo(map);
+            </text>
+        }
+
+   
+
+    
+
 
         var changes = @Json.Serialize(Model);
 
