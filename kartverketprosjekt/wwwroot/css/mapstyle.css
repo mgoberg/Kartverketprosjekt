@@ -7,6 +7,10 @@
     /* Establish a positioning context for absolutely positioned children */
     min-height: 500px;
     /* Set a minimum height for the map */
+    border: 1px solid #64DD8A;
+    /* Add a border with color #64DD8A */
+    border-radius: 15px;
+    /* Add rounded corners */
 }
 
 
