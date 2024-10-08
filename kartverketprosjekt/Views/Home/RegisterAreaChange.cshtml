@@ -35,9 +35,6 @@
             <div>
                 <button id="btn-changeToSea" onclick="changeToSea()"></button>
             </div>
-            <div>
-                <button id="btn-changeToAerial" onclick="changeToAerial()"></button>
-            </div>
     </div>
             
 
@@ -62,13 +59,14 @@
 @section Scripts {
     
     <script>
-            //fjerner kartlag og tvinger på kartet til kartverket
-        map.eachLayer(function (layer) {
-        if (!(layer instanceof L.FeatureGroup)) {  
-            map.removeLayer(layer);
+            //simulerer at brukeren trykker på knappen for å endre til land for å ha det som initielle kartlag. hvis ikke blir ikke kart url'en sendt med form dataen
+        document.addEventListener('DOMContentLoaded', function () {  
+            changeToLand();
+        });
+
+        function changeToLand() {
+            changeTileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png', '&copy; <a href="http://www.kartverket.no/">Kartverket</a>', 'btn-changeToLand');
         }
-        L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png', { attribution: '&copy; <a href="http://www.kartverket.no/">Kartverket</a>' }).addTo(map);
-    });
         
         var searchControl = new L.esri.Controls.Geosearch().addTo(map);// Add the geocoding searchbar
 
@@ -104,7 +102,31 @@
             document.getElementById('geoJsonInput').value = geoJsonString;
         });
 
-        
+        /**
+        * Event listener for the form submission.
+        * Prevents the default form submission behavior, captures the URL of the current TileLayer,
+        * creates a hidden input to store the TileLayer URL, appends the hidden input to the form,
+        * and submits the form.
+        */
+        document.getElementById('areaChangeForm').addEventListener('submit', function (event) {
+            // Prevent the default form submission
+            event.preventDefault();
+
+            // Capture the URL of the current TileLayer
+            var tileLayerUrl = map._layers[Object.keys(map._layers)[1]]._url;
+
+            // Create a hidden input to store the TileLayer URL
+            var mapStateInput = document.createElement('input');
+            mapStateInput.type = 'hidden';
+            mapStateInput.name = 'mapUrl';
+            mapStateInput.value = tileLayerUrl;
+
+            // Append the hidden input to the form
+            this.appendChild(mapStateInput);
+
+            // Submit the form
+            this.submit();
+        });
     </script>
 
     

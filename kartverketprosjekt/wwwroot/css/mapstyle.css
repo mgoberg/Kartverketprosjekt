@@ -124,10 +124,6 @@
     background-image: url(../Images/raster.png);
 }
 
-#btn-changeToAerial {
-    background-image: url(../Images/aerial.png);
-}
-
 #btn-changeToGrey {
     background-image: url(../Images/grey.png);
 }

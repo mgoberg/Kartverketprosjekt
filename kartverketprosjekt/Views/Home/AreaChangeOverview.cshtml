@@ -23,19 +23,13 @@
         {
             <tr>
                 <td>
-
                     @change.ID
-
                 </td>
                 <td>
-
                     @change.GeoJSON
-
                 </td>
                 <td>
-
                     @change.Description
-
                 </td>
             </tr>
         }
@@ -47,117 +41,93 @@
 @section Scripts {
     <script>
 
+    // Initial map position and zoom-level
+    var map = L.map('map').setView([65, 12], 4);
 
-         // Removes any previous layer
+    var layerUrl = '@Model[Model.Count - 1].LayerUrl';  // Gets the layer URL for the last item in the Model list.
+
     map.eachLayer(function (layer) {
-        map.removeLayer(layer);
+        if (!(layer instanceof L.FeatureGroup)) { 
+            map.removeLayer(layer);
+        }
     });
 
-    @if (Model.Count > 0)
-    {
-        var layerUrl = Model[Model.Count - 1].LayerUrl;  // Gets the layer URL for the last item in the Model list.
-    
-        <text>
-        map.eachLayer(function (layer) {
-            if (!(layer instanceof L.FeatureGroup)) { 
-                map.removeLayer(layer);
-            }
-        });
-    
-        L.tileLayer('@layerUrl', {
-            attribution: '&copy; Denne må også sendes sammen med url!'
-        }).addTo(map);
-            </text>
+    L.tileLayer(layerUrl, { attribution:'&copy; Denne må også sendes sammen med url!'}).addTo(map);
+
+    var changes = @Json.Serialize(Model);
+
+    changes.forEach(function (change) {
+        var geoJsonData = JSON.parse(change.geoJSON);
+
+        L.geoJSON(geoJsonData).addTo(map);
+
+        var layer = L.geoJSON(geoJsonData).bindPopup(change.description);
+        layer.addTo(map);
+
+        var coordinates = geoJsonData.geometry.coordinates;
+
+        if (geoJsonData.geometry.type === 'LineString') {
+            // Calculate the center point of the line
+            var lineCoordinates = coordinates;
+            var lineCenter = calculateLineCenter(lineCoordinates);
+
+            // Extracting latitude and longitude of the line center
+            var latitude = lineCenter[1];
+            var longitude = lineCenter[0];
+
+                map.setView([latitude, longitude], 15); // Fly to the center of the line
+
+        } else if (geoJsonData.geometry.type === 'Polygon') {
+            // Calculate the center point of the polygon
+            var polygonCoordinates = coordinates[0]; // Assuming the first array of coordinates represents the outer ring of the polygon
+            var polygonCenter = calculatePolygonCenter(polygonCoordinates);
+
+            // Extracting latitude and longitude of the polygon center
+            var latitude = polygonCenter[1];
+            var longitude = polygonCenter[0];
+
+                map.setView([latitude, longitude], 15); // Fly to the center of the polygon
+        } else {
+            // Extracting latitude and longitude of the point
+            var latitude = coordinates[1];
+            var longitude = coordinates[0];
+
+                map.setView([latitude, longitude], 15); // Fly to the point
         }
 
-        else
-        {
-             <text>
-             L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png', { 
-            attribution: '&copy; <a href="http://www.kartverket.no/">Kartverket</a>' 
-            }).addTo(map);
-            </text>
+        // Function to calculate the center point of a line
+        function calculateLineCenter(coordinates) {
+            var totalPoints = coordinates.length;
+            var sumLat = 0;
+            var sumLng = 0;
+
+            for (var i = 0; i < totalPoints; i++) {
+                sumLat += coordinates[i][1];
+                sumLng += coordinates[i][0];
+            }
+
+            var centerLat = sumLat / totalPoints;
+            var centerLng = sumLng / totalPoints;
+
+            return [centerLng, centerLat];
         }
 
-   
+        // Function to calculate the center point of a polygon
+        function calculatePolygonCenter(coordinates) {
+            var totalPoints = coordinates.length;
+            var sumLat = 0;
+            var sumLng = 0;
 
-    
-
-
-        var changes = @Json.Serialize(Model);
-
-        changes.forEach(function (change) {
-            var geoJsonData = JSON.parse(change.geoJSON);
-
-            L.geoJSON(geoJsonData).addTo(map);
-
-            var layer = L.geoJSON(geoJsonData).bindPopup(change.description);
-            layer.addTo(map);
-
-            
-            var coordinates = geoJsonData.geometry.coordinates;
-
-            if (geoJsonData.geometry.type === 'LineString') {
-                // Calculate the center point of the line
-                var lineCoordinates = coordinates;
-                var lineCenter = calculateLineCenter(lineCoordinates);
-
-                // Extracting latitude and longitude of the line center
-                var latitude = lineCenter[1];
-                var longitude = lineCenter[0];
-
-                map.flyTo([latitude, longitude], 15); // Fly to the center of the line
-            } else if (geoJsonData.geometry.type === 'Polygon') {
-                // Calculate the center point of the polygon
-                var polygonCoordinates = coordinates[0]; // Assuming the first array of coordinates represents the outer ring of the polygon
-                var polygonCenter = calculatePolygonCenter(polygonCoordinates);
-
-                // Extracting latitude and longitude of the polygon center
-                var latitude = polygonCenter[1];
-                var longitude = polygonCenter[0];
-
-                map.flyTo([latitude, longitude], 15); // Fly to the center of the polygon
-            } else {
-                // Extracting latitude and longitude of the point
-                var latitude = coordinates[1];
-                var longitude = coordinates[0];
-
-                map.flyTo([latitude, longitude], 15); // Fly to the point
+            for (var i = 0; i < totalPoints; i++) {
+                sumLat += coordinates[i][1];
+                sumLng += coordinates[i][0];
             }
 
-            // Function to calculate the center point of a line
-            function calculateLineCenter(coordinates) {
-                var totalPoints = coordinates.length;
-                var sumLat = 0;
-                var sumLng = 0;
+            var centerLat = sumLat / totalPoints;
+            var centerLng = sumLng / totalPoints;
 
-                for (var i = 0; i < totalPoints; i++) {
-                    sumLat += coordinates[i][1];
-                    sumLng += coordinates[i][0];
-                }
-
-                var centerLat = sumLat / totalPoints;
-                var centerLng = sumLng / totalPoints;
-
-                return [centerLng, centerLat];
-            }
-
-            // Function to calculate the center point of a polygon
-            function calculatePolygonCenter(coordinates) {
-                var totalPoints = coordinates.length;
-                var sumLat = 0;
-                var sumLng = 0;
-
-                for (var i = 0; i < totalPoints; i++) {
-                    sumLat += coordinates[i][1];
-                    sumLng += coordinates[i][0];
-                }
-
-                var centerLat = sumLat / totalPoints;
-                var centerLng = sumLng / totalPoints;
-
-                return [centerLng, centerLat];
-            }
-        });
+            return [centerLng, centerLat];
+        }
+    });
     </script>
 }
