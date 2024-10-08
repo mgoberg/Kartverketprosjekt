@@ -6,7 +6,9 @@
 
 <h2>Korrigeringsoversikt</h2>
 
-<table class="table">
+<div id="map"></div>
+
+<table class="styled-table">
     <thead>
         <tr>
             <th>ID</th>
@@ -21,19 +23,13 @@
         {
             <tr>
                 <td>
-
                     @change.ID
-
                 </td>
                 <td>
-
                     @change.GeoJSON
-
                 </td>
                 <td>
-
                     @change.Description
-
                 </td>
             </tr>
         }
@@ -41,88 +37,97 @@
 
 </table>
 
-<div id="map"></div>
 
 @section Scripts {
     <script>
-        var map = L.map('map').setView([65, 12], 4);
 
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="http://www.openstreetmap.org/">OpenStreetMap</a>' }).addTo(map);
+    // Initial map position and zoom-level
+    var map = L.map('map').setView([65, 12], 4);
 
-        var changes = @Json.Serialize(Model);
+    var layerUrl = '@Model[Model.Count - 1].LayerUrl';  // Gets the layer URL for the last item in the Model list.
 
-        changes.forEach(function (change) {
-            var geoJsonData = JSON.parse(change.geoJSON);
+    map.eachLayer(function (layer) {
+        if (!(layer instanceof L.FeatureGroup)) { 
+            map.removeLayer(layer);
+        }
+    });
 
-            L.geoJSON(geoJsonData).addTo(map);
+    L.tileLayer(layerUrl, { attribution:'&copy; Denne må også sendes sammen med url!'}).addTo(map);
 
-            var layer = L.geoJSON(geoJsonData).bindPopup(change.description);
-            layer.addTo(map);
+    var changes = @Json.Serialize(Model);
 
-            
-            var coordinates = geoJsonData.geometry.coordinates;
+    changes.forEach(function (change) {
+        var geoJsonData = JSON.parse(change.geoJSON);
 
-            if (geoJsonData.geometry.type === 'LineString') {
-                // Calculate the center point of the line
-                var lineCoordinates = coordinates;
-                var lineCenter = calculateLineCenter(lineCoordinates);
+        L.geoJSON(geoJsonData).addTo(map);
 
-                // Extracting latitude and longitude of the line center
-                var latitude = lineCenter[1];
-                var longitude = lineCenter[0];
+        var layer = L.geoJSON(geoJsonData).bindPopup(change.description);
+        layer.addTo(map);
 
-                map.flyTo([latitude, longitude], 15); // Fly to the center of the line
-            } else if (geoJsonData.geometry.type === 'Polygon') {
-                // Calculate the center point of the polygon
-                var polygonCoordinates = coordinates[0]; // Assuming the first array of coordinates represents the outer ring of the polygon
-                var polygonCenter = calculatePolygonCenter(polygonCoordinates);
+        var coordinates = geoJsonData.geometry.coordinates;
 
-                // Extracting latitude and longitude of the polygon center
-                var latitude = polygonCenter[1];
-                var longitude = polygonCenter[0];
+        if (geoJsonData.geometry.type === 'LineString') {
+            // Calculate the center point of the line
+            var lineCoordinates = coordinates;
+            var lineCenter = calculateLineCenter(lineCoordinates);
 
-                map.flyTo([latitude, longitude], 15); // Fly to the center of the polygon
-            } else {
-                // Extracting latitude and longitude of the point
-                var latitude = coordinates[1];
-                var longitude = coordinates[0];
+            // Extracting latitude and longitude of the line center
+            var latitude = lineCenter[1];
+            var longitude = lineCenter[0];
 
-                map.flyTo([latitude, longitude], 15); // Fly to the point
+                map.setView([latitude, longitude], 15); // Fly to the center of the line
+
+        } else if (geoJsonData.geometry.type === 'Polygon') {
+            // Calculate the center point of the polygon
+            var polygonCoordinates = coordinates[0]; // Assuming the first array of coordinates represents the outer ring of the polygon
+            var polygonCenter = calculatePolygonCenter(polygonCoordinates);
+
+            // Extracting latitude and longitude of the polygon center
+            var latitude = polygonCenter[1];
+            var longitude = polygonCenter[0];
+
+                map.setView([latitude, longitude], 15); // Fly to the center of the polygon
+        } else {
+            // Extracting latitude and longitude of the point
+            var latitude = coordinates[1];
+            var longitude = coordinates[0];
+
+                map.setView([latitude, longitude], 15); // Fly to the point
+        }
+
+        // Function to calculate the center point of a line
+        function calculateLineCenter(coordinates) {
+            var totalPoints = coordinates.length;
+            var sumLat = 0;
+            var sumLng = 0;
+
+            for (var i = 0; i < totalPoints; i++) {
+                sumLat += coordinates[i][1];
+                sumLng += coordinates[i][0];
             }
 
-            // Function to calculate the center point of a line
-            function calculateLineCenter(coordinates) {
-                var totalPoints = coordinates.length;
-                var sumLat = 0;
-                var sumLng = 0;
+            var centerLat = sumLat / totalPoints;
+            var centerLng = sumLng / totalPoints;
 
-                for (var i = 0; i < totalPoints; i++) {
-                    sumLat += coordinates[i][1];
-                    sumLng += coordinates[i][0];
-                }
+            return [centerLng, centerLat];
+        }
 
-                var centerLat = sumLat / totalPoints;
-                var centerLng = sumLng / totalPoints;
+        // Function to calculate the center point of a polygon
+        function calculatePolygonCenter(coordinates) {
+            var totalPoints = coordinates.length;
+            var sumLat = 0;
+            var sumLng = 0;
 
-                return [centerLng, centerLat];
+            for (var i = 0; i < totalPoints; i++) {
+                sumLat += coordinates[i][1];
+                sumLng += coordinates[i][0];
             }
 
-            // Function to calculate the center point of a polygon
-            function calculatePolygonCenter(coordinates) {
-                var totalPoints = coordinates.length;
-                var sumLat = 0;
-                var sumLng = 0;
+            var centerLat = sumLat / totalPoints;
+            var centerLng = sumLng / totalPoints;
 
-                for (var i = 0; i < totalPoints; i++) {
-                    sumLat += coordinates[i][1];
-                    sumLng += coordinates[i][0];
-                }
-
-                var centerLat = sumLat / totalPoints;
-                var centerLng = sumLng / totalPoints;
-
-                return [centerLng, centerLat];
-            }
-        });
+            return [centerLng, centerLat];
+        }
+    });
     </script>
 }

@@ -13,6 +13,126 @@
     /* Add rounded corners */
 }
 
+#buttonContainer {
+    display: flex;
+    justify-content: space-around;
+    /* Distribute space evenly */
+    align-items: center;
+    /* Center items vertically */
+    flex-wrap: wrap;
+    /* Allow buttons to wrap to the next line if needed */
+    padding: 20px;
+    /* Add padding around the container */
+    position: absolute;
+    /* Position the container absolutely within the map */
+    bottom: 30px;
+    /* Adjust as needed */
+    left: 200px;
+    /* Adjust as needed */
+    right: 200px;
+    /* Adjust as needed */
+    background-color: rgba(255, 255, 255, 0.4);
+    /* Semi-transparent background */
+    border-radius: 5px;
+    /* Rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    /* Optional: Add a shadow for better visibility */
+    z-index: 1000;
+    /* Ensure the button container appears on top of map tiles*/
+    animation: slideIn 0.5s ease-out;
+    /* Apply the slide-in animation */
+    display: none;
+    /* Initially hide the button container */
+}
+
+@media (max-width: 1400px) {
+    #buttonContainer {
+        left: 20px;
+        /* Adjust as needed */
+        right: 20px;
+        /* Adjust as needed */
+    }
+}
+
+#buttonContainer button {
+    flex: 1 1 100px;
+    /* Allow buttons to grow and shrink, with a minimum width of 100px */
+    margin: 10px;
+    /* Space between buttons */
+    padding: 20px;
+    /* Adjust padding as needed */
+    border: 2px solid black;
+    /* Corrected border syntax */
+    background-size: cover;
+    /* Ensure background image covers the button */
+    background-position: center;
+    /* Center the background image */
+    background-repeat: no-repeat;
+    /* Prevent background image from repeating */
+    transition: transform 0.1s ease-in-out;
+    /* Smooth transition for scaling */
+}
+
+    #buttonContainer button:hover {
+        transform: scale(1.2);
+        /* Scale up on hover */
+        cursor: pointer;
+        /* Pointer cursor on hover */
+    }
+
+.map-btn {
+    padding: 8px 38px;
+    background-color: var(--button-background-color);
+    color: var(--button-text-color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: transform 0.1s ease-in-out;
+}
+
+    .map-btn:hover {
+        transform: translateY(-2px);
+    }
+
+
+.map-h3 {
+    padding: 10px 0px;
+    margin: 0;
+}
+
+
+@keyframes slideIn {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+
+/* Specific button styles */
+#btn-changeToLand {
+    background-image: url(../Images/land.png);
+}
+
+#btn-changeToRaster {
+    background-image: url(../Images/raster.png);
+}
+
+#btn-changeToGrey {
+    background-image: url(../Images/grey.png);
+}
+
+#btn-changeToSea {
+    background-image: url(../Images/sea.png);
+}
+
+
 
 #verticalButtonContainer {
     display: flex;
@@ -33,7 +153,21 @@
         color: var(--button-text-hover-color-alternate);
     }
 
-
+#toggleButton {
+    margin: 10px 5px;
+    padding: 10px 10px;
+    background-color: var(--background-color);
+    box-shadow: 2px 3px 2px rgba(0, 0, 0, 0.3);
+    /* Add shadow for 3D effect */
+    color: var(--text-color);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    z-index: 1001;
+    /* Ensure it appears above other elements */
+    transition: 0.2s;
+    
+}
 
 #layers {
     font-size: 30px;
@@ -52,6 +186,7 @@
     z-index: 1001;
     /* Ensure it appears above other elements */
     transition: 0.2s;
+    
 }
 
 #cross {
@@ -71,6 +206,7 @@
     z-index: 1001;
     /* Ensure it appears above other elements */
     transition: 0.2s;
+    
 }
 
 #fullscreen {

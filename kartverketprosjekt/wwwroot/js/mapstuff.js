@@ -1,4 +1,68 @@
-﻿
+﻿//SETUP
+
+// Initial map position and zoom-level
+var map = L.map('map').setView([65, 12], 4);
+
+// Initial tile layer
+L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png', { attribution: '&copy; <a href="http://www.kartverket.no/">Kartverket</a>' }).addTo(map);
+
+//adds scale to map
+L.control.scale().addTo(map);
+
+
+
+//var popup = L.popup();
+
+
+
+
+//FUNCTIONS
+
+// Function to change the tile layer and update button styles
+function changeTileLayer(layerUrl, attribution, buttonId) {
+    // Remove all existing layers
+    map.eachLayer(function (layer) {
+        if (!(layer instanceof L.FeatureGroup)) {
+            map.removeLayer(layer);
+        }
+    });
+
+
+    // Add the new layer
+    L.tileLayer(layerUrl, { attribution }, { maxZoom: 18 }).addTo(map);
+
+    // Update button styles when selected
+    var buttons = document.querySelectorAll('button');
+    buttons.forEach(function (button) {
+        button.classList.remove('selected');
+    });
+    document.getElementById(buttonId).classList.add('selected');
+}
+// functions called by pressing the map-layer buttons
+function changeToLand() {
+    changeTileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png', '&copy; <a href="http://www.kartverket.no/">Kartverket</a>', 'btn-changeToLand');
+}
+
+function changeToGrey() {
+    changeTileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topograatone/default/webmercator/{z}/{y}/{x}.png', '&copy; <a href="http://www.kartverket.no/">Kartverket</a>', 'btn-changeToGrey');
+}
+
+function changeToRaster() {
+    changeTileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/toporaster/default/webmercator/{z}/{y}/{x}.png', '&copy; <a href="http://www.kartverket.no/">Kartverket</a>', 'btn-changeToRaster');
+}
+function changeToSea() {
+    changeTileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/sjokartraster/default/webmercator/{z}/{y}/{x}.png', '&copy; <a href="http://www.kartverket.no/">Kartverket</a>', 'btn-changeToSea');
+}
+
+document.getElementById('toggleButton').addEventListener('click', function () {
+    var buttonContainer = document.getElementById('buttonContainer');
+    if (buttonContainer.style.display === 'none' || buttonContainer.style.display === '') {
+        buttonContainer.style.display = 'flex';
+    } else {
+        buttonContainer.style.display = 'none';
+    }
+});
+
 document.getElementById('geolocateButton').addEventListener('click', function () {
 
     if (navigator.geolocation) {
@@ -45,3 +109,7 @@ document.querySelectorAll('#verticalButtonContainer button, #buttonContainer but
         event.stopPropagation(); // Prevent the map from receiving the click event
     });
 });
+
+
+
+

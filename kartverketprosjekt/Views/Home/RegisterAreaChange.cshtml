@@ -12,7 +12,9 @@
     <div class="element1">
         <div id="map">
             <div id="verticalButtonContainer">
-
+                <button id="toggleButton">
+                    <i class='bx bx-layer' id="layers"></i>
+                </button>
                 <button id="geolocateButton">
                     <i class='bx bx-current-location' id="cross"></i>
                 </button>
@@ -20,13 +22,29 @@
                     <i class='bx bx-fullscreen' id="fullscreen"></i>
                 </button>
             </div>
+             <div id="buttonContainer">
+            <div>
+                <button id="btn-changeToLand" onclick="changeToLand()"></button>
+            </div>
+            <div>
+                <button id="btn-changeToGrey" onclick="changeToGrey()"></button>
+            </div>
+            <div>
+                <button id="btn-changeToRaster" onclick="changeToRaster()"></button>
+            </div>
+            <div>
+                <button id="btn-changeToSea" onclick="changeToSea()"></button>
+            </div>
+    </div>
+            
 
         </div>
     </div>
     <div class="element2">
-        <form asp-action="RegisterAreaChange" method="post">
+        <form id="areaChangeForm" asp-action="RegisterAreaChange" method="post">
 
             <input type="hidden" class="form-control" id="geoJsonInput" name="GeoJSON" readonly>
+            
 
             <label for="description">Beskrivelse:</label>
             <textarea class="form-control" id="description" name="description" required></textarea>
@@ -39,12 +57,20 @@
 
 
 @section Scripts {
-
+    
     <script>
+            //simulerer at brukeren trykker på knappen for å endre til land for å ha det som initielle kartlag. hvis ikke blir ikke kart url'en sendt med form dataen
+        document.addEventListener('DOMContentLoaded', function () {  
+            changeToLand();
+        });
 
-        var map = L.map('map').setView([65, 12], 4);
+        function changeToLand() {
+            changeTileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png', '&copy; <a href="http://www.kartverket.no/">Kartverket</a>', 'btn-changeToLand');
+        }
+        
+        var searchControl = new L.esri.Controls.Geosearch().addTo(map);// Add the geocoding searchbar
 
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="http://www.openstreetmap.org/">OpenStreetMap</a>' }).addTo(map);
+        document.querySelector('.geocoder-control').style.zIndex = '2000';
 
         var drawnItems = new L.FeatureGroup();
         map.addLayer(drawnItems);
@@ -75,9 +101,35 @@
 
             document.getElementById('geoJsonInput').value = geoJsonString;
         });
-        
 
+        /**
+        * Event listener for the form submission.
+        * Prevents the default form submission behavior, captures the URL of the current TileLayer,
+        * creates a hidden input to store the TileLayer URL, appends the hidden input to the form,
+        * and submits the form.
+        */
+        document.getElementById('areaChangeForm').addEventListener('submit', function (event) {
+            // Prevent the default form submission
+            event.preventDefault();
+
+            // Capture the URL of the current TileLayer
+            var tileLayerUrl = map._layers[Object.keys(map._layers)[1]]._url;
+
+            // Create a hidden input to store the TileLayer URL
+            var mapStateInput = document.createElement('input');
+            mapStateInput.type = 'hidden';
+            mapStateInput.name = 'mapUrl';
+            mapStateInput.value = tileLayerUrl;
+
+            // Append the hidden input to the form
+            this.appendChild(mapStateInput);
+
+            // Submit the form
+            this.submit();
+        });
     </script>
+
+    
 }
 
 

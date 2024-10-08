@@ -15,7 +15,7 @@
             <h1>Kartverkets nye rapporteringstjeneste</h1>
             <p>Bidra med å forbedre kartgrunnlaget til Kartverkets offentlige kart</p>
             <a class="btn-primary" onclick="showModal()">Til Kartet</a>
-          <a asp-action="RegisterAreaChange" class="btn-primary">ny</a>
+          <a asp-action="CorrectMap" class="btn-primary">Oblig 1</a>
         </div>
 
         <div id="phone-img">
@@ -53,21 +53,25 @@
             <form asp-action="Login" method="post" id="login-form" onsubmit="redirectToCorrectMap(event)">
                 <label for="username">Brukernavn:</label>
                 <input type="text" id="username" name="username" required>
+
                 <label for="password">Passord:</label>
                 <input type="password" id="password" name="password" required>
+
                 <button type="submit" class="btn-primary">Logg inn</button>
             </form>
-            <form asp-action="Register" method="post" id="register-form" style="display: none;">
-                <label for="username">Brukernavn:</label>
-                <input type="text" id="username" name="username" required>
-                <label for="password">Passord:</label>
-                <input type="password" id="password" name="password" required>
+            <form asp-controller="Bruker" asp-action="Register" method="post" id="register-form" style="display: none;">
+                <label for="brukernavn">Brukernavn:</label>
+                <input type="text" id="brukernavn" name="Brukernavn" required>
+                <label for="passord">Passord:</label>
+                <input type="password" id="passord" name="Passord" required>
+                <label for="epost">Epost:</label>
+                <input type="email" id="epost" name="Epost" required>
                 <button type="submit" class="btn-primary">Registrer</button>
             </form>
 
             <!-- Fortsett uten å logge inn -->
             <div id="continue-without-login">
-                <a href="/Home/CorrectMap" class="btn-primary" style="text-align: center; display: block; margin: 10px 0;">(PH) Til kartet</a>
+                <a asp-action="RegisterAreaChange" class="btn-primary" style="text-align: center; display: block; margin: 10px 0;">(PH) Til kartet</a>
             </div>
 
             <div id="toggle-form">
