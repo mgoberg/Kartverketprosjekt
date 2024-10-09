@@ -34,11 +34,6 @@ namespace kartverketprosjekt.Controllers
             return View(model); // Return the model back to the view if invalid
         }
 
-        // GET register
-        public IActionResult CorrectMap()
-        {
-            return View(); // Returns the registration view
-        }
 
         // POST register
         [HttpPost]

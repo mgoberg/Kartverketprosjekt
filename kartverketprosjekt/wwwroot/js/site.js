@@ -6,9 +6,14 @@ window.addEventListener('DOMContentLoaded', function () {
     document.querySelector('body').style.opacity = '1';
 });
 
-// function for darkmode
+
+// functions for darkmode
+
+
 document.getElementById('darkModeToggle').addEventListener('click', function () {
     document.body.classList.toggle('dark-mode');
+    // Change toggle icon in layout
+    document.querySelector('.bx-toggle-left').classList.toggle('bxs-toggle-right');
 });
 
 function showModal() {
@@ -119,7 +124,5 @@ document.getElementById('register-form').onsubmit = async function (event) {
         alert("An error occurred during registration."); // Notify user
     }
 };
-
-
 
 
