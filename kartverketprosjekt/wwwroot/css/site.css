@@ -9,6 +9,7 @@
     --form-background-color: #f9f9f9;
     --form-text-color: #000000;
     --button-background-color: #1a833b;
+    --button-background-color-alternate: #3e3f41;
     --button-background-hover-color: rgba(100, 221, 138, 1);
     --button-text-color: #ffffff;
     --footer-text-color: #ffffff;
@@ -182,6 +183,7 @@ main {
             #navbar ul li > * {
                 color: var(--navbar-text-color);
                 display: block;
+                white-space: nowrap;
                 padding: 1em 3em;
                 text-decoration: none;
                 transition-duration: 0.3s;
@@ -457,12 +459,35 @@ a {
     
 
 }
+.btn-secondary {
+    background-color: var(--button-background-color-alternate);
+    /* Set background color */
+    color: var(--button-text-color);
+    /* Set text color */
+    padding: 15px 20px;
+    /* Add padding inside the button */
+    border: none;
+    /* Remove border */
+    border-radius: 3px;
+    /* Add rounded corners */
+    cursor: pointer;
+    /* Change cursor to pointer */
+    transition: 0.3s;
+}
 
     .btn-primary:hover {
         transition-timing-function: ease-in-out;
         background-color: var(--button-background-hover-color);
         color: var(--button-text-hover-color);
         /* Change background color on hover */
+        cursor: url('../images/Spider-Man Pointing Meme--cursor--SweezyCursors.cur'), auto;
+    }
+    .btn-secondary:hover {
+        transition-timing-function: ease-in-out;
+        background-color: var(--button-background-hover-color);
+        color: var(--button-text-hover-color);
+        /* Change background color on hover */
+        cursor: url('../images/Spider-Man Pointing Meme--pointer--SweezyCursors.cur'), auto;
     }
 
 .box-container {
@@ -521,7 +546,7 @@ a {
     width: 100%; /* Let the width adjust freely between the min and max sizes */
 }
    
-}
+
 
     #phone-img:hover {
         transform: translateY(-10px);
@@ -654,4 +679,30 @@ input[type="text"], input[type="password"] {
 
 .styled-table tbody tr:nth-child(odd) {
     background-color: var(--box-background-color);
+}
+
+.bxs-chevron-left {
+    
+    font-size: 50px;
+    padding: 0;
+    margin-left: -13px; 
+    transition: 0.1s ease-in-out;
+}
+    .bxs-chevron-left:hover {
+        cursor: pointer;
+        transform: scale(1.05);
+        
+    }
+
+.bx-toggle-left {
+    font-size: 28px;
+}   
+.bxs-toggle-right {     
+    font-size: 28px;
+}
+.bx-sun {
+    font-size: 28px;
+}
+.bx-moon {
+    font-size: 28px;
 }

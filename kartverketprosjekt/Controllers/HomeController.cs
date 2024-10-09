@@ -27,7 +27,10 @@ namespace prosjekt_kartverket.Controllers
         {
             return View();
         }
-
+        public IActionResult CaseWorkerView()
+        {
+            return View();
+        }
         [HttpGet]
         public IActionResult RegisterAreaChange()
         {
