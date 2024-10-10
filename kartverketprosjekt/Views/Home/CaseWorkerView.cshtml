@@ -2,44 +2,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Saksbehandler";
 }
-<head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="~/css/site.css" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <style>
-        /* STYLING ER LAGT HER MIDLERTIDIG */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
-        }
 
-        table, th, td {
-            border: 1px solid black;
-        }
-
-        th {
-            background-color: green;
-            color: white;
-        }
-
-        th, td {
-            padding: 8px;
-            text-align: left;
-            height: 20px; /* Endre på størrelsen til rowsa */
-        }
-
-        /* dashboard og kart container */
-        .container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh; /* Full height of the viewport */
-        }
-
-     
+    <style>  
         .upper-section {
             flex: 1; /* Take up the top half of the screen */
         }
@@ -54,94 +23,94 @@
             width: 50%; /* Dashboard and map share equal space horizontally */
             padding: 20px;
             border: 1px solid #ddd;
-        }
-
-        #map {
-            height: 100%;
+            margin-top: 20px;
         }
     </style>
-</head>
-<body>
+
+
     <h2>
         Saksoversikt
     </h2>
 
-    <div class="container">
-        <!-- Tabell -->
-        <div class="upper-section">
-            <table id="casesTable">
-                <thead>
-                    <tr>
-                        <th>BrukerID</th>
-                        <th>Navn</th>
-                        <th>Beskrivelse</th>
-                        <th>Status</th>
-                        <th>Telefon</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr data-geojson='{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[7.909303,58.075045]}}'>
-                        <td>1</td>
-                        <td>Ola Nordmann</td>
-                        <td>Feil i kartet</td>
-                        <td>Åpen</td>
-                        <td>12345678</td>
-                    </tr>
-                    <tr data-geojson='{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[7.909,58.08]}}'>
-                        <td>2</td>
-                        <td>Kari Nordmann</td>
-                        <td>Veien er feil</td>
-                        <td>Under behandling</td>
-                        <td>87654321</td>
-                    </tr>
-                    <tr data-geojson='{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[7.92,58.07]}}'>
-                        <td>3</td>
-                        <td>Nils Hansen</td>
-                        <td>Kystlinjen er feil</td>
-                        <td>Lukket</td>
-                        <td>45678912</td>
-                    </tr>
-                    <tr data-geojson='{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[7.91,58.06]}}'>
-                        <td>4</td>
-                        <td>Anne Olsen</td>
-                        <td>Feil på stier</td>
-                        <td>Åpen</td>
-                        <td>65432109</td>
-                    </tr>
-                    <tr data-geojson='{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[7.93,58.05]}}'>
-                        <td>5</td>
-                        <td>Per Pettersen</td>
-                        <td>Manglende vei</td>
-                        <td>Åpen</td>
-                        <td>23456789</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Lower section: Dashboard and Map share space vertically -->
-        <div class="lower-section">
-            <!-- Dashbord -->
-            <div class="dashboard">
-                <h3>Dashboard</h3>
-                <p><strong>BrukerID:</strong> <span id="dashboardBrukerID">-</span></p>
-                <p><strong>Navn:</strong> <span id="dashboardNavn">-</span></p>
-                <p><strong>Beskrivelse:</strong> <span id="dashboardBeskrivelse">-</span></p>
-                <p><strong>Status:</strong> <span id="dashboardStatus">-</span></p>
-                <p><strong>Telefon:</strong> <span id="dashboardTelefon">-</span></p>
-                <!-- Status dropdown -->
-                <label for="changeStatus">Endre status:</label>
-                <select id="changeStatus">
-                    <option value="Åpen">Åpen</option>
-                    <option value="Under behandling">Under behandling</option>
-                    <option value="Lukket">Lukket</option>
-                </select>
-            </div>
-
-            <!-- Leaflet kartet -->
-            <div id="map"></div>
-        </div>
+    
+    <!-- Tabell -->
+    <div class="upper-section">
+        <table id="casesTable" class="styled-table">
+            <thead>
+                <tr>
+                    <th>BrukerID</th>
+                    <th>Navn</th>
+                    <th>Beskrivelse</th>
+                    <th>Status</th>
+                    <th>Telefon</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-geojson='{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[7.909303,58.075045]}}'>
+                    <td>1</td>
+                    <td>Ola Nordmann</td>
+                    <td>Feil i kartet</td>
+                    <td>Åpen</td>
+                    <td>12345678</td>
+                </tr>
+                <tr data-geojson='{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[7.909,58.08]}}'>
+                    <td>2</td>
+                    <td>Kari Nordmann</td>
+                    <td>Veien er feil</td>
+                    <td>Under behandling</td>
+                    <td>87654321</td>
+                </tr>
+                <tr data-geojson='{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[7.92,58.07]}}'>
+                    <td>3</td>
+                    <td>Nils Hansen</td>
+                    <td>Kystlinjen er feil</td>
+                    <td>Lukket</td>
+                    <td>45678912</td>
+                </tr>
+                <tr data-geojson='{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[7.91,58.06]}}'>
+                    <td>4</td>
+                    <td>Anne Olsen</td>
+                    <td>Feil på stier</td>
+                    <td>Åpen</td>
+                    <td>65432109</td>
+                </tr>
+                <tr data-geojson='{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[7.93,58.05]}}'>
+                    <td>5</td>
+                    <td>Per Pettersen</td>
+                    <td>Manglende vei</td>
+                    <td>Åpen</td>
+                    <td>23456789</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
+
+    <!-- Lower section: Dashboard and Map share space vertically -->
+    <div class="lower-section">
+        <!-- Dashbord -->
+        <div class="dashboard">
+            <h3>Dashboard</h3>
+            <p><strong>BrukerID:</strong> <span id="dashboardBrukerID">-</span></p>
+            <p><strong>Navn:</strong> <span id="dashboardNavn">-</span></p>
+            <p><strong>Beskrivelse:</strong> <span id="dashboardBeskrivelse">-</span></p>
+            <p><strong>Status:</strong> <span id="dashboardStatus">-</span></p>
+            <p><strong>Telefon:</strong> <span id="dashboardTelefon">-</span></p>
+            <!-- Status dropdown -->
+            <label for="changeStatus">Endre status:</label>
+            <select id="changeStatus">
+                <option value="Åpen">Åpen</option>
+                <option value="Under behandling">Under behandling</option>
+                <option value="Lukket">Lukket</option>
+            </select>
+        </div>
+
+        <!-- Leaflet kartet -->
+        <div id="map"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
     <script>
         // GPT Generet script, her kan vi erstatte med det vi allerede har.
@@ -201,4 +170,5 @@
             });
         });
     </script>
-</body>
+
+
