@@ -6,10 +6,13 @@ window.addEventListener('DOMContentLoaded', function () {
     document.querySelector('body').style.opacity = '1';
 });
 
+document.getElementById('menuButton').addEventListener('click', function () {
+    var icon = this.querySelector('i');
+    icon.classList.toggle('bx-menu');
+    icon.classList.toggle('bx-x');
+});
 
-// functions for darkmode
-
-
+// function for darkmode
 document.getElementById('darkModeToggle').addEventListener('click', function () {
     document.body.classList.toggle('dark-mode');
     // Change toggle icon in layout
