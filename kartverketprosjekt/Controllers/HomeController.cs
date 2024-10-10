@@ -109,16 +109,15 @@ namespace prosjekt_kartverket.Controllers
         {
             if (ModelState.IsValid)
             {
-                // TODO: Process the form submission (e.g., send email, save to database)
-                // For now, we'll just redirect to a thank you page
-                return RedirectToAction("ThankYou");
+                // TODO: Håndter innsendt kontaktskjema
+                return RedirectToAction("ContactConfirmed");
             }
 
             // If the model is not valid, return to the form with validation errors
             return View(model);
         }
 
-        public IActionResult ThankYou()
+        public IActionResult ContactConfirmed()
         {
             return View();
         }
