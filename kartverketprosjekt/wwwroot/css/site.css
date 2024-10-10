@@ -731,3 +731,18 @@ a {
 .bx-moon {
     font-size: 28px;
 }
+
+
+        /* Styling for input-error */
+.text-danger {
+    color: #ff5454;
+    font-weight: bold;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+input.input-validation-error,
+textarea.input-validation-error,
+select.input-validation-error {
+    background-color: #fce4e4;
+}

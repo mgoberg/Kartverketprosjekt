@@ -15,7 +15,7 @@ namespace kartverketprosjekt.Models
         [Required(ErrorMessage = "Emne er påkrevd")]
         public string Subject { get; set; }
 
-        [Required(ErrorMessage = "Melding er påkrevd")]
+        [Required(ErrorMessage = "Beskrivelse er påkrevd")]
         public string Message { get; set; }
     }
 }
