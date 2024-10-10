@@ -1,0 +1,7 @@
+FROM mariadb:latest
+
+# Install MariaDB client
+RUN apt-get update && apt-get install -y mariadb-client
+
+# Copy the initialization SQL script
+COPY ./init.sql /docker-entrypoint-initdb.d/

@@ -1,30 +1,15 @@
 version: '3.8'
-
 services:
-  database:
+  db:
     image: mariadb:latest
-    container_name: kartverket_db
-    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root  # Keep the root password
       MYSQL_DATABASE: kartverketdb
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
-    ports:
-      - "3306:3306"
     volumes:
-      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - kartverket-network
 
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: kartverket_web
-    restart: always
-    ports:
-      - "80:80"  # Adjust based on your application's port
-    depends_on:
-      - database
-
-volumes:
-  db_data:
+networks:
+  kartverket-network:
+    external: true
