@@ -9,7 +9,7 @@
     --form-background-color: #f9f9f9;
     --form-text-color: #000000;
     --button-background-color: #1a833b;
-    --button-background-color-alternate: #3e3f41;
+    --button-background-color-alternate: #606367;
     --button-background-hover-color: rgba(100, 221, 138, 1);
     --button-text-color: #ffffff;
     --footer-text-color: #ffffff;
@@ -30,6 +30,7 @@ body.dark-mode {
     --form-background-color: #3e3f41;
     --form-text-color: #000000;
     --button-background-color: #1a833b;
+    --button-background-color-alternate: #606367;
     --button-text-color: #ffffff;
     --footer-text-color: #000000;
     --footer-background-gradient: linear-gradient(0deg, rgba(100, 221, 138, 1) 57%, rgba(39, 40, 42, 0) 100%);
@@ -304,19 +305,6 @@ form {
         max-width: 600px;
     }
 }
-.flex-row {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly; /* Adjust as needed: space-between, space-around, space-evenly, etc. */
-    align-items: center; /* Adjust as needed: center, flex-start, flex-end, etc. */
-    gap: 5%;
-}
-.element1 {
-    width: 100%;
-}
-.element2 {
-    width: 100%;
-}
 
 @media (max-width: 1024px) {
     .flex-row {
@@ -343,9 +331,55 @@ form textarea {
     /* Make inputs take the full width of the form */
     box-sizing: border-box;
     /* Ensure padding and border are included in the element's total width and height */
+    resize: vertical;
+}
+
+form input[type="email"] {
+    margin-bottom: 15px;
+    /* Space between form elements */
+    padding: 10px;
+    /* Add padding inside inputs */
+    border: 1px solid #ccc;
+    /* Add a border to inputs */
+    border-radius: 3px;
+    /* Add rounded corners to inputs */
+    width: 100%;
+    /* Make inputs take the full width of the form */
+    box-sizing: border-box;
+    /* Ensure padding and border are included in the element's total width and height */
     resize: none;
 }
 
+form input[type="text"] {
+    margin-bottom: 15px;
+    /* Space between form elements */
+    padding: 10px;
+    /* Add padding inside inputs */
+    border: 1px solid #ccc;
+    /* Add a border to inputs */
+    border-radius: 3px;
+    /* Add rounded corners to inputs */
+    width: 100%;
+    /* Make inputs take the full width of the form */
+    box-sizing: border-box;
+    /* Ensure padding and border are included in the element's total width and height */
+    resize: none;
+}
+input[type="password"] {
+    margin-bottom: 15px;
+    /* Space between form elements */
+    padding: 10px;
+    /* Add padding inside inputs */
+    border: 1px solid #ccc;
+    /* Add a border to inputs */
+    border-radius: 3px;
+    /* Add rounded corners to inputs */
+    width: 100%;
+    /* Make inputs take the full width of the form */
+    box-sizing: border-box;
+    /* Ensure padding and border are included in the element's total width and height */
+    resize: none;
+}
 form input[type="submit"] {
     padding: 10px 20px;
     /* Add padding inside the submit button */
@@ -364,12 +398,29 @@ form input[type="submit"] {
     transition: 0.3s;
 }
 
+
     form input[type="submit"]:hover {
         transition-timing-function: ease-in-out;
         background-color: var(--button-text-hover-color);
         color: var(--button-text-hover-color-alternate);
         /* Change background color on hover */
     }
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly; /* Adjust as needed: space-between, space-around, space-evenly, etc. */
+    align-items: center; /* Adjust as needed: center, flex-start, flex-end, etc. */
+    gap: 5%;
+}
+
+.element1 {
+    width: 100%;
+}
+
+.element2 {
+    width: 100%;
+}
 
 #footer {
     /*background-color: #0d1b2a; /* ikke gradient */
@@ -497,26 +548,26 @@ a {
     height: 100%; 
 }
 
-.box {
-    flex: 1;
-    margin-bottom: 75px;
-    height: 35vh;
-    padding: 25px;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--box-background-color);
-    border-radius: 10px;
-    box-sizing: border-box; /* Include padding and border in the element's total width and height */
-    box-shadow: 0 7px 30px -10px rgba(150,170,180,0.5);
-    max-width: 600px;
-    width: 100%;
-}
-
-    .box p {
-        
-        padding-bottom: 30px;
-
+    .box {
+        flex: 1;
+        margin-bottom: 75px;
+        height: 35vh;
+        padding: 25px;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--box-background-color);
+        border-radius: 10px;
+        box-sizing: border-box; /* Include padding and border in the element's total width and height */
+        box-shadow: 0 7px 30px -10px rgba(150,170,180,0.5);
+        max-width: 600px;
+        width: 100%;
     }
+
+        .box p {
+        
+            padding-bottom: 30px;
+
+        }
 
 #phone-img {
     flex: 1;
@@ -586,21 +637,6 @@ a {
     width: 100%; /* Ensure content takes full width */
 }
 
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px; /* Add space between form elements */
-    width: 100%; /* Form takes up full width of modal */
-}
-
-input[type="text"], input[type="password"] {
-    width: 100%; /* Make input fields take up full modal width */
-    box-sizing: border-box; /* Include padding and border in width */
-    padding: 8px; /* Add padding for better UX */
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
 #modal button {
     width: 100%; /* Button takes up full width of the modal */
     padding: 10px; /* Add padding for the button */
@@ -654,28 +690,28 @@ input[type="text"], input[type="password"] {
     text-align: left;
 }
 
-.styled-table thead tr {
-    background-color: var(--button-background-color);
-    color: #ffffff;
-    text-align: left;
-}
+    .styled-table thead tr {
+        background-color: var(--button-background-color);
+        color: #ffffff;
+        text-align: left;
+    }
 
-.styled-table th,
-.styled-table td {
-    padding: 12px 15px;
-}
+    .styled-table th,
+    .styled-table td {
+        padding: 12px 15px;
+    }
 
-.styled-table tbody tr {
-    border-bottom: 1px solid #dddddd;
-}
+    .styled-table tbody tr {
+        border-bottom: 1px solid #dddddd;
+    }
 
-.styled-table tbody tr:nth-child(even) {
-    background-color: var(--box-background-color-alternate);
-}
+        .styled-table tbody tr:nth-child(even) {
+            background-color: var(--box-background-color-alternate);
+        }
 
-.styled-table tbody tr:nth-child(odd) {
-    background-color: var(--box-background-color);
-}
+        .styled-table tbody tr:nth-child(odd) {
+            background-color: var(--box-background-color);
+        }
 
 .bxs-chevron-left {
     

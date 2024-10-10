@@ -2,25 +2,31 @@
 
 <h2>Kontakt oss</h2>
 
+<style>
+    h2 {
+        text-align: center;
+    }
+</style>
+
 <form asp-controller="Home" asp-action="Contact" method="post">
     <div class="form">
         <label asp-for="Name">Navn:</label>
-        <input asp-for="Name" class="form-control" />
+        <input asp-for="Name" class="form-control" placeholder="Ola Nordmann" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div class="form">
         <label asp-for="Email">Epost:</label>
-        <input asp-for="Email" type="email" class="form-control" />
+        <input asp-for="Email" type="email" class="form-control" placeholder="OlaNordmann@mail.no" />
         <span asp-validation-for="Email" class="text-danger"></span>
     </div>
     <div class="form">
         <label asp-for="Subject">Sak:</label>
-        <input asp-for="Subject" class="form-control" />
+        <input asp-for="Subject" class="form-control" placeholder="Sak ID"/>
         <span asp-validation-for="Subject" class="text-danger"></span>
     </div>
     <div class="form">
         <label asp-for="Message">Beskrivelse:</label>
-        <textarea asp-for="Message" rows="5" class="form-control"></textarea>
+        <textarea asp-for="Message" rows="5" class="form-control" placeholder="Beskrivelse av saken"></textarea>
         <span asp-validation-for="Message" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-primary">Send</button>
