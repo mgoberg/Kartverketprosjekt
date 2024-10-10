@@ -67,7 +67,7 @@
     </h2>
 
     <div class="container">
-        <!-- Upper section: Full-width table -->
+        <!-- Tabell -->
         <div class="upper-section">
             <table id="casesTable">
                 <thead>
@@ -121,7 +121,7 @@
 
         <!-- Lower section: Dashboard and Map share space vertically -->
         <div class="lower-section">
-            <!-- Dashboard section -->
+            <!-- Dashbord -->
             <div class="dashboard">
                 <h3>Dashboard</h3>
                 <p><strong>BrukerID:</strong> <span id="dashboardBrukerID">-</span></p>
@@ -129,7 +129,7 @@
                 <p><strong>Beskrivelse:</strong> <span id="dashboardBeskrivelse">-</span></p>
                 <p><strong>Status:</strong> <span id="dashboardStatus">-</span></p>
                 <p><strong>Telefon:</strong> <span id="dashboardTelefon">-</span></p>
-                <!-- Dropdown to change status -->
+                <!-- Status dropdown -->
                 <label for="changeStatus">Endre status:</label>
                 <select id="changeStatus">
                     <option value="Åpen">Åpen</option>
@@ -138,13 +138,13 @@
                 </select>
             </div>
 
-            <!-- Leaflet map -->
+            <!-- Leaflet kartet -->
             <div id="map"></div>
         </div>
     </div>
 
     <script>
-        // Initialize the map
+        // GPT Generet script, her kan vi erstatte med det vi allerede har.
         var map = L.map('map').setView([58.075045, 7.909303], 10);
 
         // Add OpenStreetMap tiles
@@ -158,7 +158,7 @@
         function updateMap(geojson) {
             var coordinates = geojson.geometry.coordinates;
 
-            // If a marker already exists, remove it
+            // Når kartert spawner, fjernes marker som er på kartet fra før av når man velger et annet kart.
             if (marker) {
                 map.removeLayer(marker);
             }
@@ -171,7 +171,7 @@
         // jQuery function to handle row click and update dashboard
         $(document).ready(function () {
             $('#casesTable tbody tr').click(function () {
-                // Get data from the clicked row
+                // hente data fra tabellen
                 var brukerID = $(this).find('td:eq(0)').text();
                 var navn = $(this).find('td:eq(1)').text();
                 var beskrivelse = $(this).find('td:eq(2)').text();
@@ -179,17 +179,17 @@
                 var telefon = $(this).find('td:eq(4)').text();
                 var geojson = $(this).data('geojson');
 
-                // Update dashboard with clicked row data
+                // Fylle inn dashbord med info ved å klikke på tabellen
                 $('#dashboardBrukerID').text(brukerID);
                 $('#dashboardNavn').text(navn);
                 $('#dashboardBeskrivelse').text(beskrivelse);
                 $('#dashboardStatus').text(status);
                 $('#dashboardTelefon').text(telefon);
 
-                // Set the status dropdown to the current status
+                // endre status
                 $('#changeStatus').val(status);
 
-                // Update the map with the new coordinates
+                // Legge kartet fra Json inn i kartet
                 updateMap(geojson);
             });
 
@@ -197,7 +197,7 @@
             $('#changeStatus').change(function () {
                 var newStatus = $(this).val();
                 $('#dashboardStatus').text(newStatus);
-                // Additional logic can be added here to update the status in the database
+                // Legg inn database logikk her
             });
         });
     </script>
