@@ -479,15 +479,11 @@ a {
         transition-timing-function: ease-in-out;
         background-color: var(--button-background-hover-color);
         color: var(--button-text-hover-color);
-        /* Change background color on hover */
-        cursor: url('../images/Spider-Man Pointing Meme--cursor--SweezyCursors.cur'), auto;
     }
     .btn-secondary:hover {
         transition-timing-function: ease-in-out;
         background-color: var(--button-background-hover-color);
-        color: var(--button-text-hover-color);
-        /* Change background color on hover */
-        cursor: url('../images/Spider-Man Pointing Meme--pointer--SweezyCursors.cur'), auto;
+        color: var(--button-text-hover-color);        
     }
 
 .box-container {
