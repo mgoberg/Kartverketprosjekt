@@ -1,27 +1,37 @@
 ﻿@model kartverketprosjekt.Models.ContactModel
 
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Kontakt";
+}
+
 <h2>Kontakt oss</h2>
 
-<form asp-controller="Home" asp-action="Contact" method="post">
+<style>
+    h2 {
+        text-align: center;
+    }
+</style>
+
+<form asp-controller="Home" asp-action="Contact" method="post" novalidate>
     <div class="form">
-        <label asp-for="Name">Navn:</label>
-        <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
+        <input asp-for="Name" class="form-control" placeholder="Navn..."/>
     </div>
     <div class="form">
-        <label asp-for="Email">Epost:</label>
-        <input asp-for="Email" type="email" class="form-control" />
         <span asp-validation-for="Email" class="text-danger"></span>
+        <input asp-for="Email" type="email" class="form-control" placeholder="Epost..."/>
     </div>
     <div class="form">
         <label asp-for="Subject">Sak:</label>
-        <input asp-for="Subject" class="form-control" />
+        <input asp-for="Subject" class="form-control" placeholder="Sak ID"/>
         <span asp-validation-for="Subject" class="text-danger"></span>
+        <input asp-for="Subject" class="form-control" placeholder="Hva gjelder det?..."/>
     </div>
     <div class="form">
-        <label asp-for="Message">Beskrivelse:</label>
-        <textarea asp-for="Message" rows="5" class="form-control"></textarea>
         <span asp-validation-for="Message" class="text-danger"></span>
+        <textarea asp-for="Message" rows="8" class="form-control" placeholder="Beskrivelse av saken..."></textarea>
+
     </div>
     <button type="submit" class="btn btn-primary">Send</button>
 </form>

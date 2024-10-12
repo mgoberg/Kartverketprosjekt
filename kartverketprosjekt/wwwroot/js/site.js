@@ -6,9 +6,17 @@ window.addEventListener('DOMContentLoaded', function () {
     document.querySelector('body').style.opacity = '1';
 });
 
+document.getElementById('menuButton').addEventListener('click', function () {
+    var icon = this.querySelector('i');
+    icon.classList.toggle('bx-menu');
+    icon.classList.toggle('bx-x');
+});
+
 // function for darkmode
 document.getElementById('darkModeToggle').addEventListener('click', function () {
     document.body.classList.toggle('dark-mode');
+    // Change toggle icon in layout
+    document.querySelector('.bx-toggle-left').classList.toggle('bxs-toggle-right');
 });
 
 function showModal() {
@@ -119,7 +127,5 @@ document.getElementById('register-form').onsubmit = async function (event) {
         alert("An error occurred during registration."); // Notify user
     }
 };
-
-
 
 

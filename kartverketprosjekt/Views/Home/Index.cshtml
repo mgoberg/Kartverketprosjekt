@@ -1,87 +1,76 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Ny rapport tjeneste";
 }
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kartverkets Rapporteringstjeneste</title>
-    <link rel="stylesheet" href="~/css/site.css" />
-</head>
-<body>
 
-    <div class="box-container">
-        <div class="box">
-            <h1>Kartverkets nye rapporteringstjeneste</h1>
-            <p>Bidra med å forbedre kartgrunnlaget til Kartverkets offentlige kart</p>
-            <a class="btn-primary" onclick="showModal()">Til Kartet</a>
-          <a asp-action="CorrectMap" class="btn-primary">Oblig 1</a>
-        </div>
-
-        <div id="phone-img">
-            <!-- image -->
-        </div>
+<div class="box-container">
+    <div class="box">
+        <h1>Kartverkets nye rapporteringstjeneste</h1>
+        <p>Bidra med å forbedre kartgrunnlaget til Kartverkets offentlige kart</p>
+        <a class="btn-primary" onclick="showModal()">Til Kartet</a>
+        <a asp-action="CorrectMap" class="btn-secondary">Oblig 1</a>
     </div>
 
-    <div class="text-section">
-        <h2 class="ubuntu-bold-italic">Kort om tjenesten</h2>
-        <p class="ubuntu-light">
-            Kartverket tilbyr en tjeneste der brukere enkelt kan rapportere feil i kartet
-            ved å tegne direkte på det digitale kartet. Gjennom denne funksjonen kan brukerne
-            markere områder hvor de oppdager unøyaktigheter eller mangler, som for eksempel
-            feilplasserte veier, bygninger eller andre geografiske objekter. Når brukeren
-            tegner på kartet og beskriver feilen, sendes informasjonen til
-            Kartverkets systemer for vurdering og oppdatering. Denne brukerdrevne
-            tilnærmingen bidrar til mer nøyaktige og oppdaterte kartdata, samtidig
-            som det fremmer et samarbeid mellom Kartverket og publikum for å
-            opprettholde kvaliteten på karttjenestene.
-        </p>
+    <div id="phone-img">
+        <!-- image -->
     </div>
+</div>
 
-    <div class="box-container">
-        <div>
-            <a href="https://www.kartverket.no/">
-                <img src="/images/kartverket-logo-large.svg" />
-            </a>
+<div class="text-section">
+    <h2 class="ubuntu-bold-italic">Kort om tjenesten</h2>
+    <p class="ubuntu-light">
+        Kartverket tilbyr en tjeneste der brukere enkelt kan rapportere feil i kartet
+        ved å tegne direkte på det digitale kartet. Gjennom denne funksjonen kan brukerne
+        markere områder hvor de oppdager unøyaktigheter eller mangler, som for eksempel
+        feilplasserte veier, bygninger eller andre geografiske objekter. Når brukeren
+        tegner på kartet og beskriver feilen, sendes informasjonen til
+        Kartverkets systemer for vurdering og oppdatering. Denne brukerdrevne
+        tilnærmingen bidrar til mer nøyaktige og oppdaterte kartdata, samtidig
+        som det fremmer et samarbeid mellom Kartverket og publikum for å
+        opprettholde kvaliteten på karttjenestene.
+    </p>
+</div>
+
+<div class="box-container">
+    <div>
+        <a href="https://www.kartverket.no/">
+            <img src="/images/kartverket-logo-large.svg" />
+        </a>
+    </div>
+</div>
+
+<!-- Modal for registrering / innlogging -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <h2 id="modal-title">Logg inn</h2>
+        <form asp-action="Login" method="post" id="login-form" onsubmit="redirectToCorrectMap(event)">
+            <label for="username">Brukernavn:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Passord:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit" class="btn-primary">Logg inn</button>
+        </form>
+        <form asp-controller="Bruker" asp-action="Register" method="post" id="register-form" style="display: none;">
+            <label for="brukernavn">Brukernavn:</label>
+            <input type="text" id="brukernavn" name="Brukernavn" required>
+            <label for="passord">Passord:</label>
+            <input type="password" id="passord" name="Passord" required>
+            <label for="epost">Epost:</label>
+            <input type="email" id="epost" name="Epost" required>
+            <button type="submit" class="btn-primary">Registrer</button>
+        </form>
+
+        <!-- Fortsett uten å logge inn -->
+        <div id="continue-without-login">
+            <a asp-action="RegisterAreaChange" style="text-align: center; display: block; color: var(--button-text-hover-color); padding: 15px;">Fortsett uten å logge inn</a>
+        </div>
+
+        <div id="toggle-form">
+            <a style="text-align: center; display: block; color: var(--button-text-hover-color); padding: 15px; cursor: pointer;" onclick="toggleForm()">Registrer </a>
         </div>
     </div>
+</div>
 
-    <!-- Modal for registrering / innlogging -->
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <h2 id="modal-title">Logg inn</h2>
-            <form asp-action="Login" method="post" id="login-form" onsubmit="redirectToCorrectMap(event)">
-                <label for="username">Brukernavn:</label>
-                <input type="text" id="username" name="username" required>
-
-                <label for="password">Passord:</label>
-                <input type="password" id="password" name="password" required>
-
-                <button type="submit" class="btn-primary">Logg inn</button>
-            </form>
-            <form asp-controller="Bruker" asp-action="Register" method="post" id="register-form" style="display: none;">
-                <label for="brukernavn">Brukernavn:</label>
-                <input type="text" id="brukernavn" name="Brukernavn" required>
-                <label for="passord">Passord:</label>
-                <input type="password" id="passord" name="Passord" required>
-                <label for="epost">Epost:</label>
-                <input type="email" id="epost" name="Epost" required>
-                <button type="submit" class="btn-primary">Registrer</button>
-            </form>
-
-            <!-- Fortsett uten å logge inn -->
-            <div id="continue-without-login">
-                <a asp-action="RegisterAreaChange" class="btn-primary" style="text-align: center; display: block; margin: 10px 0;">(PH) Til kartet</a>
-            </div>
-
-            <div id="toggle-form">
-                <button class="btn-primary" onclick="toggleForm()">Registrer</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="overlay" id="overlay"></div>
-
-    <script src="/js/site.js"></script>
-</body>
-</html>
+<div class="overlay" id="overlay"></div>

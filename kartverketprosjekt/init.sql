@@ -1,0 +1,10 @@
+CREATE DATABASE IF NOT EXISTS kartverketdb;
+
+USE kartverketdb;
+
+CREATE TABLE IF NOT EXISTS Brukere (
+    Brukerid INT AUTO_INCREMENT PRIMARY KEY,
+    Brukernavn VARCHAR(100) NOT NULL,
+    Passord VARCHAR(100) NOT NULL,
+    Epost VARCHAR(100)
+);

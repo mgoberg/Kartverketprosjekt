@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - WebApplication1</title>
+    <title>@ViewData["Title"] - Kartverket</title>
+    @await Html.PartialAsync("_Favicons")
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
@@ -64,11 +65,18 @@
                         <img src="/images/kartverket-logo-large.svg" alt="Kartverket Logo" id="kartverketLogo">
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Contact">Kontakt</a>
+                <li>
+                    <a asp-controller="Home" asp-action="CaseWorkerView">Saksbehandler</a>
                 </li>
                 <li>
-                    <a id="darkModeToggle">Tema</a>
+                    <a href="#footer">Kontakt</a>
+                </li>
+                <li>
+                    <a id="darkModeToggle">
+                        <i class='bx bx-sun'></i>
+                        <i class='bx bx-toggle-left'></i>
+                        <i class='bx bx-moon'></i>                     
+                    </a>
                 </li>
                 <li>
                     <button id="menuButton">
@@ -91,12 +99,7 @@
         <h1 id="footer-h1">Kontaktinformasjon</h1>
 
         <div id="footerContainer">
-            <div class="footer-btn">
-                <a href="https://discord.gg/mCmumZa3">
-                    <i class='bx bxl-discord bx-flashing-hover'></i>
-                </a>
-                <h3 class="ubuntu-regular">Discord</h3>
-            </div>
+            
 
             <div class="footer-btn">
                 <a href="https://github.com/mgoberg/kartverketprosjekt">
@@ -104,6 +107,14 @@
                 </a>
                 <h3 class="ubuntu-regular">GitHub</h3>
             </div>
+
+            <div class="footer-btn">
+                <a asp-controller="Home" asp-action="Contact">
+                    <i class='bx bx-conversation bx-flashing-hover'></i>
+                </a>
+                <h3 class="ubuntu-regular">Kontakt</h3>
+            </div>
+
             <div class="footer-btn">
 
                 <a href="https://leafletjs.com/">
