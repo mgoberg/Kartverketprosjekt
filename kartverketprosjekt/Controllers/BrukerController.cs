@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using kartverketprosjekt.Models; // Ensure this points to the BrukerModel class
 using kartverketprosjekt.Data; // Ensure this points to your DbContext
 using System.Linq; // Needed for LINQ queries to select model errors
+using Microsoft.AspNetCore.Identity;
 
 namespace kartverketprosjekt.Controllers
 {
@@ -42,10 +43,14 @@ namespace kartverketprosjekt.Controllers
         {
             if (ModelState.IsValid)
             {
+                // HASH PÅ PASSORD I DB
+                var passwordHasher = new PasswordHasher<BrukerModel>();
+
                 var bruker = new BrukerModel
                 {
                     Brukernavn = model.Brukernavn,
-                    Passord = model.Passord,
+                    // LEGGER EN HASH PÅ PASSORDET FØR DET REGISTRERES
+                    Passord = passwordHasher.HashPassword(null, model.Passord),
                     Epost = model.Epost
                 };
 
