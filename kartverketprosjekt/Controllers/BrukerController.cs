@@ -44,9 +44,9 @@ namespace kartverketprosjekt.Controllers
             {
                 var bruker = new BrukerModel
                 {
-                    Brukernavn = model.Brukernavn,
-                    Passord = model.Passord,
-                    Epost = model.Epost
+                    epost = model.epost,
+                    passord = model.passord,
+                    tilgangsnivaa_id = 1
                 };
 
                 await _context.AddAsync(bruker);
