@@ -48,10 +48,12 @@ namespace kartverketprosjekt.Controllers
 
                 var bruker = new BrukerModel
                 {
-                    Brukernavn = model.Brukernavn,
+                
                     // LEGGER EN HASH PÅ PASSORDET FØR DET REGISTRERES
-                    Passord = passwordHasher.HashPassword(null, model.Passord),
-                    Epost = model.Epost
+                    passord = passwordHasher.HashPassword(null, model.passord),
+                    epost = model.epost,
+                    tilgangsnivaa_id = 1
+
                 };
 
                 await _context.AddAsync(bruker);

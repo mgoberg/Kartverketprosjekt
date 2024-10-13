@@ -5,13 +5,12 @@ namespace kartverketprosjekt.Models
     public class BrukerModel
     {
         [Key]
-        public int BrukerId { get; set; } // Primary key
-        [Required]
-        public string Brukernavn { get; set; }
-        [Required]
-        public string Passord { get; set; }
-        [Required]
         [EmailAddress]
-        public string Epost { get; set; }
+        public string epost { get; set; }
+        [Required]
+        public string passord { get; set; }
+
+        public int tilgangsnivaa_id { get; set; } = 1; // Standard verd i 1
+
     }
 }
