@@ -3,12 +3,32 @@
     ViewData["Title"] = "Ny rapport tjeneste";
 }
 
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Message"]
+    </div>
+}
+
 <div class="box-container">
     <div class="box">
         <h1>Kartverkets nye rapporteringstjeneste</h1>
         <p>Bidra med å forbedre kartgrunnlaget til Kartverkets offentlige kart</p>
-        <a class="btn-primary" onclick="showModal()">Til Kartet</a>
-        <a asp-action="CorrectMap" class="btn-secondary">Oblig 1</a>
+
+        <!-- Conditionally render "Til Kartet" button based on user's authentication status -->
+        @if (User.Identity.IsAuthenticated)
+        {
+            <!-- If the user is logged in, redirect them directly to RegisterAreaChange -->
+            <a href="@Url.Action("RegisterAreaChange", "Home")" class="btn-primary">Til Kartet</a>
+        }
+        else
+        {
+            <!-- If the user is not logged in, show the modal for login -->
+            <a class="btn-primary" onclick="showModal()">Til Kartet</a>
+        }
+
+        <!-- This button will take the user to CorrectMap -->
+        <a href="@Url.Action("CorrectMap", "Home")" class="btn-secondary">Oblig 1</a>
     </div>
 
     <div id="phone-img">
@@ -39,16 +59,22 @@
     </div>
 </div>
 
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="error-message">
+        <p>@ViewBag.ErrorMessage</p>
+    </div>
+}
+
 <!-- Modal for registrering / innlogging -->
 <div id="modal" class="modal">
     <div class="modal-content">
         <h2 id="modal-title">Logg inn</h2>
-        <form asp-action="Login" method="post" id="login-form" onsubmit="redirectToCorrectMap(event)">
+        <form asp-controller="Bruker" asp-action="Login" method="post" id="login-form">
             <label for="epost">Epost:</label>
-            <input type="email" id="epost" name="Epost" required>
+            <input type="email" id="epost" name="epost" required>
             <label for="password">Passord:</label>
             <input type="password" id="password" name="password" required>
-
             <button type="submit" class="btn-primary">Logg inn</button>
         </form>
         <form asp-controller="Bruker" asp-action="Register" method="post" id="register-form" style="display: none;">
@@ -61,7 +87,7 @@
 
         <!-- Fortsett uten å logge inn -->
         <div id="continue-without-login">
-            <a asp-action="RegisterAreaChange" style="text-align: center; display: block; color: var(--button-text-hover-color); padding: 15px;">Fortsett uten å logge inn</a>
+            <a asp-action="RegisterAreaChange" style="text-align: center; display: block; color: var(--button-text-hover-color); padding: 15px;"><u>Fortsett uten å logge inn</u></a>
         </div>
 
         <div id="toggle-form">
@@ -71,3 +97,40 @@
 </div>
 
 <div class="overlay" id="overlay"></div>
+
+@section Scripts {
+    <script>
+        function showModal() {
+            // Show the login modal when "Til Kartet" is clicked and the user is not logged in
+            document.getElementById('modal').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        }
+
+        function toggleForm() {
+            // Toggle between login and register forms
+            var loginForm = document.getElementById("login-form");
+            var registerForm = document.getElementById("register-form");
+            var modalTitle = document.getElementById("modal-title");
+
+            if (loginForm.style.display === "none") {
+                loginForm.style.display = "block";
+                registerForm.style.display = "none";
+                modalTitle.innerText = "Logg inn";
+            } else {
+                loginForm.style.display = "none";
+                registerForm.style.display = "block";
+                modalTitle.innerText = "Registrer";
+            }
+        }
+
+        // Close modal when clicking outside the modal content
+        window.onclick = function (event) {
+            var modal = document.getElementById("modal");
+            var overlay = document.getElementById("overlay");
+            if (event.target == modal || event.target == overlay) {
+                modal.style.display = "none";
+                overlay.style.display = "none";
+            }
+        }
+    </script>
+}

@@ -1,4 +1,5 @@
 using kartverketprosjekt.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -66,6 +67,7 @@ namespace prosjekt_kartverket.Controllers
 
         // Action metode som håndterer GET request til /Home/CorrectMap
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult CorrectMap()
         {
             return View();
