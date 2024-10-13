@@ -1,74 +1,101 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using kartverketprosjekt.Models; // Ensure this points to the BrukerModel class
-using kartverketprosjekt.Data; // Ensure this points to your DbContext
-using System.Linq; // Needed for LINQ queries to select model errors
+﻿using kartverketprosjekt.Data;
+using kartverketprosjekt.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
-namespace kartverketprosjekt.Controllers
+public class BrukerController : Controller
 {
-    public class BrukerController : Controller
+    private readonly KartverketDbContext _context;
+
+    public BrukerController(KartverketDbContext context)
     {
-        private readonly KartverketDbContext _context; // Specify your DbContext class here
+        _context = context;
+    }
 
-        public BrukerController(KartverketDbContext context) // Constructor injection of DbContext
-        {
-            _context = context;
-        }
+    // POST login
+    [ValidateAntiForgeryToken]
+    [HttpPost]
+    public async Task<IActionResult> Login(string epost, string password)
+    {
+        // Retrieve the user from the database
+        var user = _context.Bruker.FirstOrDefault(u => u.epost == epost);
 
-        // GET login
-        public IActionResult Login()
+        if (user != null)
         {
-            return View(); // Returns the login view
-        }
+            var passwordHasher = new PasswordHasher<BrukerModel>();
+            var result = passwordHasher.VerifyHashedPassword(user, user.passord, password);
 
-        // POST login
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginModel model)
-        {
-            if (ModelState.IsValid)
+            if (result == PasswordVerificationResult.Success)
             {
-                // Logic for validating login
-                // TODO: Implement login validation logic here
-            }
-            return View(model); // Return the model back to the view if invalid
-        }
-
-
-        // POST register
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegistrerModel model)
-        {
-            if (ModelState.IsValid)
+                // Create claims for the logged-in user
+                var claims = new List<Claim>
             {
-                // HASH PÅ PASSORD I DB
-                var passwordHasher = new PasswordHasher<BrukerModel>();
+                new Claim(ClaimTypes.Name, user.epost),
+                new Claim(ClaimTypes.Role, user.tilgangsnivaa_id.ToString()) // Optional: Handle roles
+            };
 
-                var bruker = new BrukerModel
-                {
-                
-                    // LEGGER EN HASH PÅ PASSORDET FØR DET REGISTRERES
-                    passord = passwordHasher.HashPassword(null, model.passord),
-                    epost = model.epost,
-                    tilgangsnivaa_id = 1
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-                };
-
-                await _context.AddAsync(bruker);
-                await _context.SaveChangesAsync();
-
-                // Set a success message in TempData
-                TempData["Message"] = "Registrering vellykket";
-
-                // Redirect to the CorrectMap view
-                return RedirectToAction("CorrectMap", "Home");
+                return RedirectToAction("RegisterAreaChange", "Home");
             }
-
-            // Log the validation errors for debugging
-            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-            return BadRequest(new { success = false, errors });
         }
+
+        // If user is not found or password is incorrect, show an error message
+        ViewBag.ErrorMessage = "Invalid login attempt";
+        return View("Index");
+    }
+    // POST logout
+    [HttpPost]
+    public async Task<IActionResult> Logout()
+    {
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+        // Set a success message for the logout
+        TempData["Message"] = "You have successfully logged out.";
+        return RedirectToAction("Index", "Home"); // Redirect to the desired page after logout
+    }
+
+    // POST register
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Register(RegistrerModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            var passwordHasher = new PasswordHasher<BrukerModel>();
+
+            // Hash the password and create a new user
+            var bruker = new BrukerModel
+            {
+                passord = passwordHasher.HashPassword(null, model.passord),
+                epost = model.epost,
+                tilgangsnivaa_id = 1 // Set appropriate access level
+            };
+
+            // Add user to the database
+            await _context.AddAsync(bruker);
+            await _context.SaveChangesAsync();
+
+            // Automatically log in the user after registration
+            var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, bruker.epost),
+            new Claim(ClaimTypes.Role, bruker.tilgangsnivaa_id.ToString()) // Optional: Handle roles
+        };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+            TempData["Message"] = "Registration successful! You are now logged in.";
+            return RedirectToAction("RegisterAreaChange", "Home");
+        }
+
+        var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+        return BadRequest(new { success = false, errors });
     }
 }

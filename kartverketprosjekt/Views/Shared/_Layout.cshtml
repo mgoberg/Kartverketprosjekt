@@ -7,8 +7,6 @@
     @await Html.PartialAsync("_Favicons")
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-
-
     
 
     @if (ViewContext.RouteData.Values["action"].ToString() == "CorrectMap" || ViewContext.RouteData.Values["action"].ToString() == "CorrectionOverview")
@@ -78,6 +76,14 @@
                         <i class='bx bx-moon'></i>                     
                     </a>
                 </li>
+                @if (User.Identity.IsAuthenticated)
+            {
+                <li>
+                    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="logout-link">Logg ut</a>
+                    <form id="logout-form" asp-controller="Bruker" asp-action="Logout" method="post" style="display: none;">
+                    </form>
+                    </li>
+                }
                 <li>
                     <button id="menuButton">
                         <i class='bx bx-menu' id="menu"></i>

@@ -5,6 +5,13 @@
     ViewData["Title"] = "Registrer endring";
 }
 
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Message"]
+    </div>
+}
+
 <h2>Korriger ved å tegne i kartet:</h2>
 
 
