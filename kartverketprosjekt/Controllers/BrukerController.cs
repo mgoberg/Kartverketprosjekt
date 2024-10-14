@@ -40,7 +40,7 @@ public class BrukerController : Controller
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-                return RedirectToAction("RegisterAreaChange", "Home");
+                return RedirectToAction("RegisterAreaChange", "Sak");
             }
         }
 
@@ -92,7 +92,7 @@ public class BrukerController : Controller
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
             TempData["Message"] = "Registration successful! You are now logged in.";
-            return RedirectToAction("RegisterAreaChange", "Home");
+            return RedirectToAction("RegisterAreaChange", "Sak");
         }
 
         var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();

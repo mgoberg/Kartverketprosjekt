@@ -398,3 +398,4 @@ FodyWeavers.xsd
 *.sln.iml
 kartverketprosjekt/.idea/.idea.kartverketprosjekt/.idea/indexLayout.xml
 kartverketprosjekt/.idea/.idea.kartverketprosjekt/.idea/vcs.xml
+/kartverketprosjekt/wwwroot/uploads
