@@ -27,11 +27,12 @@ CREATE TABLE Sak (
     id INT AUTO_INCREMENT PRIMARY KEY,
     epost_bruker VARCHAR(100), -- Referanse til brukeren som rapporterer saken
     beskrivelse TEXT NOT NULL,
-    vedlegg LONGBLOB, -- Binærdata for vedlegg
+    vedlegg VARCHAR(255) NULL, -- Binærdata for vedlegg
     geojson_data JSON, -- Inneholder kartdata i JSON-format
     kommune_id INT, -- Referanse til kommunen
     status ENUM('Godkjent', 'Ikke godkjent', 'Påbegynt', 'Under behandling') NOT NULL,
     opprettet_dato TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    layerurl VARCHAR(255) NULL, -- URL til kartlaget
     FOREIGN KEY (epost_bruker) REFERENCES Bruker(epost),
     FOREIGN KEY (kommune_id) REFERENCES Kommune(id) -- Relasjon til Kommune-tabellen
 );
