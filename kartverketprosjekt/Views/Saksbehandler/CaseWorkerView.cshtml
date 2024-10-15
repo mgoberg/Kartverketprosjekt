@@ -38,9 +38,9 @@
             <tr>
                 <th>BrukerID</th>
                 <th>Epost</th>
+                <th>Type feil</th>
                 <th>Beskrivelse</th>
                 <th>Vedlegg</th>
-                <th>Punktdata</th>
                 <th>Kommune</th>
                 <th>Status</th>
                 <th>Dato</th>
@@ -53,11 +53,11 @@
 {
     <tr data-geojson='@Html.Raw(Json.Serialize(sak.geojson_data))' data-layerurl='@sak.layerurl'>
         <td>@sak.id</td>
-        <td>@sak.epost_bruker</td>
+        <td>@(sak.epost_bruker ?? "ikke registrert")</td>
+        <td>@sak.type_feil</td>
         <td>@sak.beskrivelse</td>
-        <td>@sak.vedlegg</td>
-        <td>@sak.geojson_data</td> <!-- Denne cellen viser GeoJSON, men lagres også i data-attribute -->
-        <td>@sak.kommune_id</td>
+        <td>@(sak.vedlegg ?? "Ingen vedlegg")</td>
+        <td>@(sak.kommune_id ?? "NULL")</td>
         <td>@sak.status</td>
         <td>@sak.opprettet_dato.ToString("dd.MM.yyyy")</td>
         @if (sak.layerurl == "https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png")
@@ -90,20 +90,35 @@
             <h3>Dashboard</h3>
             <p><strong>BrukerID:</strong> <span id="dashboardBrukerID">-</span></p>                                         
             <p><strong>Epost:</strong> <span id="dashboardEpost">-</span></p>
+            <p><strong>Type feil:</strong> <span id="dashboardTypeFeil">-</span></p>
             <p><strong>Beskrivelse:</strong> <span id="dashboardBeskrivelse">-</span></p>
             <p><strong>Vedlegg:</strong> <span id="dashboardVedlegg">-</span></p>
             <p><strong>Punktdata:</strong> <span id="dashboardPunktdata">-</span></p>
-            <p><strong>Kommune:</strong> <span id="dashboardkommune">-</span></p>
+            <p><strong>Kommune:</strong> <span id="dashboardKommune">-</span></p>
             <p><strong>Status:</strong> <span id="dashboardStatus">-</span></p>
             <p><strong>Dato:</strong> <span id="dashboarddato">-</span></p>
             <p><strong>Kartlag:</strong> <span id="dashboardKartlag">-</span></p>
+
             <!-- Status dropdown -->
             <label for="changeStatus">Endre status:</label>
-            <select id="changeStatus">
+            <select id="changeStatus">  
                 <option value="Åpen">Åpen</option>
                 <option value="Under behandling">Under behandling</option>
                 <option value="Lukket">Lukket</option>
-            </select>
+            </select>   
+
+            <!-- Kommentar-seksjon -->
+            <h4>Legg til kommentar</h4>
+            <textarea id="caseComment" rows="4" cols="50" placeholder="Skriv en kommentar..."></textarea><br/>
+            <button id="saveComment">Lagre kommentar</button>
+    
+            <!-- Viser lagrede kommentarer -->
+            <div id="commentsSection">
+                <h4>Kommentarer</h4>
+                <ul id="commentsList"></ul>
+            </div>
+
+            
         </div>
       
         <!-- Leaflet kartet -->
@@ -116,13 +131,7 @@
 
     <script>
     
-        // GPT Generet script, her kan vi erstatte med det vi allerede har.
         var map = L.map('map').setView([58.075045, 7.909303], 10);
-
-        // Legge til et standard kart-lag som fallback
-        var tileLayer = L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png', {
-            attribution: '&copy; <a href="https://www.Kartverket.no">Kartverket</a>'
-        }).addTo(map);
 
         var marker;
         var geoJsonLayer; // Lagrer GeoJSON-laget
@@ -130,44 +139,65 @@
 
 
     $(document).ready(function () {
-        $('#casesTable tbody tr').click(function () {
-            // Hente data fra tabellen
-            var brukerID = $(this).find('td:eq(0)').text();
-            var epost = $(this).find('td:eq(1)').text();
-            var beskrivelse = $(this).find('td:eq(2)').text(); // Hent beskrivelsen fra tabellen
-            var vedlegg = $(this).find('td:eq(3)').text();
-            var geojson = $(this).data('geojson');  // GeoJSON data fra data-attribute
-            var kommune = $(this).find('td:eq(5)').text();
-            var status = $(this).find('td:eq(6)').text();
-            var dato = $(this).find('td:eq(7)').text();
-            var kartlagUrl = $(this).data('layerurl');  // Hente kartlag-URL fra data-attribute
+    $('#casesTable tbody tr').click(function () {
+        // Hente data fra tabellen
+        var brukerID = $(this).find('td:eq(0)').text();
+        var epost = $(this).find('td:eq(1)').text();
+        var typeFeil = $(this).find('td:eq(2)').text();
+        var beskrivelse = $(this).find('td:eq(3)').text(); // Hent beskrivelsen fra tabellen
+        var vedlegg = $(this).find('td:eq(4)').text();
+        var geojson = $(this).data('geojson');  // GeoJSON data fra data-attribute
+        var kommune = $(this).find('td:eq(5)').text();
+        var status = $(this).find('td:eq(6)').text();
+        var dato = $(this).find('td:eq(7)').text();
+        var kartlagUrl = $(this).data('layerurl');  // Hente kartlag-URL fra data-attribute
 
-            // Konvertere GeoJSON-strengen til et objekt
-            if (typeof geojson === "string") {
-                try {
-                    geojson = JSON.parse(geojson);  // Ingen erstatning nødvendig hvis formatet er riktig
-                } catch (error) {
-                    console.error("Error parsing GeoJSON: ", error);
-                    return; // Avslutt funksjonen hvis det oppstod en feil
-                }
+        // Konvertere GeoJSON-strengen til et objekt
+        if (typeof geojson === "string") {
+            try {
+                geojson = JSON.parse(geojson);  // Ingen erstatning nødvendig hvis formatet er riktig
+            } catch (error) {
+                console.error("Error parsing GeoJSON: ", error);
+                return; // Avslutt funksjonen hvis det oppstod en feil
             }
+        }
 
-            // Oppdatere dashboard med data fra valgt rad
-            $('#dashboardBrukerID').text(brukerID);
-            $('#dashboardEpost').text(epost);
-            $('#dashboardBeskrivelse').text(beskrivelse);
-            $('#dashboardVedlegg').text(vedlegg);
-            $('#dashboardPunktdata').text(geojson); // GeoJSON vises i dashboard
-            $('#dashboardKommune').text(kommune);
-            $('#dashboardStatus').text(status);
-            $('#dashboarddato').text(dato);
-            $('#dashboardKartlag').text(kartlagUrl);
+        // Oppdatere dashboard med data fra valgt rad
+        $('#dashboardBrukerID').text(brukerID);
+        $('#dashboardEpost').text(epost);
+        $('#dashboardTypeFeil').text(typeFeil);
+        $('#dashboardBeskrivelse').text(beskrivelse);
+        $('#dashboardVedlegg').text(vedlegg);
+        $('#dashboardPunktdata').text(geojson); // GeoJSON vises i dashboard
+        $('#dashboardKommune').text(kommune);
+        $('#dashboardStatus').text(status);
+        $('#dashboarddato').text(dato);
+
+        // Sjekk kartlag-URL og vis tilsvarende tekst i dashboardet
+        var kartlagTekst = "";
+        if (kartlagUrl === "https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png") {
+            kartlagTekst = "Topografisk";
+        } else if (kartlagUrl === "https://cache.kartverket.no/v1/wmts/1.0.0/topograatone/default/webmercator/{z}/{y}/{x}.png") {
+            kartlagTekst = "Topografisk Gråtone";
+        } else if (kartlagUrl === "https://cache.kartverket.no/v1/wmts/1.0.0/sjokartraster/default/webmercator/{z}/{y}/{x}.png") {
+            kartlagTekst = "Sjøkart";
+        } else if (kartlagUrl === "https://cache.kartverket.no/v1/wmts/1.0.0/toporaster/default/webmercator/{z}/{y}/{x}.png") {
+            kartlagTekst = "Turkart";
+        } else {
+            kartlagTekst = "Ukjent kartlag";
+        }
+
+        // Oppdater kartlaget i dashboardet
+        $('#dashboardKartlag').text(kartlagTekst);
+
+
+            // Scroll ned til dashbordet
+            document.querySelector('.dashboard').scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
 
             // endre status
             $('#changeStatus').val(status);
 
-            console.log("GeoJSON Data: ", geojson);
-
+            
             // Oppdatere kart med GeoJSON data og nytt kartlag basert på URL
             if (geojson && kartlagUrl) {
                 updateMap(geojson, kartlagUrl, beskrivelse); // Send beskrivelse med

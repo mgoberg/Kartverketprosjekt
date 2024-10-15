@@ -7,7 +7,8 @@
 <h2>Kvittering</h2>
 
 <div id="map"></div>
-<p><strong>Referansernummer:</strong> @Model.id </p></partial>
+<p><strong>Referansernummer:</strong> @Model.id </p>
+<p><strong>Type feil:</strong> @Model.type_feil</p>
 <p><strong>Beskrivelse:</strong> @Model.beskrivelse</p>
 <p><strong>Opprettet dato:</strong> @Model.opprettet_dato</p>
 <p><strong>Status:</strong> @Model.status</p>
@@ -16,11 +17,11 @@
 
 @if (Model.vedlegg != null)
 {
-    <p><strong>Vedlegg:</strong> Det er et vedlegg.</p>
+    <p><strong>Vedlegg:</strong> Ja</p>
 }
 else
 {
-    <p><strong>Vedlegg:</strong> Ingen vedlegg.</p>
+    <p><strong>Vedlegg:</strong> Nei</p>
 }
 
 
