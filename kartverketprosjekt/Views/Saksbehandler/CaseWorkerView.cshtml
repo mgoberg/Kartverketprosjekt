@@ -1,0 +1,270 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Saksbehandler";
+}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+    <style>  
+        .upper-section {
+            flex: 1; /* Take up the top half of the screen */
+        }
+
+        /* Lower section for the dashboard and map, sharing space vertically */
+        .lower-section {
+            flex: 1;
+            display: flex;
+        }
+
+        .dashboard, #map {
+            width: 50%; /* Dashboard and map share equal space horizontally */
+            padding: 20px;
+            border: 1px solid #ddd;
+            margin-top: 20px;
+        }
+    </style>
+
+
+    <h2>
+        Saksoversikt
+    </h2>
+<!-- Tabell -->
+<div class="upper-section">
+    <table id="casesTable" class="styled-table">
+        <thead>
+            <tr>
+                <th>BrukerID</th>
+                <th>Epost</th>
+                <th>Beskrivelse</th>
+                <th>Vedlegg</th>
+                <th>Punktdata</th>
+                <th>Kommune</th>
+                <th>Status</th>
+                <th>Dato</th>
+                <th>Kartlag</th>
+            </tr>
+        </thead>
+    <tbody>
+
+    @foreach (var sak in ViewBag.Saker)
+{
+    <tr data-geojson='@Html.Raw(Json.Serialize(sak.geojson_data))' data-layerurl='@sak.layerurl'>
+        <td>@sak.id</td>
+        <td>@sak.epost_bruker</td>
+        <td>@sak.beskrivelse</td>
+        <td>@sak.vedlegg</td>
+        <td>@sak.geojson_data</td> <!-- Denne cellen viser GeoJSON, men lagres også i data-attribute -->
+        <td>@sak.kommune_id</td>
+        <td>@sak.status</td>
+        <td>@sak.opprettet_dato.ToString("dd.MM.yyyy")</td>
+        @if (sak.layerurl == "https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png")
+        {
+            <td>Topografisk</td>
+        }
+        else if (sak.layerurl == "https://cache.kartverket.no/v1/wmts/1.0.0/topograatone/default/webmercator/{z}/{y}/{x}.png")
+        {
+            <td>Topografisk Gråtone</td>
+        }
+        else if (sak.layerurl == "https://cache.kartverket.no/v1/wmts/1.0.0/sjokartraster/default/webmercator/{z}/{y}/{x}.png")
+        {
+            <td>Sjøkart</td>
+        }
+        else if (sak.layerurl == "https://cache.kartverket.no/v1/wmts/1.0.0/toporaster/default/webmercator/{z}/{y}/{x}.png")
+        {
+            <td>Turkart</td>
+        }
+    </tr>
+}
+    </tbody>
+    </table>
+</div>   
+
+
+    <!-- Lower section: Dashboard and Map share space vertically -->
+    <div class="lower-section">
+        <!-- Dashbord -->
+        <div class="dashboard">
+            <h3>Dashboard</h3>
+            <p><strong>BrukerID:</strong> <span id="dashboardBrukerID">-</span></p>                                         
+            <p><strong>Epost:</strong> <span id="dashboardEpost">-</span></p>
+            <p><strong>Beskrivelse:</strong> <span id="dashboardBeskrivelse">-</span></p>
+            <p><strong>Vedlegg:</strong> <span id="dashboardVedlegg">-</span></p>
+            <p><strong>Punktdata:</strong> <span id="dashboardPunktdata">-</span></p>
+            <p><strong>Kommune:</strong> <span id="dashboardkommune">-</span></p>
+            <p><strong>Status:</strong> <span id="dashboardStatus">-</span></p>
+            <p><strong>Dato:</strong> <span id="dashboarddato">-</span></p>
+            <p><strong>Kartlag:</strong> <span id="dashboardKartlag">-</span></p>
+            <!-- Status dropdown -->
+            <label for="changeStatus">Endre status:</label>
+            <select id="changeStatus">
+                <option value="Åpen">Åpen</option>
+                <option value="Under behandling">Under behandling</option>
+                <option value="Lukket">Lukket</option>
+            </select>
+        </div>
+      
+        <!-- Leaflet kartet -->
+        <div id="map"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <script>
+    
+        // GPT Generet script, her kan vi erstatte med det vi allerede har.
+        var map = L.map('map').setView([58.075045, 7.909303], 10);
+
+        // Legge til et standard kart-lag som fallback
+        var tileLayer = L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png', {
+            attribution: '&copy; <a href="https://www.Kartverket.no">Kartverket</a>'
+        }).addTo(map);
+
+        var marker;
+        var geoJsonLayer; // Lagrer GeoJSON-laget
+        var tileLayer; // Lagrer tile-laget
+
+
+    $(document).ready(function () {
+        $('#casesTable tbody tr').click(function () {
+            // Hente data fra tabellen
+            var brukerID = $(this).find('td:eq(0)').text();
+            var epost = $(this).find('td:eq(1)').text();
+            var beskrivelse = $(this).find('td:eq(2)').text(); // Hent beskrivelsen fra tabellen
+            var vedlegg = $(this).find('td:eq(3)').text();
+            var geojson = $(this).data('geojson');  // GeoJSON data fra data-attribute
+            var kommune = $(this).find('td:eq(5)').text();
+            var status = $(this).find('td:eq(6)').text();
+            var dato = $(this).find('td:eq(7)').text();
+            var kartlagUrl = $(this).data('layerurl');  // Hente kartlag-URL fra data-attribute
+
+            // Konvertere GeoJSON-strengen til et objekt
+            if (typeof geojson === "string") {
+                try {
+                    geojson = JSON.parse(geojson);  // Ingen erstatning nødvendig hvis formatet er riktig
+                } catch (error) {
+                    console.error("Error parsing GeoJSON: ", error);
+                    return; // Avslutt funksjonen hvis det oppstod en feil
+                }
+            }
+
+            // Oppdatere dashboard med data fra valgt rad
+            $('#dashboardBrukerID').text(brukerID);
+            $('#dashboardEpost').text(epost);
+            $('#dashboardBeskrivelse').text(beskrivelse);
+            $('#dashboardVedlegg').text(vedlegg);
+            $('#dashboardPunktdata').text(geojson); // GeoJSON vises i dashboard
+            $('#dashboardKommune').text(kommune);
+            $('#dashboardStatus').text(status);
+            $('#dashboarddato').text(dato);
+            $('#dashboardKartlag').text(kartlagUrl);
+
+            // endre status
+            $('#changeStatus').val(status);
+
+            console.log("GeoJSON Data: ", geojson);
+
+            // Oppdatere kart med GeoJSON data og nytt kartlag basert på URL
+            if (geojson && kartlagUrl) {
+                updateMap(geojson, kartlagUrl, beskrivelse); // Send beskrivelse med
+            }
+        });
+    });
+
+
+        // Change status event
+        $('#changeStatus').change(function () {
+            var newStatus = $(this).val();
+            $('#dashboardStatus').text(newStatus);
+            // Legg inn logikk her for å oppdatere status i databasen
+        });
+   
+
+    function updateMap(geojson, layerUrl, beskrivelse) {
+        // Kontroller om geojson er en gyldig GeoJSON-streng
+        if (typeof geojson === 'string') {
+            try {
+                geojson = JSON.parse(geojson); // Prøv å analysere JSON-strengen
+            } catch (e) {
+                console.error("Invalid GeoJSON string:", geojson);
+                return; // Avbryt hvis parsing mislykkes
+            }
+        }
+
+        // Fjerne eksisterende GeoJSON-lag og markører
+        if (marker) {
+            map.removeLayer(marker);
+        }
+
+        if (geoJsonLayer) {
+            map.removeLayer(geoJsonLayer);
+        }
+
+        // Legg til GeoJSON-laget til kartet
+        try {
+            geoJsonLayer = L.geoJSON(geojson).addTo(map); // Lagre laget i en variabel
+
+            // Hent koordinatene fra GeoJSON
+            var coordinates = geojson.geometry.coordinates;
+
+            // Bestem hvilken type geometri vi har
+            if (geojson.geometry.type === "Point") {
+                var latLng = [coordinates[1], coordinates[0]]; // [latitude, longitude]
+                marker = L.marker(latLng).addTo(map);
+                marker.bindPopup('Beskrivelse: ' + beskrivelse).openPopup();
+                map.setView(latLng, 13); // Zoom inn på markøren
+            } else if (geojson.geometry.type === "Polygon") {
+                var firstSet = coordinates[0]; // Hent den første sett med koordinater
+                if (firstSet.length > 0) {
+                    var latLng = [(firstSet[0][1] + firstSet[firstSet.length - 1][1]) / 2,
+                    (firstSet[0][0] + firstSet[firstSet.length - 1][0]) / 2]; // Midtpunkt av første og siste koordinat
+                    marker = L.polygon(firstSet.map(coord => [coord[1], coord[0]])).addTo(map);
+                    marker.bindPopup('Beskrivelse: ' + beskrivelse).openPopup();
+                    map.setView(latLng, 13); // Zoom inn på midtpunktet
+                }
+            } else if (geojson.geometry.type === "LineString") {
+                // For LineString, vi konverterer alle koordinater til latLng format
+                var latLngs = coordinates.map(coord => [coord[1], coord[0]]);
+                marker = L.polyline(latLngs).addTo(map); // Legger til linjen til kartet
+                marker.bindPopup('Beskrivelse: ' + beskrivelse).openPopup();
+
+                // Sentrer kartet på midtpunktet av linjen
+                var midPointIndex = Math.floor(latLngs.length / 2);
+                var midLatLng = latLngs[midPointIndex];
+                map.setView(midLatLng, 13); // Zoom inn på midtpunktet av linjen
+            } else if (geojson.geometry.type === "Rectangle") {
+                var bounds = L.latLngBounds(
+                    [coordinates[0][1], coordinates[0][0]],
+                    [coordinates[1][1], coordinates[1][0]]
+                );
+                marker = L.rectangle(bounds).addTo(map);
+                marker.bindPopup('Beskrivelse: ' + beskrivelse).openPopup();
+                map.fitBounds(bounds); // Juster kartet til rektangelet
+            } else {
+                console.error("Unsupported GeoJSON geometry type:", geojson.geometry.type);
+            }
+
+            // Fjerne eksisterende tile layer før vi legger til et nytt
+            if (tileLayer) {
+                map.removeLayer(tileLayer);
+            }
+
+            // Legge til nytt tile lag basert på kartlag-URL
+            tileLayer = L.tileLayer(layerUrl, {
+                attribution: '&copy; <a href="https://www.kartverket.no">Kartverket</a>'
+            }).addTo(map);
+
+        } catch (e) {
+            console.error("Error adding GeoJSON to map:", e);
+        }
+    }
+
+
+
+    </script>
+
+
