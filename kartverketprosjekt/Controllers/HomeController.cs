@@ -34,6 +34,13 @@ namespace prosjekt_kartverket.Controllers
             return View();
         }
 
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+       
+
+
 
        
 
