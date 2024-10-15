@@ -5,18 +5,39 @@ window.addEventListener('DOMContentLoaded', function () {
     document.getElementById('navbar').style.top = '0';
     document.querySelector('body').style.opacity = '1';
 });
-
-document.getElementById('menuButton').addEventListener('click', function () {
-    var icon = this.querySelector('i');
-    icon.classList.toggle('bx-menu');
-    icon.classList.toggle('bx-x');
-});
-
 // function for darkmode
 document.getElementById('darkModeToggle').addEventListener('click', function () {
     document.body.classList.toggle('dark-mode');
     // Change toggle icon in layout
     document.querySelector('.bx-toggle-left').classList.toggle('bxs-toggle-right');
+});
+
+// Select elements
+const menuButton = document.getElementById('menuButton');
+const dropdown = document.getElementById('dropdown-content');
+const openIcon = menuButton.querySelector('.bx-menu'); // Icon for closed state
+const closeIcon = menuButton.querySelector('.bx-x'); // Icon for open state
+
+// Toggle dropdown and icon on button click
+menuButton.addEventListener('click', function (event) {
+    event.stopPropagation(); 
+
+    // Toggle dropdown visibility
+    const isOpen = dropdown.style.display === 'block';
+    dropdown.style.display = isOpen ? 'none' : 'block'; 
+
+    // Toggle icons
+    openIcon.style.display = isOpen ? 'block' : 'none'; 
+    closeIcon.style.display = isOpen ? 'none' : 'block'; 
+});
+
+// Close the dropdown if the user clicks outside of it
+window.addEventListener('click', function (event) {
+    if (dropdown.style.display === 'block' && !event.target.matches('#menuButton') && !event.target.closest('#dropdown-content')) {
+        dropdown.style.display = 'none'; 
+        openIcon.style.display = 'block'; 
+        closeIcon.style.display = 'none'; 
+    }
 });
 
 function showModal() {
