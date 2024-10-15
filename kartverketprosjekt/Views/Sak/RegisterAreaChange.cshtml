@@ -11,6 +11,10 @@
     </div>
 }
 
+<a asp-controller="Home" asp-action="Index">
+    <i class='bx bx-chevron-left'></i>
+</a>
+
 <h2>Korriger ved å tegne i kartet:</h2>
 
 
@@ -52,15 +56,25 @@
             <input type="hidden" class="form-control" id="geoJsonInput" name="geojson_data" readonly>
 
             <!-- Beskrivelse (påkrevd) -->
-            <label for="beskrivelse">Beskrivelse:</label>
-            <textarea class="form-control" id="beskrivelse" name="beskrivelse" required></textarea>
+            <label class="ubuntu-regular" for="beskrivelse">Beskrivelse:</label>
+            <textarea class="form-control" id="beskrivelse" name="beskrivelse" required placeholder="F.eks. manglende sti"></textarea>
 
             <!-- Opplastning av vedlegg (valgfritt) -->
-            <label for="vedlegg">Vedlegg (valgfritt):</label>
-            <input type="file" class="form-control" id="vedlegg" name="vedlegg">
+            <label class="ubuntu-regular" for="vedlegg">Vedlegg (valgfritt):</label>
+            
+            <input class="ubuntu-light" type="file" class="form-control" id="vedlegg" name="vedlegg">
 
-            <!-- Layer URL  -->
+            <!-- Layerurl (generert under av js) -->
 
+            <!-- Type feil dropdown meny -->
+            <label class="ubuntu-light" for="typeFeil">Type feil:</label>
+            <select class="form-control" id="typeFeil" name="type_feil">
+                <option value="Annet">Annet</option>
+                <option value="Feil i vei">Vei</option>
+                <option value="Feil i tursti">Tursti</option>
+                <option value="Feil i stedsnavn">Stedsnavn</option>
+                <option value="Feil i eiendom">Eiendom</option>
+            </select>
 
             <!-- Skjult felt for kommune ID -->
             <input type="hidden" name="kommune_id" value="1">

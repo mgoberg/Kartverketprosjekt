@@ -36,7 +36,7 @@ body.dark-mode {
     --footer-background-gradient: linear-gradient(0deg, rgba(100, 221, 138, 1) 57%, rgba(39, 40, 42, 0) 100%);
     --footer-h1: black;
     --box-background-color: #3e3f41;
-    --box-background-color-alternate: #1a833b;
+    --box-background-color-alternate: #323234;
 }
 body, html {
     margin: 0;
@@ -443,6 +443,39 @@ form input[type="submit"] {
         /* Change background color on hover */
     }
 
+form input[type="file"] {
+    margin-bottom: 15px;
+    /* Space between form elements */
+    padding: 10px;
+    /* Add padding inside inputs */
+    border: 1px solid #ccc;
+    /* Add a border to inputs */
+    border-radius: 3px;
+    /* Add rounded corners to inputs */
+    width: 100%;
+    /* Make inputs take the full width of the form */
+    box-sizing: border-box;
+    /* Ensure padding and border are included in the element's total width and height */
+    resize: none;
+}
+
+
+/* Style for the select element */
+select.form-control {
+    width: 100%;
+    padding: 0.5rem;
+    background-color: var(--form-background-color);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s ease-in-out;
+    margin-bottom: 1.5rem;
+}
+
+    select.form-control:focus {
+        border-color: var(--button-background-color);
+        outline: none;
+    }
+
 .flex-row {
     display: flex;
     flex-direction: row;
@@ -530,6 +563,15 @@ a {
     /* Inherit text color */
 }
 
+    a:hover {
+        cursor: pointer;
+        color: var(--button-text-hover-color);
+    }
+
+.bx-chevron-right {
+    font-size: 30px;
+}
+
 .btn-primary {
     background-color: var(--button-background-color);
     /* Set background color */
@@ -544,8 +586,6 @@ a {
     cursor: pointer;
     /* Change cursor to pointer */
     transition: 0.15s;
-    
-
 }
 .btn-secondary {
     background-color: var(--button-background-color-alternate);
@@ -749,14 +789,14 @@ a {
             }
 
         
-.bxs-chevron-left {
+.bx-chevron-left {
     
     font-size: 50px;
     padding: 0;
     margin-left: -13px; 
     transition: 0.1s ease-in-out;
 }
-    .bxs-chevron-left:hover {
+    .bx-chevron-left:hover {
         cursor: pointer;
         transform: scale(1.05);
         

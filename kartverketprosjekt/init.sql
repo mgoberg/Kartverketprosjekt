@@ -30,6 +30,7 @@ CREATE TABLE Sak (
     vedlegg VARCHAR(255) NULL, -- Binærdata for vedlegg
     geojson_data JSON, -- Inneholder kartdata i JSON-format
     kommune_id INT, -- Referanse til kommunen
+    type_feil VARCHAR(50) NOT NULL,
     status ENUM('Godkjent', 'Ikke godkjent', 'Påbegynt', 'Under behandling') NOT NULL,
     opprettet_dato TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     layerurl VARCHAR(255) NULL, -- URL til kartlaget
