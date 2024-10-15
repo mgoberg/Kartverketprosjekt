@@ -8,7 +8,7 @@ namespace prosjekt_kartverket.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        // Liste som holder på alle posisjoner som blir lagt til
+        // Liste som holder pï¿½ alle posisjoner som blir lagt til
 
         private static List<PositionModel> positions = new List<PositionModel>();
 
@@ -28,15 +28,19 @@ namespace prosjekt_kartverket.Controllers
         {
             return View();
         }
-       
-       
+
+        public IActionResult MyPage()
+        {
+            return View();
+        }
+
 
        
 
 
         /// Registers a new area change with the specified GeoJSON and description.
  
-        // Action metode som håndterer GET request til /Home/CorrectMap
+        // Action metode som hï¿½ndterer GET request til /Home/CorrectMap
         [HttpGet]
         [AllowAnonymous]
         public IActionResult CorrectMap()
@@ -58,7 +62,7 @@ namespace prosjekt_kartverket.Controllers
             return View();
         }
 
-        // Action metode som håndterer GET request til /Home/CorrectionOverview
+        // Action metode som hï¿½ndterer GET request til /Home/CorrectionOverview
         [HttpGet]
         public IActionResult CorrectionOverview()
         {
@@ -82,7 +86,7 @@ namespace prosjekt_kartverket.Controllers
         {
             if (ModelState.IsValid)
             {
-                // TODO: Håndter innsendt kontaktskjema
+                // TODO: Hï¿½ndter innsendt kontaktskjema
                 return RedirectToAction("ContactConfirmed");
             }
 

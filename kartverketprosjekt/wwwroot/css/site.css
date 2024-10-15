@@ -209,6 +209,30 @@ main {
     background-color: var(--navbar-background-color);
 }
 
+/* Dropdown content styling */
+#dropdown-content {
+    display: none; 
+    position: fixed;
+    left: 80%;
+    background-color: var(--navbar-background-color);
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 2001; 
+    border-radius: 4px;
+}
+
+    #dropdown-content a {
+        color: var(--navbar-text-color);
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+
+        #dropdown-content a:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+            color: var(--button-text-hover-color);
+        }
+
 /* Media query for fullscreen mode */
 @media (min-width: 1024px) {
     #navbar ul {
@@ -232,8 +256,21 @@ main {
         /* Semi-transparent background */
         border: none;
     }
+    #dropdown-content {
+        position: absolute; /* Change to absolute positioning for mobile */
+        left: 0; /* Align to the left of the menu button */
+        top: 100%; /* Position directly below the button */
+        width: 100%; /* Full width on smaller screens */
+        min-width: auto; /* Remove minimum width for responsiveness */
+    }
+
+        #dropdown-content a {
+            padding: 10px 15px; /* Adjust padding for easier tapping on mobile */
+        }
 
 }
+
+
 
 #kartverketLogo {
     height: 40px;
