@@ -733,16 +733,22 @@ a {
 
     .styled-table tbody tr {
         border-bottom: 1px solid #dddddd;
+    
     }
-
-        .styled-table tbody tr:nth-child(even) {
-            background-color: var(--box-background-color-alternate);
+        .styled-table tbody tr:hover {
+            color: var(--button-text-hover-color);
+            cursor: pointer;
         }
 
-        .styled-table tbody tr:nth-child(odd) {
-            background-color: var(--box-background-color);
-        }
+            .styled-table tbody tr:nth-child(even) {
+                background-color: var(--box-background-color-alternate);
+            }
 
+            .styled-table tbody tr:nth-child(odd) {
+                background-color: var(--box-background-color);
+            }
+
+        
 .bxs-chevron-left {
     
     font-size: 50px;
