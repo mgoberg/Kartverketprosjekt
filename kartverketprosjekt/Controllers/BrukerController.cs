@@ -26,9 +26,23 @@ public class BrukerController : Controller
         if (user != null)
         {
             var passwordHasher = new PasswordHasher<BrukerModel>();
-            var result = passwordHasher.VerifyHashedPassword(user, user.passord, password);
 
-            if (result == PasswordVerificationResult.Success)
+            // Check if the password in the database is hashed or not
+            bool isPasswordValid;
+
+            if (IsHashedPassword(user.passord))
+            {
+                // Verify hashed password
+                var result = passwordHasher.VerifyHashedPassword(user, user.passord, password);
+                isPasswordValid = result == PasswordVerificationResult.Success;
+            }
+            else
+            {
+                // Compare plaintext password
+                isPasswordValid = user.passord == password;
+            }
+
+            if (isPasswordValid)
             {
                 // Create claims for the logged-in user
                 var claims = new List<Claim>
@@ -48,6 +62,13 @@ public class BrukerController : Controller
         ViewBag.ErrorMessage = "Invalid login attempt";
         return View("Index");
     }
+
+    private bool IsHashedPassword(string password)
+    {
+        // Example: Assume that a hashed password is at least 60 characters (bcrypt or similar)
+        return password.Length >= 60;
+    }
+
     // POST logout
     [HttpPost]
     public async Task<IActionResult> Logout()
