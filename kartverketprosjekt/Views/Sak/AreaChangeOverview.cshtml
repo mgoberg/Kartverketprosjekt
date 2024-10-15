@@ -43,7 +43,7 @@ else
         L.tileLayer(layerUrl, { attribution: '&copy; Denne må også sendes sammen med url!' }).addTo(map);
 
         // Henter GeoJSON-dataen fra modellen
-        var geoJsonData = JSON.parse('@Model.geojson_data');
+        var geoJsonData = JSON.parse('@Html.Raw(Model.geojson_data)');
 
         // Legger GeoJSON-dataen til kartet
         var layer = L.geoJSON(geoJsonData).bindPopup('@Model.beskrivelse');
