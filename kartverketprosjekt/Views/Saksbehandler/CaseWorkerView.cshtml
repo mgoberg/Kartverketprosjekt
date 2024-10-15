@@ -27,7 +27,9 @@
         }
     </style>
 
-
+    <a asp-controller="Home" asp-action="Index">
+        <i class='bx bx-chevron-left'></i>
+    </a>
     <h2>
         Saksoversikt
     </h2>
@@ -87,17 +89,30 @@
     <div class="lower-section">
         <!-- Dashbord -->
         <div class="dashboard">
-            <h3>Dashboard</h3>
-            <p><strong>BrukerID:</strong> <span id="dashboardBrukerID">-</span></p>                                         
-            <p><strong>Epost:</strong> <span id="dashboardEpost">-</span></p>
-            <p><strong>Type feil:</strong> <span id="dashboardTypeFeil">-</span></p>
-            <p><strong>Beskrivelse:</strong> <span id="dashboardBeskrivelse">-</span></p>
-            <p><strong>Vedlegg:</strong> <span id="dashboardVedlegg">-</span></p>
-            <p><strong>Punktdata:</strong> <span id="dashboardPunktdata">-</span></p>
-            <p><strong>Kommune:</strong> <span id="dashboardKommune">-</span></p>
-            <p><strong>Status:</strong> <span id="dashboardStatus">-</span></p>
-            <p><strong>Dato:</strong> <span id="dashboarddato">-</span></p>
-            <p><strong>Kartlag:</strong> <span id="dashboardKartlag">-</span></p>
+            <h2 style="text-align: center; color: darkgray;" >Dashbord</h2>
+
+<style>
+    .separator {    
+        border-top: 1px solid #ddd;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+</style>
+
+
+<div class="separator"></div>
+
+
+            <p><strong>BrukerID:</strong> <span class="ubuntu-light" id="dashboardBrukerID">-</span></p>                                         
+            <p><strong>Epost:</strong> <span class="ubuntu-light" id="dashboardEpost">-</span></p>
+            <p><strong>Type feil:</strong> <span class="ubuntu-light" id="dashboardTypeFeil">-</span></p>
+            <p><strong>Beskrivelse:</strong> <span class="ubuntu-light" id="dashboardBeskrivelse">-</span></p>
+            <p><strong>Vedlegg:</strong> <span class="ubuntu-light" id="dashboardVedlegg">-</span></p>
+            <p><strong>Punktdata:</strong> <span class="ubuntu-light" style="font-size: 12px;" id="dashboardPunktdata">-</span></p>
+            <p><strong>Kommune:</strong> <span class="ubuntu-light" id="dashboardKommune">-</span></p>
+            <p><strong>Status:</strong> <span class="ubuntu-light" id="dashboardStatus">-</span></p>
+            <p><strong>Dato:</strong> <span class="ubuntu-light" id="dashboarddato">-</span></p>
+            <p><strong>Kartlag:</strong> <span class="ubuntu-light" id="dashboardKartlag">-</span></p>
 
             <!-- Status dropdown -->
             <label for="changeStatus">Endre status:</label>
