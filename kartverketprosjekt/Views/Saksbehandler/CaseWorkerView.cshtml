@@ -115,14 +115,17 @@
             <p><strong>Dato:</strong> <span class="ubuntu-light" id="dashboarddato">-</span></p>
             <p><strong>Kartlag:</strong> <span class="ubuntu-light" id="dashboardKartlag">-</span></p>
 
+            
+
             <!-- Status dropdown -->
             <label for="changeStatus">Endre status:</label>
             <select id="changeStatus">  
                 <option value="Åpen">Åpen</option>
                 <option value="Under behandling">Under behandling</option>
                 <option value="Lukket">Lukket</option>
-            </select>   
-
+                <option value="Arkiver">Arkiver</option>
+            </select>
+        <p><button id="slettSakKnapp">Slett Sak</button></p>
             <!-- Kommentar-seksjon -->
             <h4>Legg til kommentar</h4>
             <textarea id="caseComment" rows="4" cols="50" placeholder="Skriv en kommentar..."></textarea><br/>
