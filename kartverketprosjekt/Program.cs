@@ -4,8 +4,17 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using kartverketprosjekt.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using kartverketprosjekt.API_Models;
+using kartverketprosjekt.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Bind the API settings from appsettings.json
+builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSettings"));
+
+// Register services and their interfaces
+builder.Services.AddHttpClient<IKommuneInfoService, KommuneInfoService>();
+builder.Services.AddHttpClient<IStedsnavnService, StedsnavnService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

@@ -1,0 +1,31 @@
+﻿@model List<kartverketprosjekt.Models.StedsnavnViewModel>
+<h2>Stedsnavn Results</h2>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Skrivemåte</th>
+            <th>Objekttype</th>
+            <th>Språk</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Skrivemåte</td>
+                <td>@item.Navneobjekttype</td>
+                <td>@item.Språk</td>
+                <td>@item.Navnestatus</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No results found.</p>
+}
