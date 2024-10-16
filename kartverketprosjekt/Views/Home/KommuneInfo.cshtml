@@ -1,15 +1,33 @@
 ﻿@model kartverketprosjekt.Models.KommuneInfoViewModel
 
-<h2>Kommune Information</h2>
+<h2>Kommune Resultat</h2>
 
 @if (Model != null)
 {
-    <p>Kommunenavn: @Model.Kommunenavn</p>
-    <p>Kommunenummer: @Model.Kommunenummer</p>
-    <p>Fylkesnavn: @Model.Fylkesnavn</p>
-    <p>Samisk Forvaltningsområde: @(Model.SamiskForvaltningsomrade ? "Yes" : "No")</p>
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Kommunenavn</th>
+                <th>Kommunenummer</th>
+                <th>Fylkesnavn</th>
+                <th>Samisk Forvaltningsområde</th>
+            </tr>
+        </thead>
+        @if (Model != null)
+        {
+            <tr>
+                <td>@Model.Kommunenavn</td>
+                <td>@Model.Kommunenummer</td>
+                <td>@Model.Fylkesnavn</td>
+                <td>@(Model.SamiskForvaltningsomrade ? "Yes" : "No")</td>
+            </tr>
+        }
+        else
+        {
+            <tr>
+                <td colspan="4">No information available.</td>
+            </tr>
+        }
+    </table>
 }
-else
-{
-    <p>No information available.</p>
-}
+

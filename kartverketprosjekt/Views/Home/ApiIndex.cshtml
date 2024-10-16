@@ -2,20 +2,20 @@
     ViewData["Title"] = "Kartverket API Search";
 }
 
-<h2>Search Kommune Info</h2>
+<h2 style="text-align: center;">Søk etter kommune info</h2>
 <form asp-action="KommuneInfo" method="post">
     @Html.AntiForgeryToken()
-    <label for="kommuneNr">Kommune Number:</label>
+    <label for="kommuneNr">Kommune Nummer:</label>
     <input type="text" id="kommuneNr" name="kommuneNr" />
-    <button type="submit">Search</button>
+    <button class="btn-primary" type="submit">Søk</button>
 </form>
 
-<h2>Search Stedsnavn</h2>
+<h2 style="text-align: center;">Søk etter stedsnavn</h2>
 <form asp-action="Stedsnavn" method="post">
     @Html.AntiForgeryToken()
-    <label for="searchTerm">Place Name:</label>
+    <label for="searchTerm">Stedsnavn:</label>
     <input type="text" id="searchTerm" name="searchTerm" />
-    <button type="submit">Search</button>
+    <button class="btn-primary" type="submit">Søk</button>
 </form>
 
 @if (ViewData["Error"] != null)
