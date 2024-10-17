@@ -16,5 +16,6 @@ namespace kartverketprosjekt.Models
         public string ? status { get; set; } = "Påbegynt";
         public DateTime opprettet_dato { get; set; } = DateTime.Now;
         public string layerurl { get; set; }
+
     }
 }

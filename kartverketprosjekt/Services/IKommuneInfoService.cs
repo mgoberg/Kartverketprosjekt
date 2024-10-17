@@ -4,6 +4,6 @@ namespace kartverketprosjekt.Services
 {
     public interface IKommuneInfoService
     {
-        Task<KommuneInfo> GetKommuneInfoAsync(string kommuneNr);
+        Task<KommuneInfo> GetKommuneInfoAsync(double nord, double ost, int koordsys);
     }
 }

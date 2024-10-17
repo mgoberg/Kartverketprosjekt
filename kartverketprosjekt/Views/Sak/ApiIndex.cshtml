@@ -2,11 +2,14 @@
     ViewData["Title"] = "Kartverket API Search";
 }
 
-<h2 style="text-align: center;">Søk etter kommune info</h2>
+<h2 style="text-align: center;">punkt kommune og fylke info</h2>
 <form asp-action="KommuneInfo" method="post">
     @Html.AntiForgeryToken()
-    <label for="kommuneNr">Kommune Nummer:</label>
-    <input type="text" id="kommuneNr" name="kommuneNr" />
+    <label for="Nord">nord</label>
+    <input type="number" id="Nord" name="nord" step="any" />
+    <label for="Ost">øst</label>
+    <input type="number" id="Ost" name="ost" step="any" />
+    <input type="hidden" id="koordsys" name="koordsys" value="4258" />
     <button class="btn-primary" type="submit">Søk</button>
 </form>
 

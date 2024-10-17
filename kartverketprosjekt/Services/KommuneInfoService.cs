@@ -16,11 +16,11 @@ namespace kartverketprosjekt.Services
             _logger = logger;
             _apiSettings = apisettings.Value;
         }
-        public async Task<KommuneInfo> GetKommuneInfoAsync(string kommuneNr)
+        public async Task<KommuneInfo> GetKommuneInfoAsync(double nord, double ost, int koordsys)
         {
             try
             {
-                var response = await _httpClient.GetAsync($"{_apiSettings.KommuneInfoApiBaseUrl}/kommuner/{kommuneNr}");
+                var response = await _httpClient.GetAsync($"{_apiSettings.KommuneInfoApiBaseUrl}punkt?nord={nord}&ost={ost}&koordsys={koordsys}");
                 response.EnsureSuccessStatusCode();
 
                 var json = await response.Content.ReadAsStringAsync();
@@ -30,7 +30,7 @@ namespace kartverketprosjekt.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error fetching KommuneInfo for {kommuneNr}: {ex.Message}");
+                _logger.LogError($"Error fetching kommune and fylke : {ex.Message}");
                 return null;
             }
 

@@ -10,7 +10,7 @@
                 <th>Kommunenavn</th>
                 <th>Kommunenummer</th>
                 <th>Fylkesnavn</th>
-                <th>Samisk Forvaltningsområde</th>
+                <th>Fylkesnummer</th>
             </tr>
         </thead>
         @if (Model != null)
@@ -19,7 +19,7 @@
                 <td>@Model.Kommunenavn</td>
                 <td>@Model.Kommunenummer</td>
                 <td>@Model.Fylkesnavn</td>
-                <td>@(Model.SamiskForvaltningsomrade ? "Yes" : "No")</td>
+                <td>@Model.Fylkesnummer</td>
             </tr>
         }
         else
