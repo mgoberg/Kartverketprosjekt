@@ -800,9 +800,12 @@ a {
 
 .styled-table {
     width: 100%;
+    max-width: 100%;
+    table-layout: fixed; /* Ensures the table doesn't overflow */
     border-collapse: collapse;
-    margin: 25px 0;
-    font-size: 18px;
+    margin-top: 20px;
+    margin-bottom: 50px;
+    font-size: 16px;
     text-align: left;
 }
 
@@ -815,31 +818,39 @@ a {
     .styled-table th,
     .styled-table td {
         padding: 12px 15px;
+        word-wrap: break-word;
+        white-space: normal; /* Allows text to wrap */
+        overflow-wrap: break-word; /* Ensures long words break to fit */
+        hyphens: auto; /* Adds hyphenation when necessary */
     }
 
     .styled-table tbody tr {
         border-bottom: 1px solid #dddddd;
-    
     }
+
         .styled-table tbody tr:hover {
             color: var(--button-text-hover-color);
             cursor: pointer;
         }
 
-            .styled-table tbody tr:nth-child(even) {
-                background-color: var(--box-background-color-alternate);
-            }
+        .styled-table tbody tr:nth-child(even) {
+            background-color: var(--box-background-color-alternate);
+        }
 
-            .styled-table tbody tr:nth-child(odd) {
-                background-color: var(--box-background-color);
-            }
+        .styled-table tbody tr:nth-child(odd) {
+            background-color: var(--box-background-color);
+        }
 
-        
+.separator {
+    border-top: 1px solid #ddd;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
 .bx-chevron-left {
-    
     font-size: 50px;
     padding: 0;
-    margin-left: -13px; 
+    margin-left: -13px;
     transition: 0.1s ease-in-out;
 }
     .bx-chevron-left:hover {
@@ -983,11 +994,13 @@ select.input-validation-error {
    line-height: 2;
 }
     .dashboard-box {
-        flex: 1; /* Each box will take up equal space */
+        flex: 1;
         padding: 20px;
         border: 1px solid #ddd;
         border-radius: 10px;
         background-color: var(--box-background-color-alternate);
+        min-width: 200px;
+        min-height: 200px;
     }
 
 .btn-container {
