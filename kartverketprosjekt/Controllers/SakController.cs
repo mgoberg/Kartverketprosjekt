@@ -35,7 +35,7 @@ namespace kartverketprosjekt.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult RegisterAreaChange(SakModel sak, IFormFile vedlegg)
+        public async Task<IActionResult> RegisterAreaChange(SakModel sak, IFormFile vedlegg, double nord, double ost, int koordsys)
         {
             // Hent e-post fra den innloggede brukeren
             sak.epost_bruker = User.Identity.Name;
@@ -61,18 +61,27 @@ namespace kartverketprosjekt.Controllers
                 var filePath = Path.Combine(uploadsPath, fileName);
 
                 // Save the file
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                await using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    vedlegg.CopyTo(stream);
+                    await vedlegg.CopyToAsync(stream);
                 }
 
                 // Store the file path (relative to wwwroot) in the SakModel
                 sak.vedlegg = fileName; // Change this if you have a different property type
             }
+            // Gjør API-kall med nord og ost
+            var kommuneInfo = await _kommuneInfoService.GetKommuneInfoAsync(nord, ost, koordsys);
+            if (kommuneInfo != null)
+            {
+                sak.Kommunenavn = kommuneInfo.Kommunenavn;
+                sak.Kommunenummer = kommuneInfo.Kommunenummer;
+                sak.Fylkesnavn = kommuneInfo.Fylkesnavn;
+                sak.Fylkesnummer = kommuneInfo.Fylkesnummer;
+            }
 
             // Lagre saken i databasen
             _context.Sak.Add(sak);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             TempData["id"] = sak.id;
 
@@ -108,61 +117,34 @@ namespace kartverketprosjekt.Controllers
             return View();
         }
 
-        //// Handles the search for KommuneInfo
+        
         //[HttpPost]
-        //public async Task<IActionResult> KommuneInfo(string kommuneNr)
+        //public async Task<IActionResult> KommuneInfo(double nord, double ost, int koordsys)
         //{
-        //    if (string.IsNullOrEmpty(kommuneNr))
-        //    {
-        //        ViewData["Error"] = "Please enter a valid Kommune Number.";
-        //        return View("ApiIndex");
-        //    }
+        //    //if (string.IsNullOrEmpty(nord, ost))
+        //    //{
+        //    //    ViewData["Error"] = "Please enter a valid Kommune Number.";
+        //    //    return View("ApiIndex");
+        //    //}
 
-        //    var kommuneInfo = await _kommuneInfoService.GetKommuneInfoAsync(kommuneNr);
+        //    var kommuneInfo = await _kommuneInfoService.GetKommuneInfoAsync(nord, ost, koordsys);
         //    if (kommuneInfo != null)
         //    {
-        //        var viewModel = new KommuneInfoViewModel
+        //        var viewModel = new SakModel()
         //        {
         //            Kommunenavn = kommuneInfo.Kommunenavn,
         //            Kommunenummer = kommuneInfo.Kommunenummer,
         //            Fylkesnavn = kommuneInfo.Fylkesnavn,
-        //            SamiskForvaltningsomrade = kommuneInfo.SamiskForvaltningsomrade
+        //            Fylkesnummer = kommuneInfo.Fylkesnummer,
         //        };
         //        return View("KommuneInfo", viewModel);
         //    }
         //    else
         //    {
-        //        ViewData["Error"] = $"No results found for Kommune Number '{kommuneNr}'.";
+        //        ViewData["Error"] = $"No results found for coordinates.";
         //        return View("ApiIndex");
         //    }
         //}
-        [HttpPost]
-        public async Task<IActionResult> KommuneInfo(double nord, double ost, int koordsys)
-        {
-            //if (string.IsNullOrEmpty(nord, ost))
-            //{
-            //    ViewData["Error"] = "Please enter a valid Kommune Number.";
-            //    return View("ApiIndex");
-            //}
-
-            var kommuneInfo = await _kommuneInfoService.GetKommuneInfoAsync(nord, ost, koordsys);
-            if (kommuneInfo != null)
-            {
-                var viewModel = new KommuneInfoViewModel
-                {
-                    Kommunenavn = kommuneInfo.Kommunenavn,
-                    Kommunenummer = kommuneInfo.Kommunenummer,
-                    Fylkesnavn = kommuneInfo.Fylkesnavn,
-                    Fylkesnummer = kommuneInfo.Fylkesnummer,
-                };
-                return View("KommuneInfo", viewModel);
-            }
-            else
-            {
-                ViewData["Error"] = $"No results found for coordinates.";
-                return View("ApiIndex");
-            }
-        }
 
 
         // Handles the search for Stedsnavn

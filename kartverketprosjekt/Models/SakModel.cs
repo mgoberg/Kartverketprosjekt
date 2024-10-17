@@ -16,6 +16,10 @@ namespace kartverketprosjekt.Models
         public string ? status { get; set; } = "Påbegynt";
         public DateTime opprettet_dato { get; set; } = DateTime.Now;
         public string layerurl { get; set; }
-
+        public string? Kommunenavn { get; set; }
+        public string? Kommunenummer { get; set; }
+        public string? Fylkesnavn { get; set; }
+        public string? Fylkesnummer { get; set; }
     }
 }
+

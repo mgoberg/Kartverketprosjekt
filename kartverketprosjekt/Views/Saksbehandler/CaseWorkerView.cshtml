@@ -43,6 +43,7 @@
                 <th>Type feil</th>
                 <th>Beskrivelse</th>
                 <th>Vedlegg</th>
+                <th>Fylke</th>
                 <th>Kommune</th>
                 <th>Status</th>
                 <th>Dato</th>
@@ -59,7 +60,8 @@
         <td>@sak.type_feil</td>
         <td>@sak.beskrivelse</td>
         <td>@(sak.vedlegg ?? "Ingen vedlegg")</td>
-        <td>@(sak.kommune_id ?? "NULL")</td>
+        <td>@(sak.Fylkesnavn ?? "NULL")</td>
+        <td>@(sak.Kommunenavn ?? "NULL")</td>
         <td>@sak.status</td>
         <td>@sak.opprettet_dato.ToString("dd.MM.yyyy")</td>
         @if (sak.layerurl == "https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png")
@@ -109,6 +111,7 @@
             <p><strong>Beskrivelse:</strong> <span class="ubuntu-light" id="dashboardBeskrivelse">-</span></p>
             <p><strong>Vedlegg:</strong> <span class="ubuntu-light" id="dashboardVedlegg">-</span></p>
             <p><strong>Punktdata:</strong> <span class="ubuntu-light" style="font-size: 12px;" id="dashboardPunktdata">-</span></p>
+            <p><strong>Fylke:</strong> <span class="ubuntu-light" id="dashboardFylke">-</span></p>
             <p><strong>Kommune:</strong> <span class="ubuntu-light" id="dashboardKommune">-</span></p>
             <p><strong>Status:</strong> <span class="ubuntu-light" id="dashboardStatus">-</span></p>
             <p><strong>Dato:</strong> <span class="ubuntu-light" id="dashboarddato">-</span></p>
@@ -162,9 +165,10 @@
         var beskrivelse = $(this).find('td:eq(3)').text(); // Hent beskrivelsen fra tabellen
         var vedlegg = $(this).find('td:eq(4)').text();
         var geojson = $(this).data('geojson');  // GeoJSON data fra data-attribute
-        var kommune = $(this).find('td:eq(5)').text();
-        var status = $(this).find('td:eq(6)').text();
-        var dato = $(this).find('td:eq(7)').text();
+        var fylke = $(this).find('td:eq(5)').text();
+        var kommune = $(this).find('td:eq(6)').text();
+        var status = $(this).find('td:eq(7)').text();
+        var dato = $(this).find('td:eq(8)').text();
         var kartlagUrl = $(this).data('layerurl');  // Hente kartlag-URL fra data-attribute
 
         // Konvertere GeoJSON-strengen til et objekt
@@ -184,6 +188,7 @@
         $('#dashboardBeskrivelse').text(beskrivelse);
         $('#dashboardVedlegg').text(vedlegg);
         $('#dashboardPunktdata').text(geojson); // GeoJSON vises i dashboard
+        $('#dashboardFylke').text(fylke);
         $('#dashboardKommune').text(kommune);
         $('#dashboardStatus').text(status);
         $('#dashboarddato').text(dato);
