@@ -246,6 +246,13 @@
         // Forhindre standard innsending av skjemaet og åpne modalen
         areaChangeForm.addEventListener('submit', function (event) {
             event.preventDefault(); // Stopper skjemaet fra å bli sendt automatisk
+
+            // Sjekker om det er noen lag i drawnItems før innsending
+            if (drawnItems.getLayers().length === 0) {
+                alert("Vennligst marker noe på kartet før du sender inn skjemaet."); // Viser en advarsel
+                return; // Avbryt innsending
+            }
+
             modal.style.display = "block"; // Viser modalen
         });
 
