@@ -6,6 +6,7 @@ using kartverketprosjekt.Data;
 using kartverketprosjekt.Models;
 using Microsoft.EntityFrameworkCore;
 using System.IO.Compression;
+using kartverketprosjekt.Services;
 
 namespace kartverketprosjekt.Controllers
 {
@@ -13,17 +14,28 @@ namespace kartverketprosjekt.Controllers
     {
         private readonly KartverketDbContext _context;
 
-        public SakController(KartverketDbContext context)
+        private readonly ILogger<HomeController> _logger;
+
+        private readonly IKommuneInfoService _kommuneInfoService;
+
+        private readonly IStedsnavnService _stedsnavnService; //kan fjernes hvis ikke vi skal implementere stedsnavn api
+
+        public SakController(KartverketDbContext context, ILogger<HomeController> logger, IKommuneInfoService kommuneInfoService, IStedsnavnService stedsnavnService)
         {
             _context = context;
+            _logger = logger;
+            _kommuneInfoService = kommuneInfoService;
+            _stedsnavnService = stedsnavnService; //kan fjernes hvis ikke vi skal implementere stedsnavn api
         }
+      
+
         [HttpGet]
         public IActionResult RegisterAreaChange()
         {
             return View();
         }
         [HttpPost]
-        public IActionResult RegisterAreaChange(SakModel sak, IFormFile vedlegg)
+        public async Task<IActionResult> RegisterAreaChange(SakModel sak, IFormFile vedlegg, double nord, double ost, int koordsys)
         {
             // Hent e-post fra den innloggede brukeren
             sak.epost_bruker = User.Identity.Name;
@@ -49,18 +61,27 @@ namespace kartverketprosjekt.Controllers
                 var filePath = Path.Combine(uploadsPath, fileName);
 
                 // Save the file
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                await using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    vedlegg.CopyTo(stream);
+                    await vedlegg.CopyToAsync(stream);
                 }
 
                 // Store the file path (relative to wwwroot) in the SakModel
                 sak.vedlegg = fileName; // Change this if you have a different property type
             }
+            // Gjør API-kall med nord og ost
+            var kommuneInfo = await _kommuneInfoService.GetKommuneInfoAsync(nord, ost, koordsys);
+            if (kommuneInfo != null)
+            {
+                sak.Kommunenavn = kommuneInfo.Kommunenavn;
+                sak.Kommunenummer = kommuneInfo.Kommunenummer;
+                sak.Fylkesnavn = kommuneInfo.Fylkesnavn;
+                sak.Fylkesnummer = kommuneInfo.Fylkesnummer;
+            }
 
             // Lagre saken i databasen
             _context.Sak.Add(sak);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             TempData["id"] = sak.id;
 

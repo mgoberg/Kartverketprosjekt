@@ -1,15 +1,19 @@
 using kartverketprosjekt.Models;
+using kartverketprosjekt.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace prosjekt_kartverket.Controllers
+namespace kartverketprosjekt.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        // Liste som holder p� alle posisjoner som blir lagt til
 
+        
+
+
+        // Liste som holder p� alle posisjoner som blir lagt til
         private static List<PositionModel> positions = new List<PositionModel>();
 
 
@@ -17,6 +21,7 @@ namespace prosjekt_kartverket.Controllers
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
+           
         }
 
         public IActionResult Index()
@@ -38,15 +43,15 @@ namespace prosjekt_kartverket.Controllers
         {
             return View();
         }
-       
+
+        
 
 
 
-       
 
 
         /// Registers a new area change with the specified GeoJSON and description.
- 
+
         // Action metode som h�ndterer GET request til /Home/CorrectMap
         [HttpGet]
         [AllowAnonymous]

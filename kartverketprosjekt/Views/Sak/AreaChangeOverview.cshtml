@@ -1,5 +1,4 @@
 ﻿@model kartverketprosjekt.Models.SakModel
-
 @{
     ViewData["Title"] = "Korrigeringsoversikt";
 }
@@ -11,9 +10,31 @@
 <p><strong>Type feil:</strong> @Model.type_feil</p>
 <p><strong>Beskrivelse:</strong> @Model.beskrivelse</p>
 <p><strong>Opprettet dato:</strong> @Model.opprettet_dato</p>
-<p><strong>Status:</strong> @Model.status</p>
-<p><strong>GeoJSON data:</strong> @Model.geojson_data</p>
-<p><strong>Layer URL:</strong> @Model.layerurl</p>
+<p><strong>Fylke:</strong> @Model.Fylkesnavn</p>
+<p><strong>Kommune:</strong> @Model.Kommunenavn</p>
+<p>
+    <strong>Kartlag:</strong>
+    @{
+        string kartlagNavn = "Ukjent kartlag"; // Standardverdi for kartlag
+        if (Model.layerurl == "https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png")
+        {
+            kartlagNavn = "Topografisk";
+        }
+        else if (Model.layerurl == "https://cache.kartverket.no/v1/wmts/1.0.0/topograatone/default/webmercator/{z}/{y}/{x}.png")
+        {
+            kartlagNavn = "Topografisk Gråtone";
+        }
+        else if (Model.layerurl == "https://cache.kartverket.no/v1/wmts/1.0.0/sjokartraster/default/webmercator/{z}/{y}/{x}.png")
+        {
+            kartlagNavn = "Sjøkart";
+        }
+        else if (Model.layerurl == "https://cache.kartverket.no/v1/wmts/1.0.0/toporaster/default/webmercator/{z}/{y}/{x}.png")
+        {
+            kartlagNavn = "Turkart";
+        }
+    }
+    @kartlagNavn
+</p>
 
 @if (Model.vedlegg != null)
 {
@@ -41,7 +62,7 @@ else
         });
 
         // Legger til bakgrunnskart
-        L.tileLayer(layerUrl, { attribution: '&copy; Denne må også sendes sammen med url!' }).addTo(map);
+        L.tileLayer(layerUrl, { attribution: '&copy; <a href="https://www.kartverket.no/">Kartverket</a> ' }).addTo(map);
 
         // Henter GeoJSON-dataen fra modellen
         var geoJsonData = JSON.parse('@Html.Raw(Model.geojson_data)');

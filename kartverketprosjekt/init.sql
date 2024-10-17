@@ -34,6 +34,10 @@ CREATE TABLE Sak (
     status ENUM('Godkjent', 'Ikke godkjent', 'Påbegynt', 'Under behandling') NOT NULL,
     opprettet_dato TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     layerurl VARCHAR(255) NULL, -- URL til kartlaget
+    Kommunenavn VARCHAR(255),      -- Feltene for kommuneinfo
+    Kommunenummer VARCHAR(50),      -- Kan være en string, avhengig av hvordan nummeret lagres
+    Fylkesnavn VARCHAR(255),
+    Fylkesnummer VARCHAR(50),
     FOREIGN KEY (epost_bruker) REFERENCES Bruker(epost),
     FOREIGN KEY (kommune_id) REFERENCES Kommune(id) -- Relasjon til Kommune-tabellen
 );
