@@ -1,3 +1,7 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.Extensions.Localization
+@using System.Resources
+@inject IStringLocalizer<Resources.Views.Home.IndexResource> localizer
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Ny rapport tjeneste";
@@ -11,23 +15,20 @@
 }
 <div class="box-container">
     <div class="box">
-        <h1>Kartverkets nye rapporteringstjeneste</h1>
-        <p>Bidra med å forbedre kartgrunnlaget til Kartverkets offentlige kart</p>
+        <h1>@localizer["KartverketsNyeRapporteringstjeneste"]</h1>
+        <p>@localizer["BidraMedForbedreKartgrunnlaget"]</p>
 
         <!-- Conditionally render "Til Kartet" button based on user's authentication status -->
         @if (User.Identity.IsAuthenticated)
         {
-            <!-- If the user is logged in, redirect them directly to RegisterAreaChange -->
-            <a href="@Url.Action("RegisterAreaChange", "Sak")" class="btn-primary">Til Kartet</a>
+            <a href="@Url.Action("RegisterAreaChange", "Sak")" class="btn-primary">@localizer["TilKartet"]</a>
         }
         else
         {
-            <!-- If the user is not logged in, show the modal for login -->
-            <a class="btn-primary" onclick="showModal()">Til Kartet</a>
+            <a class="btn-primary" onclick="showModal()">@localizer["TilKartet"]</a>
         }
 
-        <!-- This button will take the user to CorrectMap -->
-        <a href="@Url.Action("CorrectMap", "Home")" class="btn-secondary">Oblig 1</a>
+        <a href="@Url.Action("CorrectMap", "Home")" class="btn-secondary">@localizer["Oblig1"]</a>
     </div>
 
     <div id="phone-img">
@@ -36,17 +37,9 @@
 </div>
 
 <div class="text-section">
-    <h2 class="ubuntu-bold-italic">Kort om tjenesten</h2>
+    <h2 class="ubuntu-bold-italic">@localizer["KortOmTjenesten"]</h2>
     <p class="ubuntu-light">
-        Kartverket tilbyr en tjeneste der brukere enkelt kan rapportere feil i kartet
-        ved å tegne direkte på det digitale kartet. Gjennom denne funksjonen kan brukerne
-        markere områder hvor de oppdager unøyaktigheter eller mangler, som for eksempel
-        feilplasserte veier, bygninger eller andre geografiske objekter. Når brukeren
-        tegner på kartet og beskriver feilen, sendes informasjonen til
-        Kartverkets systemer for vurdering og oppdatering. Denne brukerdrevne
-        tilnærmingen bidrar til mer nøyaktige og oppdaterte kartdata, samtidig
-        som det fremmer et samarbeid mellom Kartverket og publikum for å
-        opprettholde kvaliteten på karttjenestene.
+        @localizer["KartverketTilbyrEnTjeneste"]
     </p>
 </div>
 
@@ -68,29 +61,30 @@
 <!-- Modal for registrering / innlogging -->
 <div id="modal" class="modal">
     <div class="modal-content">
-        <h2 id="modal-title">Logg inn</h2>
+        <h2 id="modal-title">@localizer["LoggInn"]</h2>
         <form asp-controller="Bruker" asp-action="Login" method="post" id="login-form">
-            <label for="epost">Epost:</label>
+            <label for="epost">@localizer["Epost"]</label>
             <input type="email" id="epost" name="epost" required>
-            <label for="password">Passord:</label>
+            <label for="password">@localizer["Passord"]</label>
             <input type="password" id="password" name="password" required>
-            <button type="submit" class="btn-primary">Logg inn</button>
+            <button type="submit" class="btn-primary">@localizer["LoggInn"]</button>
         </form>
         <form asp-controller="Bruker" asp-action="Register" method="post" id="register-form" style="display: none;">
-            <label for="epost">Epost:</label>
+            <label for="epost">@localizer["Epost"]</label>
             <input type="email" id="epost" name="Epost" required>
-            <label for="passord">Passord:</label>
+            <label for="passord">@localizer["Passord"]</label>
             <input type="password" id="passord" name="Passord" required>
-            <button type="submit" class="btn-primary">Registrer</button>
+            <button type="submit" class="btn-primary">@localizer["Registrer"]</button>
         </form>
 
-        <!-- Fortsett uten å logge inn -->
         <div id="continue-without-login">
-            <a asp-controller="Sak" asp-action="RegisterAreaChange" style="text-align: center; display: block; color: var(--button-text-hover-color); padding: 15px;"><u>Fortsett uten å logge inn</u></a>
+            <a asp-controller="Sak" asp-action="RegisterAreaChange" style="text-align: center; display: block; color: var(--button-text-hover-color); padding: 15px;">
+                <u>@localizer["FortsettUtenInnlogging"]</u>
+            </a>
         </div>
 
         <div id="toggle-form">
-            <a style="text-align: center; display: block; color: var(--button-text-hover-color); padding: 15px; cursor: pointer;" onclick="toggleForm()">Registrer </a>
+            <a style="text-align: center; display: block; color: var(--button-text-hover-color); padding: 15px; cursor: pointer;" onclick="toggleForm()">@localizer["Registrer"]</a>
         </div>
     </div>
 </div>
@@ -99,14 +93,17 @@
 
 @section Scripts {
     <script>
+
+        // Store localized strings in JavaScript variables
+        var registrerText = "@localizer["Registrer"]";
+        var loggInnText = "@localizer["LoggInn"]"; // Legg til en variabel for Logg Inn
+
         function showModal() {
-            // Show the login modal when "Til Kartet" is clicked and the user is not logged in
             document.getElementById('modal').style.display = 'block';
             document.getElementById('overlay').style.display = 'block';
         }
 
         function toggleForm() {
-            // Toggle between login and register forms
             var loginForm = document.getElementById("login-form");
             var registerForm = document.getElementById("register-form");
             var modalTitle = document.getElementById("modal-title");
@@ -114,15 +111,14 @@
             if (loginForm.style.display === "none") {
                 loginForm.style.display = "block";
                 registerForm.style.display = "none";
-                modalTitle.innerText = "Logg inn";
+                modalTitle.innerText = "@localizer["LoggInn"]";
             } else {
                 loginForm.style.display = "none";
                 registerForm.style.display = "block";
-                modalTitle.innerText = "Registrer";
+                modalTitle.innerText = "@localizer["Registrer"]";
             }
         }
 
-        // Close modal when clicking outside the modal content
         window.onclick = function (event) {
             var modal = document.getElementById("modal");
             var overlay = document.getElementById("overlay");

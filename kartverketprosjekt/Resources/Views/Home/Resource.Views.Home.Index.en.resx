@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="KartverketsNyeRapporteringstjeneste" xml:space="preserve">
+    <value>The New Reporting Service from the Mapping Agency</value>
+  </data>
+	<data name="BidraMedForbedreKartgrunnlaget" xml:space="preserve">
+    <value>Contribute to Improving the Map Foundation</value>
+  </data>
+	<data name="TilKartet" xml:space="preserve">
+    <value>To the Map</value>
+  </data>
+	<data name="KortOmTjenesten" xml:space="preserve">
+    <value>About the Service</value>
+  </data>
+	<data name="KartverketTilbyrEnTjeneste" xml:space="preserve">
+    <value>The Mapping Agency Offers a Service</value>
+  </data>
+	<data name="Oblig1" xml:space="preserve">
+    <value>Mandatory 1</value>
+  </data>
+	<data name="LoggInn" xml:space="preserve">
+    <value>Log In</value>
+  </data>
+	<data name="Epost" xml:space="preserve">
+    <value>Email</value>
+  </data>
+	<data name="Passord" xml:space="preserve">
+    <value>Password</value>
+  </data>
+	<data name="Registrer" xml:space="preserve">
+    <value>Register</value>
+  </data>
+	<data name="FortsettUtenInnlogging" xml:space="preserve">
+    <value>Continue without logging in</value>
+  </data>
+</root>

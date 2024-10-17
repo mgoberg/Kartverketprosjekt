@@ -6,6 +6,8 @@ using kartverketprosjekt.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using kartverketprosjekt.API_Models;
 using kartverketprosjekt.Services;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +25,23 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<KartverketDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
     new MySqlServerVersion(new Version(11, 3, 2)))); // Adjust version as needed
+
+// Configure supported cultures for localization
+var supportedCultures = new[] { "en-US", "nb-NO" };
+var localizationOptions = new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("nb-NO"),
+    SupportedCultures = supportedCultures.Select(c => new CultureInfo(c)).ToList(),
+    SupportedUICultures = supportedCultures.Select(c => new CultureInfo(c)).ToList()
+};
+
+// Register localization options with the services
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    options.DefaultRequestCulture = localizationOptions.DefaultRequestCulture;
+    options.SupportedCultures = localizationOptions.SupportedCultures;
+    options.SupportedUICultures = localizationOptions.SupportedUICultures;
+});
 
 // Enable authentication with cookies
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -46,11 +65,27 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.Use(async (context, next) =>
+{
+    var langCookie = context.Request.Cookies["lang"];
+    if (!string.IsNullOrEmpty(langCookie))
+    {
+        var culture = new CultureInfo(langCookie);
+        CultureInfo.CurrentCulture = culture;
+        CultureInfo.CurrentUICulture = culture;
+    }
+    await next();
+});
+
+app.UseRequestLocalization(localizationOptions);
+
 app.UseAuthentication(); // Enable authentication middleware
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+
 
 app.Run();

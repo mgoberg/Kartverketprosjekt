@@ -1,6 +1,7 @@
 using kartverketprosjekt.Models;
 using kartverketprosjekt.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -10,7 +11,7 @@ namespace kartverketprosjekt.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        
+
 
 
         // Liste som holder p� alle posisjoner som blir lagt til
@@ -21,7 +22,7 @@ namespace kartverketprosjekt.Controllers
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
-           
+
         }
 
         public IActionResult Index()
@@ -43,11 +44,6 @@ namespace kartverketprosjekt.Controllers
         {
             return View();
         }
-
-        
-
-
-
 
 
         /// Registers a new area change with the specified GeoJSON and description.
@@ -71,6 +67,7 @@ namespace kartverketprosjekt.Controllers
                 // Viser oppsummering view etter data har blitt registrert og lagret i positions listen
                 return View("CorrectionOverview", positions);
             }
+
             return View();
         }
 
@@ -80,6 +77,7 @@ namespace kartverketprosjekt.Controllers
         {
             return View(positions);
         }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -109,6 +107,20 @@ namespace kartverketprosjekt.Controllers
         public IActionResult ContactConfirmed()
         {
             return View();
+        }
+
+        // Funksjon for å sette språk
+        public IActionResult SetLanguage(string lang)
+        {
+            if (!string.IsNullOrEmpty(lang))
+            {
+                // Set language cookie
+                Response.Cookies.Append(
+                    CookieRequestCultureProvider.DefaultCookieName,
+                    CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(lang)),
+                    new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+                );
+            }
         }
     }
 }

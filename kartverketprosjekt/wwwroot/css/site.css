@@ -270,6 +270,20 @@ main {
 
 }
 
+/* Dropdown container */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown button */
+.dropbtn {
+    color: var(--navbar-text-color);
+    padding: 1em 3em; /* Juster padding for å matche andre navigasjonslenker */
+    text-decoration: none;
+    transition-duration: 0.3s;
+}
+
 
 
 #kartverketLogo {

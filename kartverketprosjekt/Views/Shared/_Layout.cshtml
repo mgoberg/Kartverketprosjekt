@@ -76,6 +76,18 @@
                         <i class='bx bx-moon'></i>                     
                     </a>
                 </li>
+                
+                <!-- Language dropdown -->
+                <li>
+                    <div class="dropdown">
+                        <button class="dropbtn">Språk</button>
+                        <div class="dropdown-content">
+                            <a href="@Url.Action("SetLanguage", "Home", new { lang = "nb" })">Norsk</a>
+                            <a href="@Url.Action("SetLanguage", "Home", new { lang = "en" })">Engelsk</a>
+                        </div>
+                    </div>
+                </li>
+
                 @if (User.Identity.IsAuthenticated)
             {
                 <li>

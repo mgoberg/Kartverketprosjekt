@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="KartverketsNyeRapporteringstjeneste" xml:space="preserve">
+    <value>Kartverkets nye rapporteringstjeneste</value>
+  </data>
+	<data name="BidraMedForbedreKartgrunnlaget" xml:space="preserve">
+    <value>Bidra med å forbedre kartgrunnlaget</value>
+  </data>
+	<data name="TilKartet" xml:space="preserve">
+    <value>Til kartet</value>
+  </data>
+	<data name="KortOmTjenesten" xml:space="preserve">
+    <value>Kort om tjenesten</value>
+  </data>
+	<data name="KartverketTilbyrEnTjeneste" xml:space="preserve">
+    <value>Kartverket tilbyr en tjeneste</value>
+  </data>
+	<data name="Oblig1" xml:space="preserve">
+    <value>Obligatorisk 1</value>
+  </data>
+	<data name="LoggInn" xml:space="preserve">
+    <value>Logg inn</value>
+  </data>
+	<data name="Epost" xml:space="preserve">
+    <value>E-post</value>
+  </data>
+	<data name="Passord" xml:space="preserve">
+    <value>Passord</value>
+  </data>
+	<data name="Registrer" xml:space="preserve">
+    <value>Registrer</value>
+  </data>
+	<data name="FortsettUtenInnlogging" xml:space="preserve">
+    <value>Fortsett uten innlogging</value>
+  </data>
+</root>
