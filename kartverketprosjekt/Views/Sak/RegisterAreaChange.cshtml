@@ -89,8 +89,19 @@
             <!-- Skjult felt for status -->
             <input type="hidden" name="status" value="Påbegynt">
 
-            <!-- Send-knapp PLACEHOLDER -> SKAL SPAWNE MODAL FOR CONFIRMATION TODO TODO TODO -->
-            <button type="submit" class="btn btn-primary">Send inn</button>
+            <!-- Modal for bekreftelse -->
+            <div id="confirmationModal" style="display:none;">
+                <div>
+                    <span class="close">&times;</span>
+                    <h2>Bekreft innsending</h2>
+                    <p>Er du sikker på at du vil sende inn skjemaet?</p>
+                    <button class="btn btn-danger" id="confirmSubmit">Bekreft</button>
+                </div>
+            </div>
+
+            <!-- Send-knapp -->
+            <button type="submit" class="btn btn-primary" id="openConfirmationModal">Send inn</button>
+
         </form>
     </div>
 </div>
@@ -98,9 +109,11 @@
 
 
 @section Scripts {
-    
     <script>
-        //simulerer at brukeren trykker på knappen for å endre til land for å ha det som initielle kartlag. hvis ikke blir ikke kart url'en sendt med form dataen
+
+
+        // Simulerer at brukeren trykker på knappen for å endre til land for å ha det som initielle kartlag. Hvis ikke blir ikke kart URL'en sendt med form dataen
+
         document.addEventListener('DOMContentLoaded', function () {
             changeToLand();
         });
@@ -109,8 +122,8 @@
             changeTileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png', '&copy; <a href="http://www.kartverket.no/">Kartverket</a>', 'btn-changeToLand');
         }
 
-        var searchControl = new L.esri.Controls.Geosearch().addTo(map);// Add the geocoding searchbar
 
+        var searchControl = new L.esri.Controls.Geosearch().addTo(map); // Add the geocoding searchbar
         document.querySelector('.geocoder-control').style.zIndex = '2000';
 
         var drawnItems = new L.FeatureGroup();
@@ -222,37 +235,44 @@
             });
         });
 
-        /**
-        * Event listener for the form submission.
-        * Prevents the default form submission behavior, captures the URL of the current TileLayer,
-        * creates a hidden input to store the TileLayer URL, appends the hidden input to the form,
-        * and submits the form.
-        */
-        document.getElementById('areaChangeForm').addEventListener('submit', function (event) {
-            // Prevent the default form submission
-            event.preventDefault();
 
-            // Sjekk om det finnes noen tegnede elementer
-            if (drawnItems.getLayers().length === 0) {
-                alert("Du må markere et område på kartet før du sender inn skjemaet.");
-                return; // Stopper innsending av skjemaet
-            }
+        // Henter bekreftelses modal og knapper
+        var modal = document.getElementById("confirmationModal");
+        var confirmBtn = document.getElementById("confirmSubmit");
+        var areaChangeForm = document.getElementById("areaChangeForm");
+        var sendBtn = document.getElementById("openConfirmationModal");
+        var closeBtn = document.querySelector(".close");
 
-            // Capture the URL of the current TileLayer
+        // Forhindre standard innsending av skjemaet og åpne modalen
+        areaChangeForm.addEventListener('submit', function (event) {
+            event.preventDefault(); // Stopper skjemaet fra å bli sendt automatisk
+            modal.style.display = "block"; // Viser modalen
+        });
+
+        // Funksjon for å sende skjemaet
+        confirmBtn.addEventListener("click", function () {
+            // Fanger opp URL-en til nåværende TileLayer
+
             var tileLayerUrl = map._layers[Object.keys(map._layers)[1]]._url;
 
-            // Create a hidden input to store the TileLayer URL
+            // Lager en skjult input for å lagre TileLayer URL-en
             var mapStateInput = document.createElement('input');
             mapStateInput.type = 'hidden';
             mapStateInput.name = 'layerurl';
             mapStateInput.value = tileLayerUrl;
 
-            // Append the hidden input to the form
-            this.appendChild(mapStateInput);
+            // Legger til det skjulte inputet i skjemaet
+            areaChangeForm.appendChild(mapStateInput);
 
-            // Submit the form
-            this.submit();
+            modal.style.display = "none"; // Skjul modalen
+            areaChangeForm.submit(); // Send inn skjemaet manuelt
         });
+
+        // Funksjon for å lukke modalen
+        closeBtn.addEventListener("click", function () {
+            modal.style.display = "none"; // Skjul modalen
+        });
+
     </script>
 
     
