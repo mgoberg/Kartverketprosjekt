@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace kartverketprosjekt.Services
 {
-    public class StedsnavnService : IStedsnavnService
+    public class StedsnavnService : IStedsnavnService //kan fjernes hvis ikke vi skal implementere stedsnavn api
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<StedsnavnService> _logger;

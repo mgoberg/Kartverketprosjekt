@@ -2,7 +2,7 @@
 
 namespace kartverketprosjekt.Services
 {
-    public interface IStedsnavnService
+    public interface IStedsnavnService //kan fjernes hvis ikke vi skal implementere stedsnavn api
     {
         Task<StedsnavnResponse> GetStedsnavnAsync(string search);
     }

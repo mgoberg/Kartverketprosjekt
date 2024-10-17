@@ -14,7 +14,7 @@ builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSet
 
 // Register services and their interfaces
 builder.Services.AddHttpClient<IKommuneInfoService, KommuneInfoService>();
-builder.Services.AddHttpClient<IStedsnavnService, StedsnavnService>();
+builder.Services.AddHttpClient<IStedsnavnService, StedsnavnService>(); //kan fjernes hvis ikke vi skal implementere stedsnavn api
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

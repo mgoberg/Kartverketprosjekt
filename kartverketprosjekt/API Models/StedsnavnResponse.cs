@@ -2,7 +2,7 @@
 
 namespace kartverketprosjekt.API_Models
 {
-    public class StedsnavnResponse
+    public class StedsnavnResponse //kan fjernes hvis ikke vi skal implementere stedsnavn api
     {
         [JsonPropertyName("metadata")]
         public Metadata Metadata { get; set; }

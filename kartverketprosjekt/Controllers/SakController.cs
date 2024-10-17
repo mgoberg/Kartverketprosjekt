@@ -18,14 +18,14 @@ namespace kartverketprosjekt.Controllers
 
         private readonly IKommuneInfoService _kommuneInfoService;
 
-        private readonly IStedsnavnService _stedsnavnService;
+        private readonly IStedsnavnService _stedsnavnService; //kan fjernes hvis ikke vi skal implementere stedsnavn api
 
         public SakController(KartverketDbContext context, ILogger<HomeController> logger, IKommuneInfoService kommuneInfoService, IStedsnavnService stedsnavnService)
         {
             _context = context;
             _logger = logger;
             _kommuneInfoService = kommuneInfoService;
-            _stedsnavnService = stedsnavnService;
+            _stedsnavnService = stedsnavnService; //kan fjernes hvis ikke vi skal implementere stedsnavn api
         }
       
 
@@ -110,71 +110,6 @@ namespace kartverketprosjekt.Controllers
             }
 
             return NotFound(); // Handle case where no ID is found in TempData
-        }
-
-        public IActionResult ApiIndex()
-        {
-            return View();
-        }
-
-        
-        //[HttpPost]
-        //public async Task<IActionResult> KommuneInfo(double nord, double ost, int koordsys)
-        //{
-        //    //if (string.IsNullOrEmpty(nord, ost))
-        //    //{
-        //    //    ViewData["Error"] = "Please enter a valid Kommune Number.";
-        //    //    return View("ApiIndex");
-        //    //}
-
-        //    var kommuneInfo = await _kommuneInfoService.GetKommuneInfoAsync(nord, ost, koordsys);
-        //    if (kommuneInfo != null)
-        //    {
-        //        var viewModel = new SakModel()
-        //        {
-        //            Kommunenavn = kommuneInfo.Kommunenavn,
-        //            Kommunenummer = kommuneInfo.Kommunenummer,
-        //            Fylkesnavn = kommuneInfo.Fylkesnavn,
-        //            Fylkesnummer = kommuneInfo.Fylkesnummer,
-        //        };
-        //        return View("KommuneInfo", viewModel);
-        //    }
-        //    else
-        //    {
-        //        ViewData["Error"] = $"No results found for coordinates.";
-        //        return View("ApiIndex");
-        //    }
-        //}
-
-
-        // Handles the search for Stedsnavn
-        [HttpPost]
-        public async Task<IActionResult> Stedsnavn(string searchTerm)
-        {
-            if (string.IsNullOrEmpty(searchTerm))
-            {
-                ViewData["Error"] = "Please enter a valid place name.";
-                return View("ApiIndex");
-            }
-
-            var stedsnavnResponse = await _stedsnavnService.GetStedsnavnAsync(searchTerm);
-            if (stedsnavnResponse?.Navn != null && stedsnavnResponse.Navn.Any())
-            {
-                var viewModel = stedsnavnResponse.Navn.Select(n => new StedsnavnViewModel
-                {
-                    Skrivemåte = n.Skrivemåte,
-                    Navneobjekttype = n.Navneobjekttype,
-                    Språk = n.Språk,
-                    Navnestatus = n.Navnestatus
-                }).ToList();
-
-                return View("Stedsnavn", viewModel);
-            }
-            else
-            {
-                ViewData["Error"] = $"No results found for '{searchTerm}'.";
-                return View("ApiIndex");
-            }
         }
     }
 }
