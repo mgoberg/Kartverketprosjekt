@@ -54,6 +54,7 @@ html {
     /*changes highlight color*/
 }
 
+
 .alert {
     color: var(--button-text-hover-color);
 }
@@ -115,7 +116,7 @@ body {
     /* Remove default margin */
     padding: 0;
     /* Remove default padding */
-    font-size: large;
+    font-size: medium;
     padding-top: 75px;
     background-color: var(--background-color);
     color: var(--text-color);
@@ -351,11 +352,9 @@ form {
 form label {
     margin-bottom: 5px;
     /* Space between label and input */
-    font-weight: bold;
-    /* Make labels bold */
 }
 
-form textarea {
+textarea {
     margin-bottom: 15px;
     /* Space between form elements */
     padding: 10px;
@@ -369,7 +368,18 @@ form textarea {
     box-sizing: border-box;
     /* Ensure padding and border are included in the element's total width and height */
     resize: vertical;
+    max-height: 200px;
+    /* Limit the vertical resizing to 200px */
+    background-color: var(--form-background-color);
+    font: inherit;
+    font-size: 12px;
+    color: var(--text-color);
+    transition: border-color 0.3s ease-in-out;
 }
+    textarea:focus {
+        border-color: var(--button-background-color);
+        outline: none;
+    }
 
 form input[type="email"] {
     margin-bottom: 15px;
@@ -385,7 +395,12 @@ form input[type="email"] {
     box-sizing: border-box;
     /* Ensure padding and border are included in the element's total width and height */
     resize: none;
+    transition: border-color 0.3s ease-in-out;
 }
+    form input[type="email"]:focus {
+        border-color: var(--button-background-color);
+        outline: none;
+    }
 
 form input[type="text"] {
     margin-bottom: 15px;
@@ -401,7 +416,12 @@ form input[type="text"] {
     box-sizing: border-box;
     /* Ensure padding and border are included in the element's total width and height */
     resize: none;
+    transition: border-color 0.3s ease-in-out;
 }
+    form input[type="text"]:focus {
+        border-color: var(--button-background-color);
+        outline: none;
+    }
 input[type="password"] {
     margin-bottom: 15px;
     /* Space between form elements */
@@ -416,7 +436,12 @@ input[type="password"] {
     box-sizing: border-box;
     /* Ensure padding and border are included in the element's total width and height */
     resize: none;
+    transition: border-color 0.3s ease-in-out;
 }
+    input[type="password"]:focus {
+        border-color: var(--button-background-color);
+        outline: none;
+    }
 form input[type="submit"] {
     padding: 10px 20px;
     /* Add padding inside the submit button */
@@ -469,6 +494,7 @@ select.form-control {
     border-radius: 4px;
     transition: border-color 0.3s ease-in-out;
     margin-bottom: 1.5rem;
+    color: var(--text-color);
 }
 
     select.form-control:focus {
@@ -908,4 +934,71 @@ select.input-validation-error {
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+#commentsSection {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin-bottom: 20px;
+}
+
+    #commentsSection h4 {
+        margin-bottom: 10px;
+    }
+
+#commentsList {
+    list-style-type: none;
+    padding: 0;
+}
+
+    #commentsList li {
+        font-size: 1rem;
+        padding: 8px;
+        margin-bottom: 5px;
+        border-bottom: 1px solid #ddd;
+        background-color: var(--box-background-color);
+        border-radius: 3px;
+        transition: 0.1s ease-in-out;
+    }
+
+        #commentsList li:hover {
+            background-color: var(--box-background-color-alternate);
+            cursor: pointer
+        }
+
+            #commentsList li:last-child {
+                border-bottom: none;
+            }
+
+.dashboard {
+    display: flex;
+    flex-direction: row;
+    gap: 20px; /* Space between the boxes */
+}
+.dashboard p {
+   line-height: 2;
+}
+    .dashboard-box {
+        flex: 1; /* Each box will take up equal space */
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background-color: var(--box-background-color-alternate);
+    }
+
+.btn-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+h4 {
+    margin-bottom: 6px;
+}
+
+#slettSakKnapp {
+    cursor: url('../images/hihi.cur'), pointer !important;
 }

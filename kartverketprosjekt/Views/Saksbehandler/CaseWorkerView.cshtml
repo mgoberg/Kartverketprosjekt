@@ -6,26 +6,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/mapstyle.css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 
-    <style>  
-        .upper-section {
-            flex: 1; /* Take up the top half of the screen */
-        }
-
-        /* Lower section for the dashboard and map, sharing space vertically */
-        .lower-section {
-            flex: 1;
-            display: flex;
-        }
-
-        .dashboard, #map {
-            width: 50%; /* Dashboard and map share equal space horizontally */
-            padding: 20px;
-            border: 1px solid #ddd;
-            margin-top: 20px;
-        }
-    </style>
+    
 
     <a asp-controller="Home" asp-action="Index">
         <i class='bx bx-chevron-left'></i>
@@ -40,8 +24,7 @@
             <tr>
                 <th>BrukerID</th>
                 <th>Epost</th>
-                <th>Type feil</th>
-                <th>Beskrivelse</th>
+                <th>Type feil</th>  
                 <th>Vedlegg</th>
                 <th>Fylke</th>
                 <th>Kommune</th>
@@ -54,12 +37,11 @@
 
     @foreach (var sak in ViewBag.Saker)
 {
-    <tr data-geojson='@Html.Raw(Json.Serialize(sak.geojson_data))' data-layerurl='@sak.layerurl'>
+    <tr data-geojson='@Html.Raw(Json.Serialize(sak.geojson_data))' data-layerurl='@sak.layerurl' data-beskrivelse='@sak.beskrivelse'>
         <td>@sak.id</td>
         <td>@(sak.epost_bruker ?? "ikke registrert")</td>
         <td>@sak.type_feil</td>
-        <td>@sak.beskrivelse</td>
-        <td>@(sak.vedlegg ?? "Ingen vedlegg")</td>
+        <td>@(sak.vedlegg != null ? "Ja" : "Nei")</td>
         <td>@(sak.Fylkesnavn ?? "NULL")</td>
         <td>@(sak.Kommunenavn ?? "NULL")</td>
         <td>@sak.status</td>
@@ -85,12 +67,12 @@
     </tbody>
     </table>
 </div>   
+    <!-- Leaflet kartet -->
+    <div id="map"></div>
 
-
-    <!-- Lower section: Dashboard and Map share space vertically -->
-    <div class="lower-section">
+    
         <!-- Dashbord -->
-        <div class="dashboard">
+        
             <h2 style="text-align: center; color: darkgray;" >Dashbord</h2>
 
 <style>
@@ -104,50 +86,88 @@
 
 <div class="separator"></div>
 
-
-            <p><strong>BrukerID:</strong> <span class="ubuntu-light" id="dashboardBrukerID">-</span></p>                                         
-            <p><strong>Epost:</strong> <span class="ubuntu-light" id="dashboardEpost">-</span></p>
-            <p><strong>Type feil:</strong> <span class="ubuntu-light" id="dashboardTypeFeil">-</span></p>
-            <p><strong>Beskrivelse:</strong> <span class="ubuntu-light" id="dashboardBeskrivelse">-</span></p>
-            <p><strong>Vedlegg:</strong> <span class="ubuntu-light" id="dashboardVedlegg">-</span></p>
-            <p><button id="visVedleggKnapp">Vis Vedlegg</button></p>
-            <p><strong>Punktdata:</strong> <span class="ubuntu-light" style="font-size: 12px;" id="dashboardPunktdata">-</span></p>
-            <p><strong>Fylke:</strong> <span class="ubuntu-light" id="dashboardFylke">-</span></p>
-            <p><strong>Kommune:</strong> <span class="ubuntu-light" id="dashboardKommune">-</span></p>
-            <p><strong>Status:</strong> <span class="ubuntu-light" id="dashboardStatus">-</span></p>
-            <p><strong>Dato:</strong> <span class="ubuntu-light" id="dashboarddato">-</span></p>
-            <p><strong>Kartlag:</strong> <span class="ubuntu-light" id="dashboardKartlag">-</span></p>
-
-            
-
-            <!-- Status dropdown -->
-            <label for="changeStatus">Endre status:</label>
-            <select id="changeStatus">  
-                <option value="Åpen">Åpen</option>
-                <option value="Under behandling">Under behandling</option>
-                <option value="Lukket">Lukket</option>
-                <option value="Arkiver">Arkiver</option>
-            </select>
-        <p><button id="slettSakKnapp">Slett Sak</button></p>
-            <!-- Kommentar-seksjon -->
-            <h4>Legg til kommentar</h4>
-            <textarea id="caseComment" rows="4" cols="50" placeholder="Skriv en kommentar..."></textarea><br/>
-            <button id="saveComment">Lagre kommentar</button>
-    
-            <!-- Viser lagrede kommentarer -->
-            <div id="commentsSection">
-                <h4>Kommentarer</h4>
-                <ul id="commentsList"></ul>
+        <div class="dashboard">
+            <div class="dashboard-box">
+                <table class="styled-table">
+                    <tr>
+                        <td><strong>BrukerID:</strong></td>
+                        <td><span class="ubuntu-light" id="dashboardBrukerID">-</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Epost:</strong></td>
+                        <td><span class="ubuntu-light" id="dashboardEpost">-</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Type feil:</strong></td>
+                        <td><span class="ubuntu-light" id="dashboardTypeFeil">-</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Beskrivelse:</strong></td>
+                        <td><span class="ubuntu-light" id="dashboardBeskrivelse">-</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Vedlegg:</strong></td>
+                        <td><span class="ubuntu-light" id="dashboardVedlegg">-</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fylke:</strong></td>
+                        <td><span class="ubuntu-light" id="dashboardFylke">-</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kommune:</strong></td>
+                        <td><span class="ubuntu-light" id="dashboardKommune">-</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Status:</strong></td>
+                        <td><span class="ubuntu-light" id="dashboardStatus">-</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dato:</strong></td>
+                        <td><span class="ubuntu-light" id="dashboarddato">-</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kartlag:</strong></td>
+                        <td><span class="ubuntu-light" id="dashboardKartlag">-</span></td>
+                    </tr>
+                </table>
+        <button class="btn-secondary" id="visVedleggKnapp">Vis Vedlegg</button>
             </div>
 
-           
 
-            
+            <!-- Status dropdown -->
+            <div class="dashboard-box">
+                <h4 class="ubuntu-light">Endre status</h4>
+                <select class="form-control" id="changeStatus">
+                    <option value="Åpen">Åpen</option>
+                    <option value="Under behandling">Under behandling</option>
+                    <option value="Lukket">Lukket</option>
+                    <option value="Arkiver">Arkiver</option>
+                </select>
+
+                <!-- Kommentar-seksjon -->
+                <h4 class="ubuntu-light">Legg til kommentar</h4>
+                <textarea id="caseComment" rows="4" cols="50" placeholder="Skriv en kommentar..."></textarea><br/>
+                <div class="btn-container">
+                    <button class="btn-secondary" id="saveComment">Lagre kommentar</button>
+                </div>
+
+                <!-- Viser lagrede kommentarer -->
+                <div id="commentsSection">
+                <h4 class="ubuntu-light">Kommentarer</h4>
+                    <ul id="commentsList">
+                        <li>Denne brukeren tweaker! 🤯</li>
+                        <li>Jeg får ikke betalt nok for dette her! 🤓🖕 </li>
+                        <li>🔥🔥🔥🔥🔥🔥</li>
+                    </ul>
+                </div>
+                <div class="btn-container">
+                    <button class="btn btn-danger" id="slettSakKnapp">Slett sak</button>
+                    <button class="btn-primary" id="lagreKnapp">Lagre endringer</button>
+                </div>
+            </div>
+
         </div>
-      
-        <!-- Leaflet kartet -->
-        <div id="map"></div>
-    </div>
+ 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -168,13 +188,13 @@
         var brukerID = $(this).find('td:eq(0)').text();
         var epost = $(this).find('td:eq(1)').text();
         var typeFeil = $(this).find('td:eq(2)').text();
-        var beskrivelse = $(this).find('td:eq(3)').text(); // Hent beskrivelsen fra tabellen
-        var vedlegg = $(this).find('td:eq(4)').text();
+        var beskrivelse = $(this).data('beskrivelse') // Hent beskrivelsen fra data-attribute
+        var vedlegg = $(this).find('td:eq(3)').text();
         var geojson = $(this).data('geojson');  // GeoJSON data fra data-attribute
-        var fylke = $(this).find('td:eq(5)').text();
-        var kommune = $(this).find('td:eq(6)').text();
-        var status = $(this).find('td:eq(7)').text();
-        var dato = $(this).find('td:eq(8)').text();
+        var fylke = $(this).find('td:eq(4)').text();
+        var kommune = $(this).find('td:eq(5)').text();
+        var status = $(this).find('td:eq(6)').text();
+        var dato = $(this).find('td:eq(7)').text();
         var kartlagUrl = $(this).data('layerurl');  // Hente kartlag-URL fra data-attribute
 
         // Konvertere GeoJSON-strengen til et objekt
@@ -193,7 +213,6 @@
         $('#dashboardTypeFeil').text(typeFeil);
         $('#dashboardBeskrivelse').text(beskrivelse);
         $('#dashboardVedlegg').text(vedlegg);
-        $('#dashboardPunktdata').text(geojson); // GeoJSON vises i dashboard
         $('#dashboardFylke').text(fylke);
         $('#dashboardKommune').text(kommune);
         $('#dashboardStatus').text(status);
@@ -218,8 +237,9 @@
 
 
             // Scroll ned til dashbordet
-            document.querySelector('.dashboard').scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
-
+            document.querySelector('#map').scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+           
+           
             // endre status
             $('#changeStatus').val(status);
 
@@ -271,7 +291,7 @@
             if (geojson.geometry.type === "Point") {
                 var latLng = [coordinates[1], coordinates[0]]; // [latitude, longitude]
                 marker = L.marker(latLng).addTo(map);
-                marker.bindPopup('Beskrivelse: ' + beskrivelse).openPopup();
+                marker.bindPopup(beskrivelse).openPopup();
                 map.setView(latLng, 13); // Zoom inn på markøren
             } else if (geojson.geometry.type === "Polygon") {
                 var firstSet = coordinates[0]; // Hent den første sett med koordinater
@@ -279,14 +299,14 @@
                     var latLng = [(firstSet[0][1] + firstSet[firstSet.length - 1][1]) / 2,
                     (firstSet[0][0] + firstSet[firstSet.length - 1][0]) / 2]; // Midtpunkt av første og siste koordinat
                     marker = L.polygon(firstSet.map(coord => [coord[1], coord[0]])).addTo(map);
-                    marker.bindPopup('Beskrivelse: ' + beskrivelse).openPopup();
+                    marker.bindPopup(beskrivelse).openPopup();
                     map.setView(latLng, 13); // Zoom inn på midtpunktet
                 }
             } else if (geojson.geometry.type === "LineString") {
                 // For LineString, vi konverterer alle koordinater til latLng format
                 var latLngs = coordinates.map(coord => [coord[1], coord[0]]);
                 marker = L.polyline(latLngs).addTo(map); // Legger til linjen til kartet
-                marker.bindPopup('Beskrivelse: ' + beskrivelse).openPopup();
+                marker.bindPopup(beskrivelse).openPopup();
 
                 // Sentrer kartet på midtpunktet av linjen
                 var midPointIndex = Math.floor(latLngs.length / 2);
@@ -298,7 +318,7 @@
                     [coordinates[1][1], coordinates[1][0]]
                 );
                 marker = L.rectangle(bounds).addTo(map);
-                marker.bindPopup('Beskrivelse: ' + beskrivelse).openPopup();
+                marker.bindPopup(beskrivelse).openPopup();
                 map.fitBounds(bounds); // Juster kartet til rektangelet
             } else {
                 console.error("Unsupported GeoJSON geometry type:", geojson.geometry.type);
