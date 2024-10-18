@@ -20,6 +20,8 @@ namespace kartverketprosjekt.Models
         public string? Kommunenummer { get; set; }
         public string? Fylkesnavn { get; set; }
         public string? Fylkesnummer { get; set; }
+        // Relasjon til Kommentarer
+        public ICollection<KommentarModel> Kommentarer { get; set; } = new List<KommentarModel>();
     }
 }
 

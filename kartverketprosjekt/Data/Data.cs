@@ -12,5 +12,6 @@ namespace kartverketprosjekt.Data
 
         public DbSet<BrukerModel> Bruker { get; set; }
         public DbSet<SakModel> Sak { get; set; }
+        public DbSet<KommentarModel> Kommentar { get; set; }
     }
 }

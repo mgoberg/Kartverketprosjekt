@@ -42,6 +42,15 @@ CREATE TABLE Sak (
     FOREIGN KEY (kommune_id) REFERENCES Kommune(id) -- Relasjon til Kommune-tabellen
 );
 
+CREATE TABLE Kommentar (
+    Id INT AUTO_INCREMENT PRIMARY KEY, -- Bruk AUTO_INCREMENT i stedet for IDENTITY
+    Tekst TEXT NOT NULL, -- Tekst datatype i MySQL
+    Dato DATETIME NOT NULL, -- Datoen kommentaren ble opprettet
+    SakId INT NOT NULL, -- Fremmednøkkel til Sak-tabellen
+    FOREIGN KEY (SakId) REFERENCES Sak(id) -- Relasjon til Sak-tabellen
+);
+
+
 -- Opprette tabell for tilbakemeldinger fra brukere
 CREATE TABLE Tilbakemelding (
     id INT AUTO_INCREMENT PRIMARY KEY,

@@ -22,7 +22,7 @@
     <table id="casesTable" class="styled-table">
         <thead>
             <tr>
-                <th>BrukerID</th>
+                <th>SakID</th>
                 <th>Epost</th>
                 <th>Type feil</th>  
                 <th>Vedlegg</th>
@@ -37,7 +37,7 @@
 
     @foreach (var sak in ViewBag.Saker)
 {
-    <tr data-geojson='@Html.Raw(Json.Serialize(sak.geojson_data))' data-layerurl='@sak.layerurl' data-beskrivelse='@sak.beskrivelse'>
+    <tr data-sakid='@sak.id' data-geojson='@Html.Raw(Json.Serialize(sak.geojson_data))' data-layerurl='@sak.layerurl' data-beskrivelse='@sak.beskrivelse'>
         <td>@sak.id</td>
         <td>@(sak.epost_bruker ?? "ikke registrert")</td>
         <td>@sak.type_feil</td>
@@ -90,8 +90,8 @@
             <div class="dashboard-box">
                 <table class="styled-table">
                     <tr>
-                        <td><strong>BrukerID:</strong></td>
-                        <td><span class="ubuntu-light" id="dashboardBrukerID">-</span></td>
+                        <td><strong>SakID:</strong></td>
+                        <td><span class="ubuntu-light" id="dashboardSakID">-</span></td>
                     </tr>
                     <tr>
                         <td><strong>Epost:</strong></td>
@@ -155,9 +155,7 @@
                 <div id="commentsSection">
                 <h4 class="ubuntu-light">Kommentarer</h4>
                     <ul id="commentsList">
-                        <li>Hva faen! 🤯</li>
-                        <li>Jeg får ikke betalt nok for dette her! 🤓🖕 </li>
-                        <li>🔥🔥🔥🔥🔥🔥</li>
+                        <!-- her legges kommentarene -->
                     </ul>
                 </div>
                 <div class="btn-container">
@@ -181,21 +179,95 @@
         var geoJsonLayer; // Lagrer GeoJSON-laget
         var tileLayer; // Lagrer tile-laget
 
+    // Funskjon for å slette sak i db
+    $('#slettSakKnapp').click(function () {
+        var sakID = $('#dashboardSakID').text(); // Hent SakID fra dashboardet
+
+        if (sakID === "-") {
+            alert("Velg en sak før du sletter!");
+            return;
+        }
+
+        // Bekreft før sletting
+        if (confirm("Er du sikker på at du vil slette denne saken?")) {
+            $.ajax({
+                url: '/Saksbehandler/Delete',  // URL til controllerens Delete-funksjon
+                type: 'POST',
+                data: { id: sakID },
+                success: function (result) {
+                    if (result.success) {
+                        alert(result.message);  // Viser en melding til brukeren
+                        location.reload();      // Oppdaterer siden for å fjerne slettet sak fra visningen
+                    } else {
+                        alert(result.message);  // Viser en feilmelding 
+                    }
+                },
+                error: function () {
+                    alert("En feil oppstod under sletting.");
+                }
+            });
+        }
+    });
+
+    // Legge til ny kommentar i listen
+    $('#saveComment').click(function () {
+        var commentText = $('#caseComment').val();  // Hente innholdet fra tekstområdet
+
+        if (commentText.trim() !== "") {
+            // Hent sakID fra dashboardet
+            var sakID = $('#dashboardSakID').text();
+
+            if (sakID !== "-") {
+                // Legg til ny kommentar til listen på klientsiden
+                $('#commentsList').append('<li>' + commentText + '</li>');
+
+                // Tømme kommentarfeltet etter at kommentaren er lagt til
+                $('#caseComment').val('');
+
+                // Send kommentar til backend for å lagre den
+                $.ajax({
+                    url: '/Saksbehandler/AddComment',  // URL til controllerens AddComment-funksjon
+                    type: 'POST',
+                    data: {
+                        sakID: sakID,
+                        kommentar: commentText
+                    },
+                    success: function (result) {
+                        if (result.success) {
+                            alert('Kommentar lagret!');
+                        } else {
+                            alert('Kunne ikke lagre kommentar.');
+                        }
+                    },
+                    error: function () {
+                        alert('En feil oppstod under lagring.');
+                    }
+                });
+            } else {
+                alert("Velg en sak før du legger til kommentar.");
+            }
+        } else {
+            alert("Kommentarfeltet er tomt.");
+        }
+    });
+
+
+    
 
     $(document).ready(function () {
-    $('#casesTable tbody tr').click(function () {
-        // Hente data fra tabellen
-        var brukerID = $(this).find('td:eq(0)').text();
-        var epost = $(this).find('td:eq(1)').text();
-        var typeFeil = $(this).find('td:eq(2)').text();
-        var beskrivelse = $(this).data('beskrivelse') // Hent beskrivelsen fra data-attribute
-        var vedlegg = $(this).find('td:eq(3)').text();
-        var geojson = $(this).data('geojson');  // GeoJSON data fra data-attribute
-        var fylke = $(this).find('td:eq(4)').text();
-        var kommune = $(this).find('td:eq(5)').text();
-        var status = $(this).find('td:eq(6)').text();
-        var dato = $(this).find('td:eq(7)').text();
-        var kartlagUrl = $(this).data('layerurl');  // Hente kartlag-URL fra data-attribute
+        $('#casesTable tbody tr').click(function () {
+            // Hente data fra tabellen
+            var sakID = $(this).data('sakid');  // Hent sakID fra data-attribute
+            var epost = $(this).find('td:eq(1)').text();
+            var typeFeil = $(this).find('td:eq(2)').text();
+            var beskrivelse = $(this).data('beskrivelse');
+            var vedlegg = $(this).find('td:eq(3)').text();
+            var geojson = $(this).data('geojson');
+            var fylke = $(this).find('td:eq(4)').text();
+            var kommune = $(this).find('td:eq(5)').text();
+            var status = $(this).find('td:eq(6)').text();
+            var dato = $(this).find('td:eq(7)').text();
+            var kartlagUrl = $(this).data('layerurl');
 
         // Konvertere GeoJSON-strengen til et objekt
         if (typeof geojson === "string") {
@@ -207,8 +279,8 @@
             }
         }
 
-        // Oppdatere dashboard med data fra valgt rad
-        $('#dashboardBrukerID').text(brukerID);
+        // Oppdater dashboard med data fra valgt rad
+        $('#dashboardSakID').text(sakID);
         $('#dashboardEpost').text(epost);
         $('#dashboardTypeFeil').text(typeFeil);
         $('#dashboardBeskrivelse').text(beskrivelse);
@@ -217,6 +289,29 @@
         $('#dashboardKommune').text(kommune);
         $('#dashboardStatus').text(status);
         $('#dashboarddato').text(dato);
+
+        // Hent kommentarer for valgt sak
+        $.ajax({
+            url: '/Saksbehandler/GetComments',  // URL til kontrollerens GetComments metode
+            type: 'GET',
+            data: { sakId: sakID },  // Passer sakID til forespørselen
+            success: function (result) {
+                    console.log(result); // Sjekk innholdet i result
+                if (result.success) {
+                    // Tøm kommentarlisten før nye kommentarer legges til
+                    $('#commentsList').empty();
+                    // Legg til hver kommentar i listen
+                    result.kommentarer.forEach(function (kommentar) {
+                        $('#commentsList').append('<li>' + kommentar.tekst + ' - ' + kommentar.dato + '</li>');
+                    });
+                } else {
+                    alert('Kunne ikke hente kommentarer: ' + result.message);
+                }
+            },
+            error: function () {
+                alert('En feil oppstod under henting av kommentarer.');
+            }
+        });
 
         // Sjekk kartlag-URL og vis tilsvarende tekst i dashboardet
         var kartlagTekst = "";
@@ -337,9 +432,9 @@
         } catch (e) {
             console.error("Error adding GeoJSON to map:", e);
         }
+        
+
     }
-
-
 
     </script>
 

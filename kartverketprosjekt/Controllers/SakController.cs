@@ -1,20 +1,14 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Mvc;
 using kartverketprosjekt.Data;
 using kartverketprosjekt.Models;
-using Microsoft.EntityFrameworkCore;
-using System.IO.Compression;
 using kartverketprosjekt.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace kartverketprosjekt.Controllers
 {
     public class SakController : Controller
     {
         private readonly KartverketDbContext _context;
-
-        private readonly ILogger<HomeController> _logger;
 
         private readonly IKommuneInfoService _kommuneInfoService;
 
@@ -23,7 +17,6 @@ namespace kartverketprosjekt.Controllers
         public SakController(KartverketDbContext context, ILogger<HomeController> logger, IKommuneInfoService kommuneInfoService, IStedsnavnService stedsnavnService)
         {
             _context = context;
-            _logger = logger;
             _kommuneInfoService = kommuneInfoService;
             _stedsnavnService = stedsnavnService; //kan fjernes hvis ikke vi skal implementere stedsnavn api
         }
@@ -72,8 +65,8 @@ namespace kartverketprosjekt.Controllers
             // Gjør API-kall med nord og ost
             var kommuneInfo = await _kommuneInfoService.GetKommuneInfoAsync(nord, ost, koordsys);
             if (kommuneInfo != null)
-            {
-                sak.Kommunenavn = kommuneInfo.Kommunenavn;
+            {   // API-responsen lagres i KommuneInfo modellen og så flytter vi det over til Sak modellen
+                sak.Kommunenavn = kommuneInfo.Kommunenavn; 
                 sak.Kommunenummer = kommuneInfo.Kommunenummer;
                 sak.Fylkesnavn = kommuneInfo.Fylkesnavn;
                 sak.Fylkesnummer = kommuneInfo.Fylkesnummer;
@@ -111,5 +104,7 @@ namespace kartverketprosjekt.Controllers
 
             return NotFound(); // Handle case where no ID is found in TempData
         }
+        
     }
+
 }
