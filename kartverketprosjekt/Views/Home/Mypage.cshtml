@@ -1,7 +1,8 @@
+@model List<kartverketprosjekt.Models.SakModel>
 
 @{
-Layout = "~/Views/Shared/_Layout.cshtml";
-ViewData["Title"] = "Min Side";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Min Side";
 }
 <a asp-controller="Home" asp-action="Index">
     <i class='bx bx-chevron-left'></i>
@@ -10,30 +11,42 @@ ViewData["Title"] = "Min Side";
 
 <div class="box-container">
     <div class="box">
-        <a asp-controller="" asp-action="">
-            <h3>Mine Saker
+        <a asp-controller="Sak" asp-action="MyPage">
+            <h3>
+                Mine Saker
                 <i class='bx bx-chevron-right'></i>
             </h3>
         </a>
-        <a asp-controller="" asp-action="">
-            <h3> Inbox
+        <a asp-controller="Inbox" asp-action="Index">
+            <h3>
+                Inbox
                 <i class='bx bx-chevron-right'></i>
-            </h3>  
+            </h3>
         </a>
-        <a asp-controller="" asp-action="">
-            <h3>Instillinger
+        <a asp-controller="Settings" asp-action="Index">
+            <h3>
+                Instillinger
                 <i class='bx bx-chevron-right'></i>
             </h3>
         </a>
     </div>
 
-    
     <div class="box">
-        <h2>
-            Oversikt over siste sak
-        </h2>
+        <h2>Oversikt over dine saker</h2>
+        @if (Model != null && Model.Count > 0)
+        {
+            <ul>
+                @foreach (var sak in Model)
+                {
+                    <li>
+                        @sak.Kommunenavn - @sak.status - @sak.opprettet_dato.ToString("d")
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>Du har ingen saker.</p>
+        }
     </div>
 </div>
-
-
-
