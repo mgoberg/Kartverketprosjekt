@@ -322,13 +322,13 @@ form {
     /* Align elements vertically */
     width: 100%;
     /* Ensure the form takes the full width of its container */
-    max-width: 400px;
+    max-width: 200px;
     /* Optional: Set a maximum width for the form */
     margin: 0 auto;
-    margin-top: 25px;
+    margin-top: 20px;
     margin-bottom: 25px;
     /* Center the form horizontally */
-    padding: 20px;
+    padding: 10px;
     /* Add padding around the form */
     background-color: var(--form-background-color);
     /* Optional: Set a background color */

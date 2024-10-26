@@ -4,31 +4,38 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Min Side";
 }
+
 <a asp-controller="Home" asp-action="Index">
     <i class='bx bx-chevron-left'></i>
 </a>
 <h1>Min Side</h1>
 
 <div class="box-container">
-    <div class="box">
-        <a asp-controller="Sak" asp-action="MyPage">
-            <h3>
-                Mine Saker
-                <i class='bx bx-chevron-right'></i>
-            </h3>
-        </a>
-        <a asp-controller="Inbox" asp-action="Index">
-            <h3>
-                Inbox
-                <i class='bx bx-chevron-right'></i>
-            </h3>
-        </a>
-        <a asp-controller="Settings" asp-action="Index">
-            <h3>
-                Instillinger
-                <i class='bx bx-chevron-right'></i>
-            </h3>
-        </a>
+    <div class="instillinger">
+ <h2>Instillinger(ingen funksjon enda) + må styles</h2>
+        <!-- Endre Navn Form -->
+        <form asp-controller="Account" asp-action="UpdateName" method="post">
+            <div>
+                <label for="Name">Navn:</label>
+                <input type="text" id="Name" name="Name" placeholder="Skriv inn ditt navn" required />
+            </div>
+            <button type="submit">Oppdater Navn</button>
+        </form>
+
+        <!-- Endre Passord Form -->
+        <form asp-controller="Account" asp-action="UpdatePassword" method="post" style="margin-top: 0px;">
+            <div>
+                <label for="Password">Nytt passord:</label>
+                <input type="password" id="Password" name="Password" placeholder="Skriv inn nytt passord" required />
+            </div>
+            <button type="submit">Oppdater Passord</button>
+        </form>
+
+        <!-- Slette Konto Form -->
+        <form asp-controller="Account" asp-action="DeleteAccount" method="post" style="margin-top: 0px;">
+            <p>Ønsker du å slette kontoen din? Denne handlingen kan ikke angres.</p>
+            <button type="submit">Slett Konto</button>
+        </form>
     </div>
 
     <div class="box">
@@ -39,7 +46,10 @@
                 @foreach (var sak in Model)
                 {
                     <li>
-                        @sak.Kommunenavn - @sak.status - @sak.opprettet_dato.ToString("d")
+                        <strong>@sak.Kommunenavn</strong> -
+                        Status: @sak.status -
+                        Opprettet: @sak.opprettet_dato.ToString("d")
+                        <a asp-controller="Sak" asp-action="Details" asp-route-id="@sak.id">Vis detaljer</a>
                     </li>
                 }
             </ul>
