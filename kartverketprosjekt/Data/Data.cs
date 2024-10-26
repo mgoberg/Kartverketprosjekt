@@ -10,16 +10,8 @@ namespace kartverketprosjekt.Data
         {
         }
 
-        public DbSet<BrukerModel> Brukere { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<BrukerModel>()
-                .HasKey(b => b.BrukerId); // Specify 'Id' as the primary key
-
-            modelBuilder.Entity<BrukerModel>()
-                .Property(b => b.BrukerId)
-                .ValueGeneratedOnAdd();
-        }
+        public DbSet<BrukerModel> Bruker { get; set; }
+        public DbSet<SakModel> Sak { get; set; }
+        public DbSet<KommentarModel> Kommentar { get; set; }
     }
 }

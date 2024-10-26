@@ -1,0 +1,441 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Saksbehandler";
+}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/mapstyle.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+    
+
+    <a asp-controller="Home" asp-action="Index">
+        <i class='bx bx-chevron-left'></i>
+    </a>
+    <h2>
+        Saksoversikt
+    </h2>
+<!-- Tabell -->
+<div class="upper-section">
+    <table id="casesTable" class="styled-table">
+        <thead>
+            <tr>
+                <th>SakID</th>
+                <th>Epost</th>
+                <th>Type feil</th>  
+                <th>Vedlegg</th>
+                <th>Fylke</th>
+                <th>Kommune</th>
+                <th>Status</th>
+                <th>Dato</th>
+                <th>Kartlag</th>
+            </tr>
+        </thead>
+    <tbody>
+
+    @foreach (var sak in ViewBag.Saker)
+{
+    <tr data-sakid='@sak.id' data-geojson='@Html.Raw(Json.Serialize(sak.geojson_data))' data-layerurl='@sak.layerurl' data-beskrivelse='@sak.beskrivelse'>
+        <td>@sak.id</td>
+        <td>@(sak.epost_bruker ?? "ikke registrert")</td>
+        <td>@sak.type_feil</td>
+        <td>@(sak.vedlegg != null ? "Ja" : "Nei")</td>
+        <td>@(sak.Fylkesnavn ?? "NULL")</td>
+        <td>@(sak.Kommunenavn ?? "NULL")</td>
+        <td>@sak.status</td>
+        <td>@sak.opprettet_dato.ToString("dd.MM.yyyy")</td>
+        @if (sak.layerurl == "https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png")
+        {
+            <td>Topografisk</td>
+        }
+        else if (sak.layerurl == "https://cache.kartverket.no/v1/wmts/1.0.0/topograatone/default/webmercator/{z}/{y}/{x}.png")
+        {
+            <td>Topografisk Gråtone</td>
+        }
+        else if (sak.layerurl == "https://cache.kartverket.no/v1/wmts/1.0.0/sjokartraster/default/webmercator/{z}/{y}/{x}.png")
+        {
+            <td>Sjøkart</td>
+        }
+        else if (sak.layerurl == "https://cache.kartverket.no/v1/wmts/1.0.0/toporaster/default/webmercator/{z}/{y}/{x}.png")
+        {
+            <td>Turkart</td>
+        }
+    </tr>
+}
+    </tbody>
+    </table>
+</div>   
+
+<div class="separator"></div>
+
+<h2 style="text-align: center; color: darkgray;">Kart</h2>
+
+<!-- Leaflet kartet -->
+<div id="map">
+    <h1 style="text-align: center; margin-top: 215px; color: rgba(0,0,0,0.3);text-shadow: 2px 2px 3px rgba(255,255,255,0.1);">
+        -Trykk i tabellen for å åpne sak-
+    </h1>
+</div>
+
+
+<!-- Dashbord -->
+        
+<h2 style="text-align: center; color: darkgray;" >Dashbord</h2>
+
+<div class="separator"></div>
+
+        <div class="dashboard">
+            <div class="dashboard-box">
+                <table class="styled-table">
+                    <tr>
+                        <td><strong>SakID:</strong></td>
+                        <td><span class="ubuntu-light" id="dashboardSakID">-</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Epost:</strong></td>
+                        <td><span class="ubuntu-light" id="dashboardEpost">-</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Type feil:</strong></td>
+                        <td><span class="ubuntu-light" id="dashboardTypeFeil">-</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Beskrivelse:</strong></td>
+                        <td><span class="ubuntu-light" id="dashboardBeskrivelse">-</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Vedlegg:</strong></td>
+                        <td><span class="ubuntu-light" id="dashboardVedlegg">-</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fylke:</strong></td>
+                        <td><span class="ubuntu-light" id="dashboardFylke">-</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kommune:</strong></td>
+                        <td><span class="ubuntu-light" id="dashboardKommune">-</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Status:</strong></td>
+                        <td><span class="ubuntu-light" id="dashboardStatus">-</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dato:</strong></td>
+                        <td><span class="ubuntu-light" id="dashboarddato">-</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kartlag:</strong></td>
+                        <td><span class="ubuntu-light" id="dashboardKartlag">-</span></td>
+                    </tr>
+                </table>
+        <button class="btn-secondary" id="visVedleggKnapp">Vis Vedlegg</button>
+            </div>
+
+
+            <!-- Status dropdown -->
+            <div class="dashboard-box">
+                <h4 class="ubuntu-light">Endre status</h4>
+                <select class="form-control" id="changeStatus">
+                    <option value="Åpen">Åpen</option>
+                    <option value="Under behandling">Under behandling</option>
+                    <option value="Lukket">Lukket</option>
+                    <option value="Arkiver">Arkiver</option>
+                </select>
+
+                <!-- Kommentar-seksjon -->
+                <h4 class="ubuntu-light">Legg til kommentar</h4>
+                <textarea id="caseComment" rows="4" cols="50" placeholder="Skriv en kommentar..."></textarea><br/>
+                <div class="btn-container">
+                    <button class="btn-secondary" id="saveComment">Lagre kommentar</button>
+                </div>
+
+                <!-- Viser lagrede kommentarer -->
+                <div id="commentsSection">
+                <h4 class="ubuntu-light">Kommentarer</h4>
+                    <ul id="commentsList">
+                        <!-- her legges kommentarene -->
+                    </ul>
+                </div>
+                <div class="btn-container">
+                    <button class="btn btn-danger" id="slettSakKnapp">Slett sak</button>
+                    <button class="btn-primary" id="lagreKnapp">Lagre endringer</button>
+                </div>
+            </div>
+
+        </div>
+ 
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <script>
+    
+        var map = L.map('map').setView([58.075045, 7.909303], 10);
+
+        var marker;
+        var geoJsonLayer; // Lagrer GeoJSON-laget
+        var tileLayer; // Lagrer tile-laget
+
+    // Funskjon for å slette sak i db
+    $('#slettSakKnapp').click(function () {
+        var sakID = $('#dashboardSakID').text(); // Hent SakID fra dashboardet
+
+        if (sakID === "-") {
+            alert("Velg en sak før du sletter!");
+            return;
+        }
+
+        // Bekreft før sletting
+        if (confirm("Er du sikker på at du vil slette denne saken?")) {
+            $.ajax({
+                url: '/Saksbehandler/Delete',  // URL til controllerens Delete-funksjon
+                type: 'POST',
+                data: { id: sakID },
+                success: function (result) {
+                    if (result.success) {
+                        alert(result.message);  // Viser en melding til brukeren
+                        location.reload();      // Oppdaterer siden for å fjerne slettet sak fra visningen
+                    } else {
+                        alert(result.message);  // Viser en feilmelding 
+                    }
+                },
+                error: function () {
+                    alert("En feil oppstod under sletting.");
+                }
+            });
+        }
+    });
+
+    // Legge til ny kommentar i listen
+    $('#saveComment').click(function () {
+        var commentText = $('#caseComment').val();  // Hente innholdet fra tekstområdet
+
+        if (commentText.trim() !== "") {
+            // Hent sakID fra dashboardet
+            var sakID = $('#dashboardSakID').text();
+
+            if (sakID !== "-") {
+                // Legg til ny kommentar til listen på klientsiden
+                $('#commentsList').append('<li>' + commentText + '</li>');
+
+                // Tømme kommentarfeltet etter at kommentaren er lagt til
+                $('#caseComment').val('');
+
+                // Send kommentar til backend for å lagre den
+                $.ajax({
+                    url: '/Saksbehandler/AddComment',  // URL til controllerens AddComment-funksjon
+                    type: 'POST',
+                    data: {
+                        sakID: sakID,
+                        kommentar: commentText
+                    },
+                    success: function (result) {
+                        if (result.success) {
+                            alert('Kommentar lagret!');
+                        } else {
+                            alert('Kunne ikke lagre kommentar.');
+                        }
+                    },
+                    error: function () {
+                        alert('En feil oppstod under lagring.');
+                    }
+                });
+            } else {
+                alert("Velg en sak før du legger til kommentar.");
+            }
+        } else {
+            alert("Kommentarfeltet er tomt.");
+        }
+    });
+
+
+    
+
+    $(document).ready(function () {
+        $('#casesTable tbody tr').click(function () {
+            // Hente data fra tabellen
+            var sakID = $(this).data('sakid');  // Hent sakID fra data-attribute
+            var epost = $(this).find('td:eq(1)').text();
+            var typeFeil = $(this).find('td:eq(2)').text();
+            var beskrivelse = $(this).data('beskrivelse');
+            var vedlegg = $(this).find('td:eq(3)').text();
+            var geojson = $(this).data('geojson');
+            var fylke = $(this).find('td:eq(4)').text();
+            var kommune = $(this).find('td:eq(5)').text();
+            var status = $(this).find('td:eq(6)').text();
+            var dato = $(this).find('td:eq(7)').text();
+            var kartlagUrl = $(this).data('layerurl');
+
+        // Konvertere GeoJSON-strengen til et objekt
+        if (typeof geojson === "string") {
+            try {
+                geojson = JSON.parse(geojson);  // Ingen erstatning nødvendig hvis formatet er riktig
+            } catch (error) {
+                console.error("Error parsing GeoJSON: ", error);
+                return; // Avslutt funksjonen hvis det oppstod en feil
+            }
+        }
+
+        // Oppdater dashboard med data fra valgt rad
+        $('#dashboardSakID').text(sakID);
+        $('#dashboardEpost').text(epost);
+        $('#dashboardTypeFeil').text(typeFeil);
+        $('#dashboardBeskrivelse').text(beskrivelse);
+        $('#dashboardVedlegg').text(vedlegg);
+        $('#dashboardFylke').text(fylke);
+        $('#dashboardKommune').text(kommune);
+        $('#dashboardStatus').text(status);
+        $('#dashboarddato').text(dato);
+
+        // Hent kommentarer for valgt sak
+        $.ajax({
+            url: '/Saksbehandler/GetComments',  // URL til kontrollerens GetComments metode
+            type: 'GET',
+            data: { sakId: sakID },  // Passer sakID til forespørselen
+            success: function (result) {
+                    console.log(result); // Sjekk innholdet i result
+                if (result.success) {
+                    // Tøm kommentarlisten før nye kommentarer legges til
+                    $('#commentsList').empty();
+                    // Legg til hver kommentar i listen
+                    result.kommentarer.forEach(function (kommentar) {
+                        $('#commentsList').append('<li>' + kommentar.tekst + ' - ' + kommentar.dato + '</li>');
+                    });
+                } else {
+                    alert('Kunne ikke hente kommentarer: ' + result.message);
+                }
+            },
+            error: function () {
+                alert('En feil oppstod under henting av kommentarer.');
+            }
+        });
+
+        // Sjekk kartlag-URL og vis tilsvarende tekst i dashboardet
+        var kartlagTekst = "";
+        if (kartlagUrl === "https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png") {
+            kartlagTekst = "Topografisk";
+        } else if (kartlagUrl === "https://cache.kartverket.no/v1/wmts/1.0.0/topograatone/default/webmercator/{z}/{y}/{x}.png") {
+            kartlagTekst = "Topografisk Gråtone";
+        } else if (kartlagUrl === "https://cache.kartverket.no/v1/wmts/1.0.0/sjokartraster/default/webmercator/{z}/{y}/{x}.png") {
+            kartlagTekst = "Sjøkart";
+        } else if (kartlagUrl === "https://cache.kartverket.no/v1/wmts/1.0.0/toporaster/default/webmercator/{z}/{y}/{x}.png") {
+            kartlagTekst = "Turkart";
+        } else {
+            kartlagTekst = "Ukjent kartlag";
+        }
+
+        // Oppdater kartlaget i dashboardet
+        $('#dashboardKartlag').text(kartlagTekst);
+
+
+            // Scroll ned til dashbordet
+            document.querySelector('#map').scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+           
+           
+            // endre status
+            $('#changeStatus').val(status);
+
+            
+            // Oppdatere kart med GeoJSON data og nytt kartlag basert på URL
+            if (geojson && kartlagUrl) {
+                updateMap(geojson, kartlagUrl, beskrivelse); // Send beskrivelse med
+            }
+        });
+    });
+
+
+        // Change status event
+        $('#changeStatus').change(function () {
+            var newStatus = $(this).val();
+            $('#dashboardStatus').text(newStatus);
+            // Legg inn logikk her for å oppdatere status i databasen
+        });
+   
+
+    function updateMap(geojson, layerUrl, beskrivelse) {
+        // Kontroller om geojson er en gyldig GeoJSON-streng
+        if (typeof geojson === 'string') {
+            try {
+                geojson = JSON.parse(geojson); // Prøv å analysere JSON-strengen
+            } catch (e) {
+                console.error("Invalid GeoJSON string:", geojson);
+                return; // Avbryt hvis parsing mislykkes
+            }
+        }
+
+        // Fjerne eksisterende GeoJSON-lag og markører
+        if (marker) {
+            map.removeLayer(marker);
+        }
+
+        if (geoJsonLayer) {
+            map.removeLayer(geoJsonLayer);
+        }
+
+        // Legg til GeoJSON-laget til kartet
+        try {
+            geoJsonLayer = L.geoJSON(geojson).addTo(map); // Lagre laget i en variabel
+
+            // Hent koordinatene fra GeoJSON
+            var coordinates = geojson.geometry.coordinates;
+
+            // Bestem hvilken type geometri vi har
+            if (geojson.geometry.type === "Point") {
+                var latLng = [coordinates[1], coordinates[0]]; // [latitude, longitude]
+                marker = L.marker(latLng).addTo(map);
+                marker.bindPopup(beskrivelse).openPopup();
+                map.setView(latLng, 13); // Zoom inn på markøren
+            } else if (geojson.geometry.type === "Polygon") {
+                var firstSet = coordinates[0]; // Hent den første sett med koordinater
+                if (firstSet.length > 0) {
+                    var latLng = [(firstSet[0][1] + firstSet[firstSet.length - 1][1]) / 2,
+                    (firstSet[0][0] + firstSet[firstSet.length - 1][0]) / 2]; // Midtpunkt av første og siste koordinat
+                    marker = L.polygon(firstSet.map(coord => [coord[1], coord[0]])).addTo(map);
+                    marker.bindPopup(beskrivelse).openPopup();
+                    map.setView(latLng, 13); // Zoom inn på midtpunktet
+                }
+            } else if (geojson.geometry.type === "LineString") {
+                // For LineString, vi konverterer alle koordinater til latLng format
+                var latLngs = coordinates.map(coord => [coord[1], coord[0]]);
+                marker = L.polyline(latLngs).addTo(map); // Legger til linjen til kartet
+                marker.bindPopup(beskrivelse).openPopup();
+
+                // Sentrer kartet på midtpunktet av linjen
+                var midPointIndex = Math.floor(latLngs.length / 2);
+                var midLatLng = latLngs[midPointIndex];
+                map.setView(midLatLng, 13); // Zoom inn på midtpunktet av linjen
+            } else if (geojson.geometry.type === "Rectangle") {
+                var bounds = L.latLngBounds(
+                    [coordinates[0][1], coordinates[0][0]],
+                    [coordinates[1][1], coordinates[1][0]]
+                );
+                marker = L.rectangle(bounds).addTo(map);
+                marker.bindPopup(beskrivelse).openPopup();
+                map.fitBounds(bounds); // Juster kartet til rektangelet
+            } else {
+                console.error("Unsupported GeoJSON geometry type:", geojson.geometry.type);
+            }
+
+            // Fjerne eksisterende tile layer før vi legger til et nytt
+            if (tileLayer) {
+                map.removeLayer(tileLayer);
+            }
+
+            // Legge til nytt tile lag basert på kartlag-URL
+            tileLayer = L.tileLayer(layerUrl, {
+                attribution: '&copy; <a href="https://www.kartverket.no">Kartverket</a>'
+            }).addTo(map);
+
+        } catch (e) {
+            console.error("Error adding GeoJSON to map:", e);
+        }
+        
+
+    }
+
+    </script>
+
+

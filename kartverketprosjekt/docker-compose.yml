@@ -7,6 +7,8 @@ services:
       MYSQL_DATABASE: kartverketdb
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3307:3306"  # Map port 3306 in the container to port 3307 on your host
     networks:
       - kartverket-network
 

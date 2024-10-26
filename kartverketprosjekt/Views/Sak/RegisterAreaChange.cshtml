@@ -1,0 +1,289 @@
+﻿@model kartverketprosjekt.Models.SakModel
+
+@{
+    ViewData["Title"] = "Registrer endring";
+}
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Message"]
+    </div>
+}
+
+<a asp-controller="Home" asp-action="Index">
+    <i class='bx bx-chevron-left'></i>
+</a>
+
+<h2>Korriger ved å tegne i kartet:</h2>
+
+
+<div class="flex-row">
+    <div class="element1">
+        <div id="map">
+            <div id="verticalButtonContainer">
+                <button id="toggleButton">
+                    <i class='bx bx-layer' id="layers"></i>
+                </button>
+                <button id="geolocateButton">
+                    <i class='bx bx-current-location' id="cross"></i>
+                </button>
+                <button id="fullscreenButton">
+                    <i class='bx bx-fullscreen' id="fullscreen"></i>
+                </button>
+            </div>
+            <div id="buttonContainer">
+                <div>
+                    <button id="btn-changeToLand" onclick="changeToLand()"></button>
+                </div>
+                <div>
+                    <button id="btn-changeToGrey" onclick="changeToGrey()"></button>
+                </div>
+                <div>
+                    <button id="btn-changeToRaster" onclick="changeToRaster()"></button>
+                </div>
+                <div>
+                    <button id="btn-changeToSea" onclick="changeToSea()"></button>
+                </div>
+            </div>
+            
+
+        </div>
+    </div>
+
+
+    <div class="element2">
+        <form id="areaChangeForm" asp-controller="Sak" asp-action="RegisterAreaChange" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <!-- Skjult felt for GeoJSON-data -->
+            <input type="hidden" class="form-control" id="geoJsonInput" name="geojson_data" readonly>
+            <!-- Skjult felter for koordinater -->
+            <input type="number" id="Nord" name="nord" step="any" placeholder="nord" hidden readonly />
+            <input type="number" id="Ost" name="ost" step="any" placeholder="øst" hidden readonly />
+            <input type="hidden" id="koordsys" name="koordsys" value="4258" />
+
+            <!-- Beskrivelse (påkrevd) -->
+            <label class="ubuntu-regular" for="beskrivelse">Beskrivelse:</label>
+            <textarea class="form-control, ubuntu-light" id="beskrivelse" name="beskrivelse" required placeholder="F.eks. manglende sti" maxlength="250"></textarea>
+
+            <!-- Opplastning av vedlegg (valgfritt) -->
+            <label class="ubuntu-regular" for="vedlegg">Vedlegg (valgfritt):</label>
+
+            <input class="ubuntu-light" type="file" class="form-control" id="vedlegg" name="vedlegg">
+
+            <!-- Layerurl (generert under av js) -->
+
+            <!-- Type feil dropdown meny -->
+            <label class="ubuntu-light" for="typeFeil">Type feil:</label>
+            <select class="form-control" id="typeFeil" name="type_feil">
+                <option value="Annet">Annet</option>
+                <option value="Feil i vei">Vei</option>
+                <option value="Feil i tursti">Tursti</option>
+                <option value="Feil i stedsnavn">Stedsnavn</option>
+                <option value="Feil i eiendom">Eiendom</option>
+            </select>
+
+            <!-- Skjult felt for kommune ID -->
+            <input type="hidden" name="kommune_id" value="1">
+
+            <!-- Skjult felt for status -->
+            <input type="hidden" name="status" value="Påbegynt">
+
+            <!-- Modal for bekreftelse -->
+            <div id="confirmationModal" style="display:none;">
+                <div>
+                    <span class="close">&times;</span>
+                    <h2>Bekreft innsending</h2>
+                    <p>Er du sikker på at du vil sende inn skjemaet?</p>
+                    <button class="btn btn-danger" id="confirmSubmit">Bekreft</button>
+                </div>
+            </div>
+
+            <!-- Send-knapp -->
+            <button type="submit" class="btn btn-primary" id="openConfirmationModal">Send inn</button>
+
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script>
+
+
+        // Simulerer at brukeren trykker på knappen for å endre til land for å ha det som initielle kartlag. Hvis ikke blir ikke kart URL'en sendt med form dataen
+
+        document.addEventListener('DOMContentLoaded', function () {
+            changeToLand();
+        });
+
+        function changeToLand() {
+            changeTileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png', '&copy; <a href="http://www.kartverket.no/">Kartverket</a>', 'btn-changeToLand');
+        }
+
+
+        var searchControl = new L.esri.Controls.Geosearch().addTo(map); // Add the geocoding searchbar
+        document.querySelector('.geocoder-control').style.zIndex = '2000';
+
+        var drawnItems = new L.FeatureGroup();
+        map.addLayer(drawnItems);
+
+        var drawControl = new L.Control.Draw({
+            draw: {
+                polygon: true,
+                polyline: true,
+                rectangle: true,
+                circle: false,
+                marker: true,
+                circlemarker: false
+            },
+            edit: {
+                featureGroup: drawnItems
+            }
+        });
+        map.addControl(drawControl);
+
+                map.on(L.Draw.Event.CREATED, function (e) {
+            var type = e.layerType,
+                layer = e.layer;
+
+            // Fjern alle tidligere tegnede elementer
+            drawnItems.clearLayers();
+
+            // Legg til det nye elementet
+            drawnItems.addLayer(layer);
+
+            var geoJsonData = layer.toGeoJSON();
+            var geoJsonString = JSON.stringify(geoJsonData);
+
+            document.getElementById('geoJsonInput').value = geoJsonString;
+
+            // Hent koordinater basert på type
+            if (type === 'marker') {
+                var coordinates = layer.getLatLng();
+                document.getElementById('Nord').value = coordinates.lat;
+                document.getElementById('Ost').value = coordinates.lng;
+            } else if (type === 'polyline') {
+                var coordinatesArray = layer.getLatLngs();
+                var firstPoint = Array.isArray(coordinatesArray[0]) ? coordinatesArray[0][0] : coordinatesArray[0];
+                document.getElementById('Nord').value = firstPoint.lat;
+                document.getElementById('Ost').value = firstPoint.lng;
+            } else if (type === 'polygon') {
+                var coordinatesArray = layer.getLatLngs();
+                var firstPoint = coordinatesArray[0][0];
+                document.getElementById('Nord').value = firstPoint.lat;
+                document.getElementById('Ost').value = firstPoint.lng;
+            } else if (type === 'rectangle') {
+                // Hent koordinatene fra rektangelet (det første hjørnet)
+                var bounds = layer.getBounds();
+                var firstPoint = bounds.getNorthWest(); // Hent nordvestlige hjørnet
+                document.getElementById('Nord').value = firstPoint.lat;
+                document.getElementById('Ost').value = firstPoint.lng;
+            }
+        });
+
+
+        // Håndterer redigering av tegnet element
+        map.on(L.Draw.Event.EDITED, function (e) {
+            var layers = e.layers;
+            layers.eachLayer(function (layer) {
+                var geoJsonData = layer.toGeoJSON();
+                var geoJsonString = JSON.stringify(geoJsonData);
+                document.getElementById('geoJsonInput').value = geoJsonString;
+
+                // Hent koordinater basert på type
+                if (layer instanceof L.Marker) {
+                    var coordinates = layer.getLatLng();
+                    document.getElementById('Nord').value = coordinates.lat;
+                    document.getElementById('Ost').value = coordinates.lng;
+                } else if (layer instanceof L.Polyline) {
+                    var coordinatesArray = layer.getLatLngs();
+
+                    // Sjekk om det er flere segmenter (array av arrays)
+                    if (Array.isArray(coordinatesArray[0])) {
+                        var firstPoint = coordinatesArray[0][0];
+                    } else {
+                        var firstPoint = coordinatesArray[0];
+                    }
+
+                    document.getElementById('Nord').value = firstPoint.lat;
+                    document.getElementById('Ost').value = firstPoint.lng;
+                } else if (layer instanceof L.Polygon) {
+                    // Hent koordinatene fra polygonen
+                    var coordinatesArray = layer.getLatLngs();
+
+                    // Hvis det er en polygon med flere ringer (ytre og indre ringer), henter vi første punkt fra første ytre ring
+                    var firstPoint = coordinatesArray[0][0];
+
+                    document.getElementById('Nord').value = firstPoint.lat;
+                    document.getElementById('Ost').value = firstPoint.lng;
+                }
+            });
+        });
+
+
+
+        // Håndterer sletting av tegnet element
+        map.on(L.Draw.Event.DELETED, function (e) {
+            var layers = e.layers;
+            layers.eachLayer(function (layer) {
+                // Tøm skjemaet når et element blir slettet
+                document.getElementById('geoJsonInput').value = '';
+                document.getElementById('Nord').value = '';
+                document.getElementById('Ost').value = '';
+            });
+        });
+
+
+        // Henter bekreftelses modal og knapper
+        var modal = document.getElementById("confirmationModal");
+        var confirmBtn = document.getElementById("confirmSubmit");
+        var areaChangeForm = document.getElementById("areaChangeForm");
+        var sendBtn = document.getElementById("openConfirmationModal");
+        var closeBtn = document.querySelector(".close");
+
+        // Forhindre standard innsending av skjemaet og åpne modalen
+        areaChangeForm.addEventListener('submit', function (event) {
+            event.preventDefault(); // Stopper skjemaet fra å bli sendt automatisk
+
+            // Sjekker om det er noen lag i drawnItems før innsending
+            if (drawnItems.getLayers().length === 0) {
+                alert("Vennligst marker noe på kartet før du sender inn skjemaet."); // Viser en advarsel
+                return; // Avbryt innsending
+            }
+
+            modal.style.display = "block"; // Viser modalen
+        });
+
+        // Funksjon for å sende skjemaet
+        confirmBtn.addEventListener("click", function () {
+            // Fanger opp URL-en til nåværende TileLayer
+
+            var tileLayerUrl = map._layers[Object.keys(map._layers)[1]]._url;
+
+            // Lager en skjult input for å lagre TileLayer URL-en
+            var mapStateInput = document.createElement('input');
+            mapStateInput.type = 'hidden';
+            mapStateInput.name = 'layerurl';
+            mapStateInput.value = tileLayerUrl;
+
+            // Legger til det skjulte inputet i skjemaet
+            areaChangeForm.appendChild(mapStateInput);
+
+            modal.style.display = "none"; // Skjul modalen
+            areaChangeForm.submit(); // Send inn skjemaet manuelt
+        });
+
+        // Funksjon for å lukke modalen
+        closeBtn.addEventListener("click", function () {
+            modal.style.display = "none"; // Skjul modalen
+        });
+
+    </script>
+
+    
+}
+
+
+

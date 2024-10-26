@@ -1,21 +1,27 @@
 using kartverketprosjekt.Models;
+using kartverketprosjekt.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace prosjekt_kartverket.Controllers
+namespace kartverketprosjekt.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        // Liste som holder på alle posisjoner som blir lagt til
 
+        
+
+
+        // Liste som holder pï¿½ alle posisjoner som blir lagt til
         private static List<PositionModel> positions = new List<PositionModel>();
 
-        private static List<AreaChangeModel> changes = new List<AreaChangeModel>();
+
 
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
+           
         }
 
         public IActionResult Index()
@@ -27,45 +33,28 @@ namespace prosjekt_kartverket.Controllers
         {
             return View();
         }
-        public IActionResult CaseWorkerView()
-        {
-            return View();
-        }
-        [HttpGet]
-        public IActionResult RegisterAreaChange()
+
+        public IActionResult MyPage()
         {
             return View();
         }
 
-       
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        
+
+
+
 
 
         /// Registers a new area change with the specified GeoJSON and description.
-        /// <returns>The action result for the area change overview view.</returns>
-        [HttpPost]
-        public IActionResult RegisterAreaChange(string geoJson, string description, string mapUrl)
-        {
-            var newChange = new AreaChangeModel
-            {
-                ID = Guid.NewGuid().ToString(), // genererer en unik ID for endringen
-                GeoJSON = geoJson,
-                Description = description,
-                LayerUrl = mapUrl
-            };
-            changes.Add(newChange);
-            
 
-            return RedirectToAction("AreaChangeOverview");
-        }
-
+        // Action metode som hï¿½ndterer GET request til /Home/CorrectMap
         [HttpGet]
-        public IActionResult AreaChangeOverview()
-        {
-            return View(changes);
-        }
-
-        // Action metode som håndterer GET request til /Home/CorrectMap
-        [HttpGet]
+        [AllowAnonymous]
         public IActionResult CorrectMap()
         {
             return View();
@@ -85,7 +74,7 @@ namespace prosjekt_kartverket.Controllers
             return View();
         }
 
-        // Action metode som håndterer GET request til /Home/CorrectionOverview
+        // Action metode som hï¿½ndterer GET request til /Home/CorrectionOverview
         [HttpGet]
         public IActionResult CorrectionOverview()
         {
@@ -109,7 +98,7 @@ namespace prosjekt_kartverket.Controllers
         {
             if (ModelState.IsValid)
             {
-                // TODO: Håndter innsendt kontaktskjema
+                // TODO: Hï¿½ndter innsendt kontaktskjema
                 return RedirectToAction("ContactConfirmed");
             }
 
