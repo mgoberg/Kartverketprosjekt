@@ -104,7 +104,7 @@ namespace kartverketprosjekt.Controllers
 
             return NotFound(); // Handle case where no ID is found in TempData
         }
-        
+
     }
 
 }
