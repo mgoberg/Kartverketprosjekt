@@ -29,6 +29,7 @@ namespace kartverketprosjekt.Controllers
             return RedirectToAction("AdminView"); // Naviger tilbake til listen over brukere
         }
 
+        
         [HttpPost]
         public IActionResult SlettBruker(string epost)
         {
@@ -37,11 +38,22 @@ namespace kartverketprosjekt.Controllers
                 return BadRequest("E-post må være oppgitt.");
             }
 
+            // Hent den innloggede brukerens e-post
+            var innloggetBrukerEpost = User.Identity.Name;
+
             // Finn brukeren med den gitte e-posten
             var bruker = _context.Bruker.FirstOrDefault(u => u.epost == epost);
             if (bruker == null)
             {
                 return NotFound("Bruker ikke funnet.");
+            }
+
+            // Sjekk om den innloggede brukeren prøver å slette sin egen konto
+            if (bruker.epost == innloggetBrukerEpost)
+            {
+                ViewBag.ErrorMessage = "Du kan ikke slette din egen konto.";
+                var alleBrukere = _context.Bruker.ToList(); // Hent alle brukere for å vise i tabellen
+                return View("AdminView", alleBrukere); // Returner til adminvisningen med alle brukere
             }
 
             // Sjekk om brukeren har tilknyttede saker
