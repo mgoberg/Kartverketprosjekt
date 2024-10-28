@@ -290,19 +290,17 @@
         $('#dashboardStatus').text(status);
         $('#dashboarddato').text(dato);
 
-        // Hent kommentarer for valgt sak
-        $.ajax({
+               $.ajax({
             url: '/Saksbehandler/GetComments',  // URL til kontrollerens GetComments metode
             type: 'GET',
             data: { sakId: sakID },  // Passer sakID til forespørselen
             success: function (result) {
-                    console.log(result); // Sjekk innholdet i result
                 if (result.success) {
                     // Tøm kommentarlisten før nye kommentarer legges til
                     $('#commentsList').empty();
                     // Legg til hver kommentar i listen
                     result.kommentarer.forEach(function (kommentar) {
-                        $('#commentsList').append('<li>' + kommentar.tekst + ' - ' + kommentar.dato + '</li>');
+                        $('#commentsList').append('<li>' + kommentar.tekst + ' - ' + kommentar.dato + ' (av: ' + kommentar.epost + ')</li>');
                     });
                 } else {
                     alert('Kunne ikke hente kommentarer: ' + result.message);

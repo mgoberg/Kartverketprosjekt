@@ -22,6 +22,7 @@ CREATE TABLE Bruker (
     FOREIGN KEY (kommune_id) REFERENCES Kommune(id)
 );
 
+
 -- Opprette tabell for saker
 CREATE TABLE Sak (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -49,6 +50,12 @@ CREATE TABLE Kommentar (
     SakId INT NOT NULL, -- Fremmednøkkel til Sak-tabellen
     FOREIGN KEY (SakId) REFERENCES Sak(id) -- Relasjon til Sak-tabellen
 );
+ALTER TABLE Kommentar
+ADD epost VARCHAR(50);
+
+ALTER TABLE Kommentar
+ADD CONSTRAINT FK_Kommentar_Saksbehandler
+FOREIGN KEY (epost) REFERENCES Bruker(epost);
 
 
 -- Opprette tabell for tilbakemeldinger fra brukere

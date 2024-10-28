@@ -1,0 +1,53 @@
+﻿@model IEnumerable<kartverketprosjekt.Models.BrukerModel>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Administrator side";
+}
+
+<h1>
+    Administrator side
+</h1>
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-danger">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
+<table class="styled-table">
+    <thead> 
+    <tr>
+        <th>E-post</th>
+        <th>Tilgangsnivå</th>
+        <th>Endre tilgang</th>
+        <th>Slett</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var bruker in Model)
+    {
+        <tr>
+            <td>@bruker.epost</td>
+            <td>@bruker.tilgangsnivaa_id</td>
+            <td>
+                <form asp-controller="Admin" asp-action="UpdateAccess" method="post">
+                    <input type="hidden" name="userId" value="@bruker.epost" />
+                        <select name="newAccessLevel" class="form-control" required>
+                        <option value="1">Nivå 1</option>
+                        <option value="2">Nivå 2</option>   
+                        <option value="3">Nivå 3</option>
+                        <option value="4">Nivå 4</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">Oppdater</button>
+                </form>
+            </td>
+            <td>
+                <form asp-action="SlettBruker" method="post">
+                    <input type="hidden" name="epost" value="@bruker.epost" />
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Er du sikker på at du vil slette denne brukeren?');">Slett</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

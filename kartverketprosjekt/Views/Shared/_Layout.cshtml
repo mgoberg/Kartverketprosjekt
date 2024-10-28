@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using kartverketprosjekt.Data 
+@inject KartverketDbContext _context 
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -63,9 +66,25 @@
                         <img src="/images/kartverket-logo-large.svg" alt="Kartverket Logo" id="kartverketLogo">
                     </a>
                 </li>
-                <li>
-                    <a asp-controller="Saksbehandler" asp-action="CaseWorkerView">Saksbehandler</a>
-                </li>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    var brukerEpost = User.Identity.Name; // Hent e-post fra den autentiserte brukeren
+                    var user = _context.Bruker.FirstOrDefault(u => u.epost == brukerEpost); // Hent brukeren fra databasen
+
+                    if (user != null && (user.tilgangsnivaa_id >= 3)) // Endret til >= 3
+                    {
+                        <li>
+                            <a asp-controller="Saksbehandler" asp-action="CaseWorkerView">Saksbehandler</a>
+                        </li>
+                    }
+
+                    if (user != null && user.tilgangsnivaa_id == 4)
+                    {
+                        <li>
+                            <a asp-controller="Admin" asp-action="AdminView">Admin</a>
+                        </li>
+                    }
+                }
                 <li>
                     <a href="#footer">Kontakt</a>
                 </li>
