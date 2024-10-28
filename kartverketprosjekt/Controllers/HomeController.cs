@@ -14,12 +14,6 @@ namespace kartverketprosjekt.Controllers
 
         private readonly KartverketDbContext _context;
 
-
-        // Liste som holder p� alle posisjoner som blir lagt til
-        private static List<PositionModel> positions = new List<PositionModel>();
-
-
-
         public HomeController(ILogger<HomeController> logger, KartverketDbContext context)
         {
             _logger = logger;
@@ -36,54 +30,11 @@ namespace kartverketprosjekt.Controllers
             return View();
         }
 
- 
-
         public IActionResult ChangePassword()
         {
             return View();
         }
 
-        
-
-
-
-
-
-        /// Registers a new area change with the specified GeoJSON and description.
-
-        // Action metode som h�ndterer GET request til /Home/CorrectMap
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult CorrectMap()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult CorrectMap(PositionModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                // Legger ny posisjon til "positions" listen
-                positions.Add(model);
-
-                // Viser oppsummering view etter data har blitt registrert og lagret i positions listen
-                return View("CorrectionOverview", positions);
-            }
-            return View();
-        }
-
-        // Action metode som h�ndterer GET request til /Home/CorrectionOverview
-        [HttpGet]
-        public IActionResult CorrectionOverview()
-        {
-            return View(positions);
-        }
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
 
         // New Contact-related actions
         [HttpGet]
