@@ -81,10 +81,10 @@ namespace kartverketprosjekt.Controllers
             await _context.SaveChangesAsync();
 
             TempData["id"] = sak.id;
-
+            string roleID = "1300573258919182347"; // Role ID for the Discord channel
 
             //Sender melding i discord kanal på ny sak
-            await _discordBot.SendMessageToDiscord($"**En ny sak er opprettet i {sak.Kommunenavn}**\n**Beskrivelse:** {sak.beskrivelse}\n**Opprettet av:** {sak.epost_bruker}");
+            await _discordBot.SendMessageToDiscord($"**En ny sak er opprettet i {sak.Kommunenavn}**\n**Beskrivelse:** {sak.beskrivelse}\n**Opprettet av:** {sak.epost_bruker}\n<@&{roleID}> " );
 
             // Viderefør til oversiktsiden
             return RedirectToAction("AreaChangeOverview");
