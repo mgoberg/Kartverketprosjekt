@@ -7,6 +7,8 @@ namespace kartverketprosjekt.Models
         [Key]
         [EmailAddress]
         public string epost { get; set; }
+
+        public string? navn { get; set; }
         [Required]
         public string passord { get; set; }
 

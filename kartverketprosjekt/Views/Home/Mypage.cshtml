@@ -10,20 +10,31 @@
 </a>
 <h1>Min Side</h1>
 
+<!-- Tilbakemeldinger -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div style="color:green;">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div style="color:red;">@TempData["ErrorMessage"]</div>
+}
+
 <div class="box-container">
     <div class="instillinger">
- <h2>Instillinger(ingen funksjon enda) + må styles</h2>
-        <!-- Endre Navn Form -->
-        <form asp-controller="Account" asp-action="UpdateName" method="post">
+ <h2>Kontoinstillinger </h2>
+        <!-- Form for Updating Name -->
+        <form asp-controller="Bruker" asp-action="UpdateName" method="post" style="margin-top: 20px;">
+            @Html.AntiForgeryToken() <!-- Ensure this is included for security -->
             <div>
-                <label for="Name">Navn:</label>
-                <input type="text" id="Name" name="Name" placeholder="Skriv inn ditt navn" required />
+                <label for="Navn">All logikk for å endre navn i databasen ligger her: (Skal vi bare bruke denne for administratorer kanskje? Trenger brukere egentlig navn?)</label>
+                <input type="text" id="Navn" name="navn" placeholder="Skriv inn nytt navn" required />
             </div>
             <button type="submit">Oppdater Navn</button>
         </form>
-
         <!-- Endre Passord Form -->
-        <form asp-controller="Account" asp-action="UpdatePassword" method="post" style="margin-top: 0px;">
+        <form asp-controller="Bruker" asp-action="UpdatePassword" method="post" style="margin-top: 0px;">
+            @Html.AntiForgeryToken()
             <div>
                 <label for="Password">Nytt passord:</label>
                 <input type="password" id="Password" name="Password" placeholder="Skriv inn nytt passord" required />
@@ -32,12 +43,38 @@
         </form>
 
         <!-- Slette Konto Form -->
-        <form asp-controller="Account" asp-action="DeleteAccount" method="post" style="margin-top: 0px;">
-            <p>Ønsker du å slette kontoen din? Denne handlingen kan ikke angres.</p>
-            <button type="submit">Slett Konto</button>
-        </form>
+        <button type="button" class="btn btn-danger" id="deleteUserButton">Slett Bruker</button>
     </div>
-
+    <script>
+    document.getElementById("deleteUserButton").onclick = function() {
+        // Ask for password input
+        const password = prompt("Vennligst skriv inn passordet ditt for å bekrefte sletting:");
+        
+        if (password) {
+            // Send delete request
+            fetch('/Bruker/DeleteUser', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': '{{ Html.AntiForgeryToken() }}' // Include anti-forgery token
+                },
+                body: JSON.stringify({ passord: password })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Brukeren er slettet.");
+                    window.location.href = '/Home/Index'; // Redirect to desired page after deletion
+                } else {
+                    alert("Det oppstod en feil. Vennligst sjekk passordet og prøv igjen.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("En feil oppstod. Vennligst prøv igjen senere.");
+            });
+        }
+    };
+</script>
     <div class="box">
         <h2>Oversikt over dine saker</h2>
         @if (Model != null && Model.Count > 0)
@@ -59,4 +96,5 @@
             <p>Du har ingen saker.</p>
         }
     </div>
+
 </div>
