@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using System.Security.Cryptography;
+using Microsoft.EntityFrameworkCore;
 
 public class BrukerController : Controller
 {
@@ -119,4 +122,98 @@ public class BrukerController : Controller
         var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
         return BadRequest(new { success = false, errors });
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UpdatePassword(string password)
+    {
+        // Assume the user's email is retrieved from the session or identity information.
+        string epost = User.Identity.Name; // Adjust this as needed based on your authentication setup
+
+        var bruker = await _context.Bruker.FirstOrDefaultAsync(b => b.epost == epost);
+        if (bruker != null)
+        {
+            var passwordHasher = new PasswordHasher<BrukerModel>();
+            bruker.passord = passwordHasher.HashPassword(bruker, password); // Hash the new password
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Passordet er oppdatert.";
+            return RedirectToAction("Mypage", "Home"); // Redirect to /Home/Mypage
+        }
+
+        TempData["ErrorMessage"] = "Kunne ikke oppdatere passordet.";
+        return RedirectToAction("Mypage", "Home"); // Redirect to /Home/Mypage with an error message
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UpdateName(string navn)
+    {
+        // Assume the user's email is retrieved from the session or identity information.
+        string epost = User.Identity.Name; // Adjust this as needed based on your authentication setup
+
+        var bruker = await _context.Bruker.FirstOrDefaultAsync(b => b.epost == epost);
+        if (bruker != null)
+        {
+            bruker.navn = navn; // Update the user's name
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Navnet er oppdatert.";
+            return RedirectToAction("Mypage", "Home"); // Redirect to /Home/Mypage
+        }
+
+        TempData["ErrorMessage"] = "Kunne ikke oppdatere navnet.";
+        return RedirectToAction("Mypage", "Home"); // Redirect to /Home/Mypage with an error message
+    }
+
+    // TODO: Her må vi gjøre slik at passordet må kunne skrives uten hash for å bekrefte sletting
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteUser(string passord)
+    {
+        // Hent e-post fra den påloggede brukeren
+        string epost = User.Identity.Name;
+
+        // Finn brukeren i databasen
+        var bruker = await _context.Bruker.FirstOrDefaultAsync(b => b.epost == epost);
+        if (bruker == null)
+        {
+            TempData["ErrorMessage"] = "Bruker finnes ikke.";
+            return RedirectToAction("Mypage", "Home");
+        }
+
+        // Sjekk om passordet er korrekt
+        var passwordHasher = new PasswordHasher<BrukerModel>();
+        bool isPasswordValid;
+
+        if (IsHashedPassword(bruker.passord))
+        {
+            // Verify hashed password
+            var result = passwordHasher.VerifyHashedPassword(bruker, bruker.passord, passord);
+            isPasswordValid = result == PasswordVerificationResult.Success;
+        }
+        else
+        {
+            // Compare plaintext password
+            isPasswordValid = bruker.passord == passord;
+        }
+
+        if (!isPasswordValid)
+        {
+            TempData["ErrorMessage"] = "Feil passord. Vennligst prøv igjen.";
+            return RedirectToAction("Mypage", "Home");
+        }
+
+        // Slett brukeren
+        _context.Bruker.Remove(bruker);
+        await _context.SaveChangesAsync();
+
+        TempData["SuccessMessage"] = "Brukeren er slettet.";
+        return RedirectToAction("Index", "Home"); // Redirect til ønsket side etter sletting
+    }
+
 }
+
