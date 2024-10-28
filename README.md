@@ -34,3 +34,5 @@ Og til slutt:
 Preview av index:
 ![image](https://github.com/user-attachments/assets/78baa97f-8d91-4853-b8d1-2d132f1a034a)
 
+Discord/Slack bot som oppdaterer kanalen hver gang en sak blir meldt inn.
+![ed986434e8ed82798ce3ec61123cefd3](https://github.com/user-attachments/assets/e1738455-0a17-4ef2-bbef-2113d2fc8618)
