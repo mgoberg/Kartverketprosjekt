@@ -45,7 +45,7 @@
     </div>
     <style>
         .status-ikke-påbegynt {
-            color: green;
+            color: grey;
         }
 
         .status-in-progress {
@@ -53,7 +53,7 @@
         }
 
         .status-completed {
-            color: blue;
+            color: Green;
         }
 
         .status-closed {
@@ -61,7 +61,7 @@
         }
 
         .status-arkivert {
-            color: grey;
+            color: Brown;
         }
     </style>
 
@@ -75,10 +75,10 @@
                     // Assign the appropriate CSS class based on the status
                     string statusClass = sak.status switch
                     {
-                        "Ikke Påbegynt" => "status-ikke-påbegynt",
-                        "Under behandling" => "status-in-progress",
+                        "Ubehandlet" => "status-ikke-påbegynt",
+                        "Under Behandling" => "status-in-progress",
                         "Løst" => "status-completed",
-                        "Lukket" => "status-closed",
+                        "Avvist" => "status-closed",
                         "Arkivert" => "status-arkivert", // Added case for 'Arkivert'
                         _ => string.Empty
                     };

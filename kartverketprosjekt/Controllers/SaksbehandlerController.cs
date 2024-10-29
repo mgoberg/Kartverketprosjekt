@@ -43,7 +43,23 @@ public class SaksbehandlerController : Controller
         ViewData["Saker"] = saker;
         return View();
     }
+
     [HttpPost]
+    public async Task<IActionResult> UpdateStatus(int id, string status)
+    {
+        var sak = await _context.Sak.FindAsync(id); // Retrieve the case by ID
+        if (sak == null)
+        {
+            return Json(new { success = false, message = "Sak ikke funnet." });
+        }
+
+        sak.status = status; // Update the status
+        await _context.SaveChangesAsync(); // Save changes to the database
+
+        return Json(new { success = true, message = "Status oppdatert." });
+    }
+
+[HttpPost]
     public IActionResult AddComment(int sakID, string kommentar, string epost)
     {
 

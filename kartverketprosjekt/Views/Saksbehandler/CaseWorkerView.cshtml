@@ -138,10 +138,9 @@
             <div class="dashboard-box">
                 <h4 class="ubuntu-light">Endre status</h4>
                 <select class="form-control" id="changeStatus">
-                    <option value="Åpen">Ikke Påbegynt</option>
-                    <option value="Under behandling">Under behandling</option>
-                    <option value="Lukket">Lukket</option>
+                    <option value="Under behandling">Under Behandling</option>
                     <option value="Løst">Løst</option>
+                    <option value="Avvist">Avvist</option>
                     <option value="Arkivert">Arkivert</option>
                 </select>
 
@@ -347,11 +346,34 @@
 
 
         // Change status event
-        $('#changeStatus').change(function () {
-            var newStatus = $(this).val();
-            $('#dashboardStatus').text(newStatus);
-            // Legg inn logikk her for å oppdatere status i databasen
-        });
+    $('#changeStatus').change(function () {
+        var sakID = $('#dashboardSakID').text();  // Get the SakID from the dashboard
+        var newStatus = $(this).val(); // Get the new status from the dropdown
+
+        if (sakID !== "-") {
+            $.ajax({
+                url: '/Saksbehandler/UpdateStatus', // URL to your controller's update method
+                type: 'POST',
+                data: {
+                    id: sakID,
+                    status: newStatus
+                },
+                success: function (result) {
+                    if (result.success) {
+                        alert('Status oppdatert!'); // Notify the user
+                        location.reload(); // Reload the page to reflect changes
+                    } else {
+                        alert('Kunne ikke oppdatere status.');
+                    }
+                },
+                error: function () {
+                    alert('En feil oppstod under oppdatering av status.');
+                }
+            });
+        } else {
+            alert("Velg en sak før du endrer status.");
+        }
+    });
    
 
     function updateMap(geojson, layerUrl, beskrivelse) {
