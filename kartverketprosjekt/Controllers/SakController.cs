@@ -39,7 +39,7 @@ namespace kartverketprosjekt.Controllers
 
             // Hardkodede verdier for kommune_id og status
             sak.kommune_id = 1;
-            sak.status = "Påbegynt";
+            sak.status = "Ikke Påbegynt";
 
             // Sjekk om vedlegg er lastet opp
             if (vedlegg != null && vedlegg.Length > 0)
