@@ -18,11 +18,26 @@
         Saksoversikt
     </h2>
 <!-- Tabell -->
+<div class="sorting-container">
+    <label for="sortBy">Sorter etter:</label>
+    <div class="button-group">
+    <button class="btn-primary" data-sort="TypeFeil">Type feil</button>
+    <button class="btn-primary" data-sort="Vedlegg">Vedlegg</button>
+    <button class="btn-primary" data-sort="Fylke">Fylke</button>
+    <button class="btn-primary" data-sort="Kommune">Kommune</button>
+    <button class="btn-primary" data-sort="Status">Status</button>
+    <button class="btn-primary" data-sort="Dato">Dato</button>
+    <button class="btn-primary" data-sort="Kartlag">Kartlag</button>
+    </div>
+    <div class="search-bar">
+    <label for="searchInput" class="searchText">Søk:</label>
+    <input type="text" id="searchInput" placeholder="Skriv inn for å søke..." />
+    </div>
+</div>
 <div class="upper-section">
     <table id="casesTable" class="styled-table">
         <thead>
             <tr>
-                <th>SakID</th>
                 <th>Epost</th>
                 <th>Type feil</th>  
                 <th>Vedlegg</th>
@@ -38,7 +53,6 @@
     @foreach (var sak in ViewBag.Saker)
 {
     <tr data-sakid='@sak.id' data-geojson='@Html.Raw(Json.Serialize(sak.geojson_data))' data-layerurl='@sak.layerurl' data-beskrivelse='@sak.beskrivelse'>
-        <td>@sak.id</td>
         <td>@(sak.epost_bruker ?? "ikke registrert")</td>
         <td>@sak.type_feil</td>
         <td>@(sak.vedlegg != null ? "Ja" : "Nei")</td>
@@ -456,6 +470,54 @@
         
 
     }
+
+    $(document).ready(function () {
+        // Sort function
+        function sortTable(columnIndex) {
+            var rows = $('#casesTable tbody tr').get();
+
+            rows.sort(function (a, b) {
+                var A = $(a).children('td').eq(columnIndex).text().toUpperCase();
+                var B = $(b).children('td').eq(columnIndex).text().toUpperCase();
+
+                if ($.isNumeric(A) && $.isNumeric(B)) {
+                    return A - B; // Sort numbers
+                } else {
+                    return A.localeCompare(B); // Sort strings
+                }
+            });
+
+            $.each(rows, function (index, row) {
+                $('#casesTable').children('tbody').append(row);
+            });
+        }
+
+        // Event listener for sorting buttons
+        $('.btn-primary').click(function () {
+            var sortBy = $(this).data('sort');
+
+            // Map sort button to column index
+            var columnIndex = {
+                'TypeFeil': 1,
+                'Vedlegg': 2,
+                'Fylke': 3,
+                'Kommune': 4,
+                'Status': 5,
+                'Dato': 6,
+                'Kartlag': 7
+            }[sortBy];
+
+            sortTable(columnIndex);
+        });
+
+        // Search function
+        $('#searchInput').on('keyup', function () {
+            var value = $(this).val().toLowerCase(); // Get the search input and convert it to lowercase
+            $('#casesTable tbody tr').filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1) // Show/hide rows based on the search input
+            });
+        });
+    });
 
     </script>
 
