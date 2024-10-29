@@ -1019,3 +1019,35 @@ h4 {
 .instillinger {
     margin-top: -50px
 }
+
+.sorting-container {
+    display: flex;
+    align-items: center; /* Ensures vertical alignment */
+    justify-content: space-between; /* Pushes elements to fill the row */
+    flex-wrap: nowrap; /* Keeps all elements on one line */
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Space between label and input */
+    margin-left: auto; /* Pushes the search bar to the far right */
+    font-size: 20px;
+}
+
+.searchText {
+    font-size: 18px;
+    color: #333;
+}
+
+#searchInput {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    width: 200px; /* Adjust width as necessary */
+}
+.button-group {
+    display: flex;
+    gap: 10px; /* Space between buttons */
+}
