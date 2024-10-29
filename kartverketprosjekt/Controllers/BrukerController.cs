@@ -169,50 +169,65 @@ public class BrukerController : Controller
     }
 
     // TODO: Her må vi gjøre slik at passordet må kunne skrives uten hash for å bekrefte sletting
-
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteUser(string passord)
     {
-        // Hent e-post fra den påloggede brukeren
-        string epost = User.Identity.Name;
-
-        // Finn brukeren i databasen
-        var bruker = await _context.Bruker.FirstOrDefaultAsync(b => b.epost == epost);
-        if (bruker == null)
+        try
         {
-            TempData["ErrorMessage"] = "Bruker finnes ikke.";
+            Console.WriteLine($"Received password: {passord}");
+
+            // Hent e-post fra den påloggede brukeren
+            string epost = User.Identity.Name;
+
+            // Finn brukeren i databasen
+            var bruker = await _context.Bruker.FirstOrDefaultAsync(b => b.epost == epost);
+            if (bruker == null)
+            {
+                TempData["ErrorMessage"] = "Bruker finnes ikke.";
+                Console.WriteLine("User not found");
+                return RedirectToAction("Mypage", "Home");
+            }
+
+
+
+            // Sjekk om passordet er korrekt
+            var passwordHasher = new PasswordHasher<BrukerModel>();
+            bool isPasswordValid;
+
+            if (IsHashedPassword(bruker.passord))
+            {
+                // Verify hashed password
+                var result = passwordHasher.VerifyHashedPassword(bruker, bruker.passord, passord);
+                isPasswordValid = result == PasswordVerificationResult.Success;
+            }
+            else
+            {
+                // Compare plaintext password
+                isPasswordValid = bruker.passord == passord;
+            }
+
+            if (!isPasswordValid)
+            {
+                TempData["ErrorMessage"] = "Feil passord. Vennligst prøv igjen.";
+                Console.WriteLine("Invalid password");
+                return RedirectToAction("Mypage", "Home");
+            }
+
+            // Slett brukeren
+            _context.Bruker.Remove(bruker);
+            await _context.SaveChangesAsync();
+            Console.WriteLine("User deleted successfully");
+            await HttpContext.SignOutAsync();
+
+            TempData["SuccessMessage"] = "Brukeren er slettet.";
+            return RedirectToAction("Index", "Home"); // Redirect til ønsket side etter sletting
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error deleting user: {ex.Message}");
+            TempData["ErrorMessage"] = "Det oppstod en feil ved sletting av brukeren.";
             return RedirectToAction("Mypage", "Home");
         }
-
-        // Sjekk om passordet er korrekt
-        var passwordHasher = new PasswordHasher<BrukerModel>();
-        bool isPasswordValid;
-
-        if (IsHashedPassword(bruker.passord))
-        {
-            // Verify hashed password
-            var result = passwordHasher.VerifyHashedPassword(bruker, bruker.passord, passord);
-            isPasswordValid = result == PasswordVerificationResult.Success;
-        }
-        else
-        {
-            // Compare plaintext password
-            isPasswordValid = bruker.passord == passord;
-        }
-
-        if (!isPasswordValid)
-        {
-            TempData["ErrorMessage"] = "Feil passord. Vennligst prøv igjen.";
-            return RedirectToAction("Mypage", "Home");
-        }
-
-        // Slett brukeren
-        _context.Bruker.Remove(bruker);
-        await _context.SaveChangesAsync();
-
-        TempData["SuccessMessage"] = "Brukeren er slettet.";
-        return RedirectToAction("Index", "Home"); // Redirect til ønsket side etter sletting
     }
 
 }

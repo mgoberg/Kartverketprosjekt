@@ -43,38 +43,42 @@
         </form>
 
         <!-- Slette Konto Form -->
-        <button type="button" class="btn btn-danger" id="deleteUserButton">Slett Bruker</button>
+
+        <form method="post" action="/Bruker/DeleteUser">
+            <input type="password" name="passord" placeholder="Skriv inn passord" required />
+            <button type="submit">Slett bruker</button>
+        </form>
     </div>
     <script>
-    document.getElementById("deleteUserButton").onclick = function() {
-        // Ask for password input
-        const password = prompt("Vennligst skriv inn passordet ditt for å bekrefte sletting:");
-        
-        if (password) {
-            // Send delete request
-            fetch('/Bruker/DeleteUser', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-Token': '{{ Html.AntiForgeryToken() }}' // Include anti-forgery token
-                },
-                body: JSON.stringify({ passord: password })
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert("Brukeren er slettet.");
-                    window.location.href = '/Home/Index'; // Redirect to desired page after deletion
-                } else {
-                    alert("Det oppstod en feil. Vennligst sjekk passordet og prøv igjen.");
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert("En feil oppstod. Vennligst prøv igjen senere.");
-            });
-        }
-    };
-</script>
+        document.getElementById("deleteUserButton").onclick = function () {
+            // Ask for password input
+            const password = prompt("Vennligst skriv inn passordet ditt for å bekrefte sletting:");
+
+            if (password) {
+                // Send delete request
+                fetch('/Bruker/DeleteUser', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ passord: password })
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            alert("Brukeren er slettet.");
+                            window.location.href = '/Home/Index'; // Redirect to desired page after deletion
+                        } else {
+                            alert("Det oppstod en feil. Vennligst sjekk passordet og prøv igjen.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert("En feil oppstod. Vennligst prøv igjen senere.");
+                    });
+            }
+        };
+    </script>
+
     <div class="box">
         <h2>Oversikt over dine saker</h2>
         @if (Model != null && Model.Count > 0)
