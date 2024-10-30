@@ -168,7 +168,8 @@
 
                 <!-- Viser lagrede kommentarer -->
                 <div id="commentsSection">
-                <h4 class="ubuntu-light">Kommentarer</h4>
+                    <h4 class="ubuntu-light" style="text-align: center; letter-spacing: 1px; ">Kommentarer</h4>
+                    <div class="separator"></div>
                     <ul id="commentsList">
                         <!-- her legges kommentarene -->
                     </ul>
@@ -320,7 +321,7 @@
                         var commentAuthor = kommentar.epost;
 
                         var commentElement = '<li>' + commentText + '</li>';
-                        var commentInfoElement = '<li class="commentInfo">' + commentDate + '  av ' + commentAuthor + '</li>';
+                            var commentInfoElement = '<li class="commentInfo">' + commentDate + '  av ' + commentAuthor + '</li>';
 
                         $('#commentsList').append(commentInfoElement);
                         $('#commentsList').append(commentElement);

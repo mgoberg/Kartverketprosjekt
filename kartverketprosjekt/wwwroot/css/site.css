@@ -673,20 +673,20 @@ a {
     height: 100%; 
 }
 
-    .box {
-        flex: 1;
-        margin-bottom: 75px;
-        height: 35vh;
-        padding: 25px;
-        justify-content: center;
-        align-items: center;
-        background-color: var(--box-background-color);
-        border-radius: 10px;
-        box-sizing: border-box; /* Include padding and border in the element's total width and height */
-        box-shadow: 0 7px 30px -10px rgba(150,170,180,0.5);
-        max-width: 600px;
-        width: 100%;
-    }
+.box {
+    flex: 1;
+    margin-bottom: 75px;
+    height: 35vh;
+    padding: 25px;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--box-background-color);
+    border-radius: 10px;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    box-shadow: 0 7px 30px -10px rgba(150,170,180,0.5);
+    max-width: 600px;
+    width: 100%;
+}
 
         .box p {
         
@@ -725,9 +725,10 @@ a {
     }
 
 .text-section {
+    position: relative;
     background-color: var(--box-background-color-alternate);
     max-width: 800px; /* Set a maximum width for readability */
-    margin: 0 auto; /* Center the text section */
+    margin: 200px auto; /* Center the text section and add 200px margin from the top */
     padding: 30px 50px; /* Add some padding for better spacing */
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
     border-radius: 10px;
@@ -828,6 +829,7 @@ a {
 
     .styled-table tbody tr {
         border-bottom: 1px solid #dddddd;
+        transition: 0.2s;
     }
 
         .styled-table tbody tr:nth-child(even) {
@@ -1058,8 +1060,32 @@ h4 {
     border-radius: 5px;
     box-sizing: border-box;
     width: 200px; /* Adjust width as necessary */
+    transition: 0.3s;
 }
+    #searchInput:focus {
+        border-color: var(--button-background-color);
+        outline: none;
+    }
 .button-group {
     display: flex;
     gap: 10px; /* Space between buttons */
+}
+.svg-wrapper {
+    position: relative;
+    flex-shrink: 0; /* Prevents SVGs from resizing */
+}
+#accent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: scaleX(-1) translate(100%, -150%);
+    width: 350px;
+}
+
+#accent2 {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    transform: translate(100%, 50%);
+    width: 350px;
 }
