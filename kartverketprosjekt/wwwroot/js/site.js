@@ -6,10 +6,24 @@ window.addEventListener('DOMContentLoaded', function () {
     document.querySelector('body').style.opacity = '1';
 });
 // function for darkmode
+// Sjekk ved sidenlasting om dark mode er aktivert i localStorage
+if (localStorage.getItem('darkMode') === 'enabled') {
+    document.body.classList.add('dark-mode');
+    document.querySelector('.bx-toggle-left').classList.add('bxs-toggle-right');
+}
+
 document.getElementById('darkModeToggle').addEventListener('click', function () {
     document.body.classList.toggle('dark-mode');
-    // Change toggle icon in layout
+
+    // Oppdater toggle-ikonet i layout
     document.querySelector('.bx-toggle-left').classList.toggle('bxs-toggle-right');
+
+    // Lagre dark mode-status i localStorage
+    if (document.body.classList.contains('dark-mode')) {
+        localStorage.setItem('darkMode', 'enabled');
+    } else {
+        localStorage.setItem('darkMode', 'disabled');
+    }
 });
 
 // Select elements

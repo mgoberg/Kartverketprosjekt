@@ -24,21 +24,17 @@
     <div class="instillinger">
  <h2>Kontoinstillinger </h2>
         <!-- Form for Updating Name -->
-        <form asp-controller="Bruker" asp-action="UpdateName" method="post" style="margin-top: 20px;">
+        <form asp-controller="Bruker" asp-action="UpdateName" method="post" style="margin-top: 20px; width: 300px;">
             @Html.AntiForgeryToken() <!-- Ensure this is included for security -->
-            <div>
                 <label for="Navn">Oppdater navnet ditt</label>
                 <input type="text" id="Navn" name="navn" placeholder="Skriv inn nytt navn" required />
-            </div>
             <button type="submit" class="btn-primary">Oppdater Navn</button>
         </form>
         <!-- Endre Passord Form -->
-        <form asp-controller="Bruker" asp-action="UpdatePassword" method="post" style="margin-top: 0px;">
+        <form asp-controller="Bruker" asp-action="UpdatePassword" method="post" style="margin-top: 0px; width: 300px;">
             @Html.AntiForgeryToken()
-            <div>
                 <label for="Password">Nytt passord:</label>
                 <input type="password" id="Password" name="Password" placeholder="Skriv inn nytt passord" required />
-            </div>
             <button type="submit" class="btn-primary">Oppdater Passord</button>
         </form>
 

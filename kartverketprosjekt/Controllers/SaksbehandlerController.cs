@@ -101,7 +101,7 @@ public class SaksbehandlerController : Controller
             {
                 k.Tekst,
                 k.Dato,
-                k.Epost // Legg til e-post
+                k.Epost 
             }).ToList();
 
         return Json(new { success = true, kommentarer });
