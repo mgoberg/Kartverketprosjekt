@@ -19,8 +19,7 @@
     <tr>
         <th>E-post</th>
         <th>Tilgangsnivå</th>
-        <th>Endre tilgang</th>
-        <th>Slett</th>
+        <th>Funksjoner</th>
     </tr>
     </thead>
     <tbody>
@@ -31,17 +30,16 @@
             <td>@bruker.tilgangsnivaa_id</td>
             <td>
                 <form asp-controller="Admin" asp-action="UpdateAccess" method="post">
-                    <input type="hidden" name="userId" value="@bruker.epost" />
+                    <input type="hidden" name="userId" value="@bruker.epost"/>
                         <select name="newAccessLevel" class="form-control" required>
-                        <option value="1">Nivå 1</option>
-                        <option value="2">Nivå 2</option>   
-                        <option value="3">Nivå 3</option>
-                        <option value="4">Nivå 4</option>
-                    </select>
+                            <option value="" disabled selected hidden>Endre tilgangsnivå</option>
+                            <option value="1">Nivå 1 (bruker)</option>
+                            <option value="2">Nivå 2 (prioritert bruker)</option>   
+                            <option value="3">Nivå 3 (saksbehandler)</option>
+                            <option value="4">Nivå 4 (administrator)</option>
+                        </select>
                     <button type="submit" class="btn btn-primary">Oppdater</button>
                 </form>
-            </td>
-            <td>
                 <form asp-action="SlettBruker" method="post">
                     <input type="hidden" name="epost" value="@bruker.epost" />
                     <button type="submit" class="btn btn-danger" onclick="return confirm('Er du sikker på at du vil slette denne brukeren?');">Slett</button>

@@ -2,6 +2,7 @@
     /* variables for lightmode/normal colorscheme*/
     --background-color: #f3f1f1;
     --text-color: #000000;
+    --text-color-weak: #545454;
     --navbar-background-color: #ffffff;
     --navbar-text-color: #000;
     --button-text-hover-color: #1a833b;
@@ -23,6 +24,7 @@ body.dark-mode {
     /* variables for darkmode colorscheme*/
     --background-color: #27282a;
     --text-color: #e9e9e9;
+    --text-color-weak: #b7b7b7;
     --navbar-background-color: #ffffff;
     --navbar-text-color: #000000;
     --button-text-hover-color: #1a833b;
@@ -137,11 +139,9 @@ main {
 }
 
     #darkModeToggle:hover {
-        transform: translateY(-2px);
         /* Move button up on hover */
         cursor: pointer;
         /* Change cursor to pointer */
-        color: var(--button-text-hover-color);
     }
 
 
@@ -188,11 +188,10 @@ main {
                 white-space: nowrap;
                 padding: 1em 3em;
                 text-decoration: none;
-                transition-duration: 0.3s;
+                transition-duration: 0.15s;
             }
 
                 #navbar ul li > *:hover {
-                    transform: scale(1.1);
                     transition-timing-function: ease-in-out;
                     /* Move button up on hover */
                     cursor: pointer;
@@ -380,6 +379,9 @@ textarea {
         border-color: var(--button-background-color);
         outline: none;
     }
+form input {
+    background-color: var(--form-background-color);
+}
 
 form input[type="email"] {
     margin-bottom: 15px;
@@ -828,17 +830,18 @@ a {
         border-bottom: 1px solid #dddddd;
     }
 
-        .styled-table tbody tr:hover {
-            color: var(--button-text-hover-color);
-            cursor: pointer;
-        }
-
         .styled-table tbody tr:nth-child(even) {
             background-color: var(--box-background-color-alternate);
         }
 
         .styled-table tbody tr:nth-child(odd) {
             background-color: var(--box-background-color);
+        }
+
+        .styled-table tbody tr:hover {
+            background-color: var(--button-background-hover-color);
+           
+            cursor: pointer;
         }
 
 .separator {
@@ -968,12 +971,12 @@ select.input-validation-error {
 
     #commentsList li {
         font-size: 1rem;
-        padding: 8px;
+        padding: 16px 8px 16px 8px;
         margin-bottom: 5px;
-        border-bottom: 1px solid #ddd;
         background-color: var(--box-background-color);
         border-radius: 3px;
         transition: 0.1s ease-in-out;
+        word-wrap: break-word;
     }
 
         #commentsList li:hover {
@@ -981,9 +984,17 @@ select.input-validation-error {
             cursor: pointer
         }
 
-            #commentsList li:last-child {
-                border-bottom: none;
-            }
+
+    #commentsList li.commentInfo {
+        margin: 0;
+        padding: 18px 4px 8px 4px;
+        background-color: var(--background-color);
+        font-size: small;
+        font-style: italic;
+        color: var(--text-color-weak);
+        border: none;
+        cursor: default;
+    }
 
 .dashboard {
     display: flex;
@@ -1037,10 +1048,11 @@ h4 {
 
 .searchText {
     font-size: 18px;
-    color: #333;
+    color: var(--text-color);
 }
 
 #searchInput {
+    background-color: var(--form-background-color);
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;

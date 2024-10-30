@@ -58,7 +58,7 @@ ADD CONSTRAINT FK_Kommentar_Saksbehandler
 FOREIGN KEY (epost) REFERENCES Bruker(epost);
 
 
--- Opprette tabell for tilbakemeldinger fra brukere
+-- Opprette tabell for tilbakemeldinger fra brukere (IKKE I BRUK)
 CREATE TABLE Tilbakemelding (
     id INT AUTO_INCREMENT PRIMARY KEY,
     epost_bruker VARCHAR(100), -- Relasjon til brukeren som sender tilbakemelding

@@ -19,19 +19,20 @@
     </h2>
 <!-- Tabell -->
 <div class="sorting-container">
-    <label for="sortBy">Sorter etter:</label>
     <div class="button-group">
-    <button class="btn-primary" data-sort="TypeFeil">Type feil</button>
-    <button class="btn-primary" data-sort="Vedlegg">Vedlegg</button>
-    <button class="btn-primary" data-sort="Fylke">Fylke</button>
-    <button class="btn-primary" data-sort="Kommune">Kommune</button>
-    <button class="btn-primary" data-sort="Status">Status</button>
-    <button class="btn-primary" data-sort="Dato">Dato</button>
-    <button class="btn-primary" data-sort="Kartlag">Kartlag</button>
+        <select id="sortBy" class="form-control" style="margin: 0;">
+            <option value="" disabled selected>Sorter etter:</option>
+            <option value="TypeFeil">Type feil</option>
+            <option value="Vedlegg">Vedlegg</option>
+            <option value="Fylke">Fylke</option>
+            <option value="Kommune">Kommune</option>
+            <option value="Status">Status</option>
+            <option value="Dato">Dato</option>
+            <option value="Kartlag">Kartlag</option>
+        </select>
     </div>
     <div class="search-bar">
-    <label for="searchInput" class="searchText">Søk:</label>
-    <input type="text" id="searchInput" placeholder="Skriv inn for å søke..." />
+        <input type="text" id="searchInput" placeholder="Skriv inn for å søke..." />
     </div>
 </div>
 <div class="upper-section">
@@ -272,15 +273,15 @@
         $('#casesTable tbody tr').click(function () {
             // Hente data fra tabellen
             var sakID = $(this).data('sakid');  // Hent sakID fra data-attribute
-            var epost = $(this).find('td:eq(1)').text();
-            var typeFeil = $(this).find('td:eq(2)').text();
+            var epost = $(this).find('td:eq(0)').text();
+            var typeFeil = $(this).find('td:eq(1)').text();
             var beskrivelse = $(this).data('beskrivelse');
-            var vedlegg = $(this).find('td:eq(3)').text();
+            var vedlegg = $(this).find('td:eq(2)').text();
             var geojson = $(this).data('geojson');
-            var fylke = $(this).find('td:eq(4)').text();
-            var kommune = $(this).find('td:eq(5)').text();
-            var status = $(this).find('td:eq(6)').text();
-            var dato = $(this).find('td:eq(7)').text();
+            var fylke = $(this).find('td:eq(3)').text();
+            var kommune = $(this).find('td:eq(4)').text();
+            var status = $(this).find('td:eq(5)').text();
+            var dato = $(this).find('td:eq(6)').text();
             var kartlagUrl = $(this).data('layerurl');
 
         // Konvertere GeoJSON-strengen til et objekt
@@ -314,7 +315,15 @@
                     $('#commentsList').empty();
                     // Legg til hver kommentar i listen
                     result.kommentarer.forEach(function (kommentar) {
-                        $('#commentsList').append('<li>' + kommentar.tekst + ' - ' + kommentar.dato + ' (av: ' + kommentar.epost + ')</li>');
+                        var commentText = kommentar.tekst;
+                        var commentDate = kommentar.dato;
+                        var commentAuthor = kommentar.epost;
+
+                        var commentElement = '<li>' + commentText + '</li>';
+                        var commentInfoElement = '<li class="commentInfo">' + commentDate + '  av ' + commentAuthor + '</li>';
+
+                        $('#commentsList').append(commentInfoElement);
+                        $('#commentsList').append(commentElement);
                     });
                 } else {
                     alert('Kunne ikke hente kommentarer: ' + result.message);
@@ -492,11 +501,11 @@
             });
         }
 
-        // Event listener for sorting buttons
-        $('.btn-primary').click(function () {
-            var sortBy = $(this).data('sort');
+        // Event listener for sorting dropdown
+        $('#sortBy').change(function () {
+            var sortBy = $(this).val();
 
-            // Map sort button to column index
+            // Map sort option to column index
             var columnIndex = {
                 'TypeFeil': 1,
                 'Vedlegg': 2,
