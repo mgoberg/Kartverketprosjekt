@@ -19,16 +19,18 @@
     </h2>
 <!-- Tabell -->
 <div class="sorting-container">
-    <label for="sortBy">Sorter etter:</label>
     <div class="button-group">
-    <button class="btn-primary" data-sort="TypeFeil">Type feil</button>
-    <button class="btn-primary" data-sort="Vedlegg">Vedlegg</button>
-    <button class="btn-primary" data-sort="Fylke">Fylke</button>
-    <button class="btn-primary" data-sort="Kommune">Kommune</button>
-    <button class="btn-primary" data-sort="Status">Status</button>
-    <button class="btn-primary" data-sort="Dato">Dato</button>
-    <button class="btn-primary" data-sort="Kartlag">Kartlag</button>
-    </div>
+        <select id="sortBy" class="form-control">
+            <option value="" disabled selected>Sorter</option>
+            <option value="TypeFeil">Type feil</option>
+            <option value="Vedlegg">Vedlegg</option>
+            <option value="Fylke">Fylke</option>
+            <option value="Kommune">Kommune</option>
+            <option value="Status">Status</option>
+            <option value="Dato">Dato</option>
+            <option value="Kartlag">Kartlag</option>
+        </select>
+</div>
     <div class="search-bar">
     <label for="searchInput" class="searchText">Søk:</label>
     <input type="text" id="searchInput" placeholder="Skriv inn for å søke..." />
@@ -492,11 +494,11 @@
             });
         }
 
-        // Event listener for sorting buttons
-        $('.btn-primary').click(function () {
-            var sortBy = $(this).data('sort');
+        // Event listener for sorting dropdown
+        $('#sortBy').change(function () {
+            var sortBy = $(this).val();
 
-            // Map sort button to column index
+            // Map sort option to column index
             var columnIndex = {
                 'TypeFeil': 1,
                 'Vedlegg': 2,
