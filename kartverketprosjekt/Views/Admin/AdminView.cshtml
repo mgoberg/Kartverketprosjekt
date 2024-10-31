@@ -3,7 +3,9 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Administrator side";
 }
-
+<a asp-controller="Home" asp-action="Index">
+    <i class='bx bx-chevron-left'></i>
+</a>
 <h1>
     Administrator side
 </h1>
@@ -13,6 +15,14 @@
         @ViewBag.ErrorMessage
     </div>
 }
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
 
 <table class="styled-table">
     <thead> 

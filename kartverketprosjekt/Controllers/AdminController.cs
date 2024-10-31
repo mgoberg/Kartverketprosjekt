@@ -25,6 +25,8 @@ namespace kartverketprosjekt.Controllers
             {
                 user.tilgangsnivaa_id = newAccessLevel; // Oppdater tilgangsnivået
                 _context.SaveChanges(); // Lagre endringene i databasen
+                TempData["SuccessMessage"] = $"Endret tilgangsnivå for {userId} til: {newAccessLevel}"; // Set success message
+
             }
             return RedirectToAction("AdminView"); // Naviger tilbake til listen over brukere
         }
@@ -62,7 +64,7 @@ namespace kartverketprosjekt.Controllers
             if (saker.Any())
             {
                 // Hvis brukeren har saker, returner til adminvisningen med en feilmelding
-                ViewBag.ErrorMessage = "Brukeren kan ikke slettes fordi det finnes saker knyttet til denne brukeren.";
+                ViewBag.ErrorMessage = "Brukeren kan ikke slettes fordi det finnes saker knyttet til denne brukeren (benytt saksbehandler view til å fjerne saker).";
                 var alleBrukere = _context.Bruker.ToList(); // Hent alle brukere for å vise i tabellen
                 return View("AdminView", alleBrukere); // Returner til adminvisningen med alle brukere
             }
@@ -71,7 +73,10 @@ namespace kartverketprosjekt.Controllers
             _context.Bruker.Remove(bruker);
             _context.SaveChanges(); // Lagre endringene
 
+            TempData["SuccessMessage"] = "Brukeren ble slettet.";
+
             return RedirectToAction("AdminView"); // Naviger tilbake til listen over brukere
+            
         }
     }
 }
