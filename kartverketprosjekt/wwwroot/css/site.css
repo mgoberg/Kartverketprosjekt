@@ -3,6 +3,8 @@
     --background-color: #f3f1f1;
     --text-color: #000000;
     --text-color-weak: #545454;
+    --alert-success: green;
+    --alert-danger: red;
     --navbar-background-color: #ffffff;
     --navbar-text-color: #000;
     --button-text-hover-color: #1a833b;
@@ -25,6 +27,8 @@ body.dark-mode {
     --background-color: #27282a;
     --text-color: #e9e9e9;
     --text-color-weak: #b7b7b7;
+    --alert-success: green;
+    --alert-danger: red;
     --navbar-background-color: #ffffff;
     --navbar-text-color: #000000;
     --button-text-hover-color: #1a833b;
@@ -57,8 +61,11 @@ html {
 }
 
 
-.alert {
-    color: var(--button-text-hover-color);
+.alert-success {
+    color: var(--alert-success);
+}
+.alert-danger {
+    color: var(--alert-danger);
 }
 /* font styles*/
 .ubuntu-light {
@@ -211,13 +218,13 @@ main {
 
 /* Dropdown content styling */
 #dropdown-content {
-    display: none; 
+    display: none;
     position: fixed;
     left: 80%;
     background-color: var(--navbar-background-color);
     min-width: 160px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    z-index: 2001; 
+    z-index: 2001;
     border-radius: 4px;
 }
 
@@ -777,7 +784,7 @@ a {
     background-color: rgba(0, 0, 0, 0.4); /* Very light overlay */
     z-index: 9998; /* Ensures it's behind the modal */
     display: none;  
-    backdrop-filter: blur(2px);  /* gjør at det lagger som faen */ 
+    /*backdrop-filter: blur(2px);*/  /* gjør at det lagger som faen */ 
 }
 
 /* Show modal and keep the background visible */
@@ -967,11 +974,14 @@ select.input-validation-error {
     }
 
 #commentsList {
-    list-style-type: none;
+    max-height: 250px; /* Sett ønsket høyde */
+    overflow-y: scroll; /* Legg til rullefelt når innholdet overstiger høyden */
     padding: 0;
+    margin: 0;
+    list-style-type: none; /* Fjern punktliste-stil */
 }
 
-    #commentsList li {
+    #commentsList > .comment {
         font-size: 1rem;
         padding: 16px 8px 16px 8px;
         margin-bottom: 5px;
@@ -981,13 +991,24 @@ select.input-validation-error {
         word-wrap: break-word;
     }
 
-        #commentsList li:hover {
+.comment-collapsed {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90%; /* Juster etter ønsket bredde */
+    cursor: pointer;
+}
+
+.comment-expanded {
+    white-space: normal;
+}
+        #commentsList .comment:hover {
             background-color: var(--box-background-color-alternate);
             cursor: pointer
         }
 
 
-    #commentsList li.commentInfo {
+    #commentsList > .commentInfo {
         margin: 0;
         padding: 18px 4px 8px 4px;
         background-color: var(--background-color);
@@ -1089,3 +1110,40 @@ h4 {
     transform: translate(100%, 50%);
     width: 350px;
 }
+
+.stats-table-container {
+    
+    display: flex; /* Use Flexbox */
+    justify-content: space-between; /* Space out the sections */
+    margin: 20px 0; /* Add some vertical spacing */
+}
+
+.stats-section {
+    flex: 1; /* Allow the stats section to grow */
+    margin-right: 20px; /* Add spacing between sections */
+}
+
+.styled-table {
+    flex: 2; /* Allow the user table to take more space */
+    width: 100%; /* Full width for the table */
+}
+
+.stats-table {
+    width: 100%; /* Full width for stats table */
+    border-collapse: collapse; /* Remove gaps between cells */
+}
+
+    .stats-table th,
+    .stats-table td {
+        border: 1px solid #ddd; /* Light gray border */
+        padding: 8px; /* Padding for cells */
+        text-align: left; /* Left align text */
+    }
+
+    .stats-table th {
+        background-color: var(--box-background-color);
+    }
+
+    .stats-table tr:nth-child(odd) {
+        background-color: var(--form-background-color);
+    }
