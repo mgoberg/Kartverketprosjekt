@@ -13,6 +13,28 @@ namespace kartverketprosjekt.Controllers
         }
         public IActionResult AdminView()
         {
+            // Retrieve the total count of cases (saker) from the database
+            int caseCount = _context.Sak.Count();
+
+            // Retrieve the total count of users from the database
+            int userCount = _context.Bruker.Count();
+
+            // Optional: Additional stats, like cases by status or date range
+            int openCasesUnbehandlet = _context.Sak.Count(s => s.status == "Ubehandlet");
+            int openCasesUnderBehandling = _context.Sak.Count(s => s.status == "Under Behandling");
+            int openCasesAvvist = _context.Sak.Count(s => s.status == "Avvist");
+            int openCasesArkivert = _context.Sak.Count(s => s.status == "Arkivert");
+            int closedCases = _context.Sak.Count(s => s.status == "Løst");
+
+            // Pass the counts to the view using ViewData or a view model
+            ViewData["CaseCount"] = caseCount;
+            ViewData["UserCount"] = userCount;
+            ViewData["OpenCasesUnbehandlet"] = openCasesUnbehandlet;
+            ViewData["OpenCasesUnderBehandling"] = openCasesUnderBehandling;
+            ViewData["OpenCasesAvvist"] = openCasesAvvist;
+            ViewData["OpenCasesArkivert"] = openCasesArkivert;
+            ViewData["ClosedCases"] = closedCases;
+
             var users = _context.Bruker.ToList(); // Hent alle brukere fra databasen
             return View(users); // Send brukerne til viewet
         }
@@ -31,7 +53,7 @@ namespace kartverketprosjekt.Controllers
             return RedirectToAction("AdminView"); // Naviger tilbake til listen over brukere
         }
 
-        
+
         [HttpPost]
         public IActionResult SlettBruker(string epost)
         {
@@ -73,10 +95,10 @@ namespace kartverketprosjekt.Controllers
             _context.Bruker.Remove(bruker);
             _context.SaveChanges(); // Lagre endringene
 
-            TempData["SuccessMessage"] = "Brukeren ble slettet.";
+            TempData["SuccessMessage"] = $"{bruker.epost} ble slettet.";
 
             return RedirectToAction("AdminView"); // Naviger tilbake til listen over brukere
-            
+
         }
     }
 }

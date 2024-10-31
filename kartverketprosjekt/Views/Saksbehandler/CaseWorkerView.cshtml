@@ -153,6 +153,7 @@
             <div class="dashboard-box">
                 <h4 class="ubuntu-light">Endre status</h4>
                 <select class="form-control" id="changeStatus">
+                    <option value="Ubehandlet" selected>Ubehandlet</option>
                     <option value="Under behandling">Under Behandling</option>
                     <option value="Løst">Løst</option>
                     <option value="Avvist">Avvist</option>
@@ -306,6 +307,20 @@
         $('#dashboardStatus').text(status);
         $('#dashboarddato').text(dato);
 
+            $(document).on('click', '.comment', function () {
+                $(this).toggleClass('comment-expanded');
+                if ($(this).hasClass('comment-expanded')) {
+                    $(this).text($(this).data('fullText')); // Vis hele teksten
+                } else {
+                    $(this).text(truncateText($(this).data('fullText'), 50)); // Forkort igjen
+                }
+            });
+
+            // Funksjon for å forkorte tekst til en spesifisert lengde
+            function truncateText(text, maxLength) {
+                return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+            }
+
                $.ajax({
             url: '/Saksbehandler/GetComments',  // URL til kontrollerens GetComments metode
             type: 'GET',
@@ -319,11 +334,17 @@
                         var commentText = kommentar.tekst;
                         var commentDate = kommentar.dato;
                         var commentAuthor = kommentar.epost;
+                        var truncatedText = truncateText(commentText, 50);
 
-                        var commentElement = '<li>' + commentText + '</li>';
-                            var commentInfoElement = '<li class="commentInfo">' + commentDate + '  av ' + commentAuthor + '</li>';
+                        var commentElement = $('<li class="comment comment-collapsed"></li>')
+                            .text(truncatedText)
+                            .data('fullText', commentText); // Lagre full tekst i data-fullText-attributtet
+                        $('#commentsList').append(commentElement);
+
+                        var commentInfoElement = '<li class="commentInfo">' + commentDate + '  av ' + commentAuthor + '</li>';
 
                         $('#commentsList').append(commentInfoElement);
+
                         $('#commentsList').append(commentElement);
                     });
                 } else {
