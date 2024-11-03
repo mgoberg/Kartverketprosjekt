@@ -808,10 +808,15 @@ a {
     width: 60%;
 }
 
+.table-container {
+    max-height: 300px; 
+    overflow-y: auto; /* Enables vertical scrolling when content overflows */
+}
+
 .styled-table {
     width: 100%;
     max-width: 100%;
-    table-layout: fixed; /* Ensures the table doesn't overflow */
+    table-layout: auto; /* Allows columns to adjust width based on content */
     border-collapse: collapse;
     margin-top: 20px;
     margin-bottom: 50px;
@@ -852,6 +857,36 @@ a {
            
             cursor: pointer;
         }
+
+.stats-table-container {
+    display: flex; /* Use Flexbox */
+    gap: 20px; /* Space between sections */
+}
+
+.stats-section {
+    flex: 1; /* Allow each section to take equal width */
+}
+
+.stats-table {
+    width: 100%; /* Full width for each table */
+    border-collapse: collapse; /* Remove gaps between cells */
+    margin-top: 20px;
+}
+
+    .stats-table th,
+    .stats-table td {
+        border: 1px solid #ddd; /* Light gray border */
+        padding: 8px; /* Padding for cells */
+        text-align: left; /* Left align text */
+    }
+
+    .stats-table th {
+        background-color: var(--box-background-color);
+    }
+
+    .stats-table tr:nth-child(odd) {
+        background-color: var(--form-background-color);
+    }
 
 .separator {
     border-top: 1px solid #ddd;
@@ -1111,39 +1146,3 @@ h4 {
     width: 350px;
 }
 
-.stats-table-container {
-    
-    display: flex; /* Use Flexbox */
-    justify-content: space-between; /* Space out the sections */
-    margin: 20px 0; /* Add some vertical spacing */
-}
-
-.stats-section {
-    flex: 1; /* Allow the stats section to grow */
-    margin-right: 20px; /* Add spacing between sections */
-}
-
-.styled-table {
-    flex: 2; /* Allow the user table to take more space */
-    width: 100%; /* Full width for the table */
-}
-
-.stats-table {
-    width: 100%; /* Full width for stats table */
-    border-collapse: collapse; /* Remove gaps between cells */
-}
-
-    .stats-table th,
-    .stats-table td {
-        border: 1px solid #ddd; /* Light gray border */
-        padding: 8px; /* Padding for cells */
-        text-align: left; /* Left align text */
-    }
-
-    .stats-table th {
-        background-color: var(--box-background-color);
-    }
-
-    .stats-table tr:nth-child(odd) {
-        background-color: var(--form-background-color);
-    }

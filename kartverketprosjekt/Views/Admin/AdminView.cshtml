@@ -27,7 +27,6 @@
 <div class="stats-table-container">
     <!-- Statistics Section -->
     <div class="stats-section">
-      
         <table class="stats-table">
             <tr>
                 <th>Status</th>
@@ -68,41 +67,45 @@
 
 
     <!-- User Table -->
-    <table class="styled-table">
-        <thead> 
-        <tr>
-            <th>E-post</th>
-            <th>Tilgangsnivå</th>
+
+<div class="table-container">
+
+        <table class="styled-table">
+            <thead> 
+            <tr>
+                <th>E-post</th>
+                <th>Tilgangsnivå</th>
             
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var bruker in Model)
-        {
-            <tr data-toggle="modal" data-target="#userModal" data-epost="@bruker.epost" data-tilgangsnivaa="@bruker.tilgangsnivaa_id">
-                <td>@bruker.epost</td>
-                <td>
-                    @if (bruker.tilgangsnivaa_id == 1)
-                    {
-                        <text>Bruker (1)</text>
-                    }
-                    else if (bruker.tilgangsnivaa_id == 2)
-                    {
-                        <text>Prioritert bruker (2)</text>
-                    }
-                    else if (bruker.tilgangsnivaa_id == 3)
-                    {
-                        <text>Saksbehandler (3)</text>
-                    }
-                    else if (bruker.tilgangsnivaa_id == 4)
-                    {
-                        <text>Administrator (4)</text>
-                    }
-                </td>
             </tr>
-        }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            @foreach (var bruker in Model)
+            {
+                <tr data-toggle="modal" data-target="#userModal" data-epost="@bruker.epost" data-tilgangsnivaa="@bruker.tilgangsnivaa_id">
+                    <td>@bruker.epost</td>
+                    <td>
+                        @if (bruker.tilgangsnivaa_id == 1)
+                        {
+                            <text>Bruker (1)</text>
+                        }
+                        else if (bruker.tilgangsnivaa_id == 2)
+                        {
+                            <text>Prioritert bruker (2)</text>
+                        }
+                        else if (bruker.tilgangsnivaa_id == 3)
+                        {
+                            <text>Saksbehandler (3)</text>
+                        }
+                        else if (bruker.tilgangsnivaa_id == 4)
+                        {
+                            <text>Administrator (4)</text>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <div class="overlay" id="modalOverlay"></div>

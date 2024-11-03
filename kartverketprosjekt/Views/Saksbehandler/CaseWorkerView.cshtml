@@ -36,11 +36,12 @@
     </div>
 </div>
 <div class="upper-section">
-    <table id="casesTable" class="styled-table">
-        <thead>
+    <div class="table-container">
+        <table id="casesTable" class="styled-table">
+            <thead>
             <tr>
                 <th>Epost</th>
-                <th>Type feil</th>  
+                <th>Type feil</th>
                 <th>Vedlegg</th>
                 <th>Fylke</th>
                 <th>Kommune</th>
@@ -48,39 +49,40 @@
                 <th>Dato</th>
                 <th>Kartlag</th>
             </tr>
-        </thead>
-    <tbody>
+            </thead>
+            <tbody>
 
-    @foreach (var sak in ViewBag.Saker)
-{
-    <tr data-sakid='@sak.id' data-geojson='@Html.Raw(Json.Serialize(sak.geojson_data))' data-layerurl='@sak.layerurl' data-beskrivelse='@sak.beskrivelse'>
-        <td>@(sak.epost_bruker ?? "ikke registrert")</td>
-        <td>@sak.type_feil</td>
-        <td>@(sak.vedlegg != null ? "Ja" : "Nei")</td>
-        <td>@(sak.Fylkesnavn ?? "NULL")</td>
-        <td>@(sak.Kommunenavn ?? "NULL")</td>
-        <td>@sak.status</td>
-        <td>@sak.opprettet_dato.ToString("dd.MM.yyyy")</td>
-        @if (sak.layerurl == "https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png")
-        {
-            <td>Topografisk</td>
-        }
-        else if (sak.layerurl == "https://cache.kartverket.no/v1/wmts/1.0.0/topograatone/default/webmercator/{z}/{y}/{x}.png")
-        {
-            <td>Topografisk Gråtone</td>
-        }
-        else if (sak.layerurl == "https://cache.kartverket.no/v1/wmts/1.0.0/sjokartraster/default/webmercator/{z}/{y}/{x}.png")
-        {
-            <td>Sjøkart</td>
-        }
-        else if (sak.layerurl == "https://cache.kartverket.no/v1/wmts/1.0.0/toporaster/default/webmercator/{z}/{y}/{x}.png")
-        {
-            <td>Turkart</td>
-        }
-    </tr>
-}
-    </tbody>
-    </table>
+            @foreach (var sak in ViewBag.Saker)
+            {
+                <tr data-sakid='@sak.id' data-geojson='@Html.Raw(Json.Serialize(sak.geojson_data))' data-layerurl='@sak.layerurl' data-beskrivelse='@sak.beskrivelse'>
+                    <td>@(sak.epost_bruker ?? "ikke registrert")</td>
+                    <td>@sak.type_feil</td>
+                    <td>@(sak.vedlegg != null ? "Ja" : "Nei")</td>
+                    <td>@(sak.Fylkesnavn ?? "NULL")</td>
+                    <td>@(sak.Kommunenavn ?? "NULL")</td>
+                    <td>@sak.status</td>
+                    <td>@sak.opprettet_dato.ToString("dd.MM.yyyy")</td>
+                    @if (sak.layerurl == "https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png")
+                    {
+                        <td>Topografisk</td>
+                    }
+                    else if (sak.layerurl == "https://cache.kartverket.no/v1/wmts/1.0.0/topograatone/default/webmercator/{z}/{y}/{x}.png")
+                    {
+                        <td>Topografisk Gråtone</td>
+                    }
+                    else if (sak.layerurl == "https://cache.kartverket.no/v1/wmts/1.0.0/sjokartraster/default/webmercator/{z}/{y}/{x}.png")
+                    {
+                        <td>Sjøkart</td>
+                    }
+                    else if (sak.layerurl == "https://cache.kartverket.no/v1/wmts/1.0.0/toporaster/default/webmercator/{z}/{y}/{x}.png")
+                    {
+                        <td>Turkart</td>
+                    }
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
 </div>   
 
 <div class="separator"></div>
