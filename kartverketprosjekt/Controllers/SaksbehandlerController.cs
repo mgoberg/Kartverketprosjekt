@@ -16,9 +16,26 @@ public class SaksbehandlerController : Controller
     {
         _context = context;
     }
+    private string GetAuthenticatedUserEmail()
+    {
+        return User.Identity.Name; // Henter brukerens e-post fra identiteten
+    }
 
     public IActionResult CaseWorkerView()
     {
+        // Hent den autentiserte brukerens e-post
+        var brukerEpost = GetAuthenticatedUserEmail();
+
+        // Sjekk om brukeren finnes i Bruker-tabellen
+        var user = _context.Bruker.FirstOrDefault(u => u.epost == brukerEpost);
+
+        // Sjekk om brukeren har tilgangsnivå 3 eller høyere
+        if (user == null || user.tilgangsnivaa_id < 3)
+        {
+            // Returner en 403 Forbidden-statuskode hvis tilgangsnivået er lavere enn 3
+            return Forbid();
+        }
+
         // Henter alle saker fra databasen
         var saker = _context.Sak.ToList();
 
@@ -26,20 +43,48 @@ public class SaksbehandlerController : Controller
         ViewData["Saker"] = saker;
         return View();
     }
+
     [HttpPost]
-    public IActionResult AddComment(int sakID, string kommentar)
+    public async Task<IActionResult> UpdateStatus(int id, string status)
     {
+        var sak = await _context.Sak.FindAsync(id); // Retrieve the case by ID
+        if (sak == null)
+        {
+            return Json(new { success = false, message = "Sak ikke funnet." });
+        }
+
+        sak.status = status; // Update the status
+        await _context.SaveChangesAsync(); // Save changes to the database
+
+        return Json(new { success = true, message = "Status oppdatert." });
+    }
+
+[HttpPost]
+    public IActionResult AddComment(int sakID, string kommentar, string epost)
+    {
+
         // Validering av input
         if (sakID <= 0 || string.IsNullOrWhiteSpace(kommentar))
         {
             return Json(new { success = false, message = "Ugyldig sakID eller kommentar." });
         }
 
+        // Hent e-post til den innloggede brukeren
+        var brukerEpost = GetAuthenticatedUserEmail();
+
+        // Sjekk om brukeren eksisterer i Bruker-tabellen
+        var bruker = _context.Bruker.FirstOrDefault(b => b.epost == brukerEpost);
+        if (bruker == null)
+        {
+            return Json(new { success = false, message = "Bruker ikke funnet." });
+        }
+
         var nyKommentar = new KommentarModel()
         {
             SakID = sakID,
             Tekst = kommentar,
-            Dato = DateTime.Now
+            Dato = DateTime.Now,
+            Epost = brukerEpost
         };
 
         _context.Kommentar.Add(nyKommentar);
@@ -50,10 +95,15 @@ public class SaksbehandlerController : Controller
     [HttpGet]
     public JsonResult GetComments(int sakId)
     {
-        // Hent kommentarer fra databasen basert på sakId
-        var kommentarer = _context.Kommentar.Where(k => k.SakID == sakId).ToList();
+        var kommentarer = _context.Kommentar
+            .Where(k => k.SakID == sakId)
+            .Select(k => new
+            {
+                k.Tekst,
+                k.Dato,
+                k.Epost 
+            }).ToList();
 
-        // Returner som JSON
         return Json(new { success = true, kommentarer });
     }
 

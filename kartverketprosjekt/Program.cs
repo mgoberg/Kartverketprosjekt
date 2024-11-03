@@ -4,8 +4,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using kartverketprosjekt.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using kartverketprosjekt.API_Models;
 using kartverketprosjekt.Services;
+using kartverketprosjekt.API_Models;
+using Discord; // Add this
+using Discord.WebSocket; // Add this
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +17,7 @@ builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSet
 
 // Register services and their interfaces
 builder.Services.AddHttpClient<IKommuneInfoService, KommuneInfoService>();
-builder.Services.AddHttpClient<IStedsnavnService, StedsnavnService>(); //kan fjernes hvis ikke vi skal implementere stedsnavn api
+builder.Services.AddHttpClient<IStedsnavnService, StedsnavnService>(); // Can be removed if not needed
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -31,6 +34,10 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LoginPath = "/Home/Index";  // Set the login page
         options.LogoutPath = "/Home/Logout"; // Set the logout page
     });
+
+// Add Discord services
+builder.Services.AddScoped<DiscordBot>(); // Register DiscordBot as scoped
+builder.Services.AddSingleton(new DiscordSocketClient()); // Register DiscordSocketClient as singleton
 
 var app = builder.Build();
 
@@ -52,5 +59,13 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Initialize the Discord bot within a scope
+using (var scope = app.Services.CreateScope())
+{
+    var discordBot = scope.ServiceProvider.GetRequiredService<DiscordBot>();
+    var discordToken = builder.Configuration["Discord:Token"]; // Get the Discord token from configuration
+    await discordBot.StartAsync(discordToken); // Pass the token when starting the bot
+}
 
 app.Run();

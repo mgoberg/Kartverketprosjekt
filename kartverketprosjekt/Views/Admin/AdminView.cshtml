@@ -1,0 +1,170 @@
+﻿@model IEnumerable<kartverketprosjekt.Models.BrukerModel>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Administrator side";
+}
+<a asp-controller="Home" asp-action="Index">
+    <i class='bx bx-chevron-left'></i>
+</a>
+<h1>
+    Administrator side
+</h1>
+
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-danger">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<div class="stats-table-container">
+    <!-- Statistics Section -->
+    <div class="stats-section">
+      
+        <table class="stats-table">
+            <tr>
+                <th>Status</th>
+                <th>Antall</th>
+            </tr>
+            <tr>
+                <td>Antall brukere</td>
+                <td>@ViewData["UserCount"]</td>
+            </tr>
+            <tr>
+                <td>Total saker</td>
+                <td>@ViewData["CaseCount"]</td>
+            </tr>
+            <tr>
+                <td>Ubehandlede saker</td>
+                <td>@ViewData["OpenCasesUnbehandlet"]</td>
+            </tr>
+            <tr>
+                <td>Saker under behandling</td>
+                <td>@ViewData["OpenCasesUnderBehandling"]</td>
+            </tr>
+            <tr>
+                <td>Avviste saker </td>
+                <td>@ViewData["OpenCasesAvvist"]</td>
+            </tr>
+            <tr>
+                <td>Arkiverte saker </td>
+                <td>@ViewData["OpenCasesArkivert"]</td>
+            </tr>
+            <tr>
+                <td>Lukkede saker</td>
+                <td>@ViewData["ClosedCases"]</td>
+            </tr>
+        </table>
+    </div>
+
+    
+
+
+    <!-- User Table -->
+    <table class="styled-table">
+        <thead> 
+        <tr>
+            <th>E-post</th>
+            <th>Tilgangsnivå</th>
+            
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var bruker in Model)
+        {
+            <tr data-toggle="modal" data-target="#userModal" data-epost="@bruker.epost" data-tilgangsnivaa="@bruker.tilgangsnivaa_id">
+                <td>@bruker.epost</td>
+                <td>
+                    @if (bruker.tilgangsnivaa_id == 1)
+                    {
+                        <text>Bruker (1)</text>
+                    }
+                    else if (bruker.tilgangsnivaa_id == 2)
+                    {
+                        <text>Prioritert bruker (2)</text>
+                    }
+                    else if (bruker.tilgangsnivaa_id == 3)
+                    {
+                        <text>Saksbehandler (3)</text>
+                    }
+                    else if (bruker.tilgangsnivaa_id == 4)
+                    {
+                        <text>Administrator (4)</text>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+<div class="overlay" id="modalOverlay"></div>
+
+<div class="modal" id="userModal">
+    <div class="modal-content">
+        <button type="button" onclick="closeModal()" style="align-self: flex-end; border: none; cursor: pointer; background-color: var(--background-color);">
+            <i class='bx bx-x' style="font-size: 30px; color: var(--text-color);"></i>    
+        </button>
+
+        <h4 class="modal-title">Administrer bruker</h4>
+        
+        <div style="display: flex; flex-direction: column; align-items: center;">
+            <form style="width: 80%;" id="updateAccessForm" asp-controller="Admin" asp-action="UpdateAccess" method="post">
+                <input type="hidden" name="userId" id="modalUserId" />
+                <div class="form-group">
+                    <label  for="newAccessLevel">Endre tilgangsnivå:</label>
+                    <select name="newAccessLevel" id="newAccessLevel" class="form-control" required>
+                        <option value="" disabled selected hidden>Velg tilgangsnivå</option>
+                        <option value="1">Nivå 1 (bruker)</option>
+                        <option value="2">Nivå 2 (prioritert bruker)</option>
+                        <option value="3">Nivå 3 (saksbehandler)</option>
+                        <option value="4">Nivå 4 (administrator)</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Oppdater</button>
+            </form>
+
+            <form style="width: 80%;" id="deleteUserForm" asp-action="SlettBruker" method="post">
+                <input type="hidden" name="epost" id="modalUserEmail"/>
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Er du sikker på at du vil slette denne brukeren?');">Slett bruker</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    document.querySelectorAll('.styled-table tr').forEach(row => {
+        row.addEventListener('click', function () {
+            const epost = this.getAttribute('data-epost');
+            const tilgangsnivaa = this.getAttribute('data-tilgangsnivaa');
+
+            // Populate modal fields
+            document.getElementById('modalUserId').value = epost;
+            document.getElementById('modalUserEmail').value = epost;
+            document.getElementById('newAccessLevel').value = tilgangsnivaa;
+
+            // Show modal and overlay
+            document.getElementById('userModal').classList.add('open');
+            document.getElementById('modalOverlay').classList.add('open');
+        });
+    });
+
+    // Close modal function
+    function closeModal() {
+        document.getElementById('userModal').classList.remove('open');
+        document.getElementById('modalOverlay').classList.remove('open');
+    }
+
+    // Close modal when clicking the overlay
+    document.getElementById('modalOverlay').addEventListener('click', closeModal);
+
+</script>

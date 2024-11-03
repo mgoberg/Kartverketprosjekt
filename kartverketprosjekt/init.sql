@@ -22,6 +22,7 @@ CREATE TABLE Bruker (
     FOREIGN KEY (kommune_id) REFERENCES Kommune(id)
 );
 
+
 -- Opprette tabell for saker
 CREATE TABLE Sak (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -31,7 +32,7 @@ CREATE TABLE Sak (
     geojson_data JSON, -- Inneholder kartdata i JSON-format
     kommune_id INT, -- Referanse til kommunen
     type_feil VARCHAR(50) NOT NULL,
-    status ENUM('Godkjent', 'Ikke godkjent', 'Påbegynt', 'Under behandling') NOT NULL,
+    status ENUM('Ubehandlet', 'Under Behandling', 'Løst', 'Avvist', 'Arkivert') NOT NULL,
     opprettet_dato TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     layerurl VARCHAR(255) NULL, -- URL til kartlaget
     Kommunenavn VARCHAR(255),      -- Feltene for kommuneinfo
@@ -49,9 +50,15 @@ CREATE TABLE Kommentar (
     SakId INT NOT NULL, -- Fremmednøkkel til Sak-tabellen
     FOREIGN KEY (SakId) REFERENCES Sak(id) -- Relasjon til Sak-tabellen
 );
+ALTER TABLE Kommentar
+ADD epost VARCHAR(50);
+
+ALTER TABLE Kommentar
+ADD CONSTRAINT FK_Kommentar_Saksbehandler
+FOREIGN KEY (epost) REFERENCES Bruker(epost);
 
 
--- Opprette tabell for tilbakemeldinger fra brukere
+-- Opprette tabell for tilbakemeldinger fra brukere (IKKE I BRUK)
 CREATE TABLE Tilbakemelding (
     id INT AUTO_INCREMENT PRIMARY KEY,
     epost_bruker VARCHAR(100), -- Relasjon til brukeren som sender tilbakemelding

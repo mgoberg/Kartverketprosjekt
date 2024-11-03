@@ -10,12 +10,16 @@ namespace kartverketprosjekt.Controllers
     {
         private readonly KartverketDbContext _context;
 
+        private readonly DiscordBot _discordBot; // Discord bot for å sende notifikasjon
+
+
         private readonly IKommuneInfoService _kommuneInfoService;
 
         private readonly IStedsnavnService _stedsnavnService; //kan fjernes hvis ikke vi skal implementere stedsnavn api
 
-        public SakController(KartverketDbContext context, ILogger<HomeController> logger, IKommuneInfoService kommuneInfoService, IStedsnavnService stedsnavnService)
+        public SakController(DiscordBot discordBot, KartverketDbContext context, ILogger<HomeController> logger, IKommuneInfoService kommuneInfoService, IStedsnavnService stedsnavnService)
         {
+            _discordBot = discordBot; // Initialize the DiscordBot
             _context = context;
             _kommuneInfoService = kommuneInfoService;
             _stedsnavnService = stedsnavnService; //kan fjernes hvis ikke vi skal implementere stedsnavn api
@@ -35,7 +39,7 @@ namespace kartverketprosjekt.Controllers
 
             // Hardkodede verdier for kommune_id og status
             sak.kommune_id = 1;
-            sak.status = "Påbegynt";
+            sak.status = "Ubehandlet";
 
             // Sjekk om vedlegg er lastet opp
             if (vedlegg != null && vedlegg.Length > 0)
@@ -77,6 +81,10 @@ namespace kartverketprosjekt.Controllers
             await _context.SaveChangesAsync();
 
             TempData["id"] = sak.id;
+            string roleID = "1300573258919182347"; // Role ID for the Discord channel
+
+            //Sender melding i discord kanal på ny sak
+            await _discordBot.SendMessageToDiscord($"**En ny sak er opprettet i {sak.Kommunenavn}**\n**Beskrivelse:** {sak.beskrivelse}\n**Opprettet av:** {sak.epost_bruker}\n<@&{roleID}> " );
 
             // Viderefør til oversiktsiden
             return RedirectToAction("AreaChangeOverview");
@@ -104,7 +112,7 @@ namespace kartverketprosjekt.Controllers
 
             return NotFound(); // Handle case where no ID is found in TempData
         }
-        
+
     }
 
 }
