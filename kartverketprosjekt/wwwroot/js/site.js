@@ -1,12 +1,10 @@
 ﻿
 //sjekker om darkmode ligger i localstorage slik at de som har valgt det får darkmode
 
-const logo = document.querySelector('.kartverketLogo');
 
 if (localStorage.getItem('darkMode') === 'enabled') {
     document.body.classList.add('dark-mode');
     document.querySelector('.bx-toggle-left').classList.add('bxs-toggle-right');
-    logo.src = '/images/kartverket-logo-dark.svg';
 }
 
 // function for darkmode
@@ -15,13 +13,10 @@ document.getElementById('darkModeToggle').addEventListener('click', function () 
     document.querySelector('.bx-toggle-left').classList.toggle('bxs-toggle-right');
 
     // Update toggle-ikonet i layout
-    const logo = document.querySelector('.kartverketLogo');
     if (document.body.classList.contains('dark-mode')) {
         localStorage.setItem('darkMode', 'enabled');
-        logo.src = '/images/kartverket-logo-dark.svg'; 
     } else {
-        localStorage.setItem('darkMode', 'disabled');     
-        logo.src = '/images/kartverket-logo.svg'; 
+        localStorage.setItem('darkMode', 'disabled');       
     }
 });
 
