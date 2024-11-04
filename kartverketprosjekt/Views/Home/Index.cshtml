@@ -56,7 +56,7 @@
 <div class="box-container">
     <div>
         <a href="https://www.kartverket.no/">
-            <img src="/images/kartverket-logo-large.svg" />
+            <img class="kartverketLogo" src="/images/kartverket-logo.svg"/>
         </a>
     </div>
 </div>
@@ -72,6 +72,9 @@
 <div id="modal" class="modal">
     <div class="modal-content">
         <h2 id="modal-title">Logg inn</h2>
+        
+        <img class="kartverketLogo" src="/images/kartverket-logo.svg"/>
+
         <form asp-controller="Bruker" asp-action="Login" method="post" id="login-form">
             <label for="epost">Epost:</label>
             <input type="email" id="epost" name="epost" required>
@@ -82,6 +85,8 @@
         <form asp-controller="Bruker" asp-action="Register" method="post" id="register-form" style="display: none;">
             <label for="epost">Epost:</label>
             <input type="email" id="epost" name="Epost" required>
+            <label for="navn">Navn:</label>
+            <input type="text" id="navn" name="Navn" placeholder="*Ikke påkrevd">
             <label for="passord">Passord:</label>
             <input type="password" id="passord" name="Passord" required>
             <button type="submit" class="btn-primary">Registrer</button>
@@ -99,6 +104,10 @@
 </div>
 
 <div class="overlay" id="overlay"></div>
+
+@{
+    ViewData["RenderFooter"] = true;
+}
 
 @section Scripts {
     <script>

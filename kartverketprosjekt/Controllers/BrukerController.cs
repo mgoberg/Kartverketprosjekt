@@ -97,6 +97,7 @@ public class BrukerController : Controller
             {
                 passord = passwordHasher.HashPassword(null, model.passord),
                 epost = model.epost,
+                navn = model.navn,
                 tilgangsnivaa_id = 1 // Set appropriate access level
             };
 
