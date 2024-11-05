@@ -10,7 +10,7 @@
 
 <div class="dashboard">
     <div class="dashboard-box">
-        <div id="map"></div>
+        <div id="map" data-layerurl="@Model.layerurl" data-geojson="@Html.Raw(Model.geojson_data)" data-description="@Model.beskrivelse"></div>
     </div>
     <div class="dashboard-box">
         <p><strong>Referansernummer:</strong> @Model.id </p>
@@ -53,6 +53,12 @@
         }
     </div>
 </div>
+
 @section Scripts {
-<script src="/js/areachangeoverview.js"></script>
+    <script>
+        var layerUrl = '@Model.layerurl';
+        var geoJsonData = JSON.parse('@Html.Raw(Model.geojson_data)');
+        var description = '@Model.beskrivelse';
+    </script>
+    <script src="/js/areachangeoverview.js"></script>
 }
