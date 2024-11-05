@@ -65,6 +65,8 @@ window.addEventListener('click', function (event) {
     }
 });
 
+
+
 //  DUPLISERT KODE SOM IKKE SKAL KJØRES PÅ ALLE VIEWS, DETTE ER ET SITE-WIDE SCRIPT (kan slettes)
 
 //function showModal() {
