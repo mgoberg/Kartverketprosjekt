@@ -90,38 +90,49 @@ public class BrukerController : Controller
     {
         if (ModelState.IsValid)
         {
+            // Oppretter en instans av PasswordHasher for å hashe passordet.
             var passwordHasher = new PasswordHasher<BrukerModel>();
 
-            // Hash the password and create a new user
+            // Setter verdier og hasher passordet.
             var bruker = new BrukerModel
             {
+                // Passordet hashes med PasswordHasher
                 passord = passwordHasher.HashPassword(null, model.passord),
                 epost = model.epost,
                 navn = model.navn,
                 tilgangsnivaa_id = 1 // Set appropriate access level
             };
 
+            // Nullstiller passord før lagring slik at passordet ikke finnes i klartekst.
+            model.passord = null;
+
             // Add user to the database
             await _context.AddAsync(bruker);
             await _context.SaveChangesAsync();
 
-            // Automatically log in the user after registration
+            // Logger inn bruker etter registrering
             var claims = new List<Claim>
         {
             new Claim(ClaimTypes.Name, bruker.epost),
-            new Claim(ClaimTypes.Role, bruker.tilgangsnivaa_id.ToString()) // Optional: Handle roles
+            new Claim(ClaimTypes.Role, bruker.tilgangsnivaa_id.ToString()) // Håndterer roller.
         };
 
+    
+            // ClaimsIdentity representerer brukerens identitet og tilhørende krav, som navn og rolle.
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
+            // CookieAuthenticationDefaults.AuthenticationScheme angir at vi bruker cookie-basert autentisering.
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-            TempData["Message"] = "Registration successful! You are now logged in.";
-            return RedirectToAction("RegisterAreaChange", "Sak");
-        }
+            // Feedback på vellykket registrering
+            TempData["Message"] = $"Hei {model.navn}, registreringen er vellykket!";
 
-        var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-        return BadRequest(new { success = false, errors });
+            // Tar brukeren til kartet.
+            return RedirectToAction("RegisterAreaChange", "Sak");
+            
+        }
+        TempData["ErrorMessage"] = "En feil oppstod under registreringen.";
+        return RedirectToAction("Index", "Home");
     }
 
     [HttpPost]

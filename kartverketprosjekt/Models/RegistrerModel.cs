@@ -5,7 +5,7 @@ namespace kartverketprosjekt.Models
     public class RegistrerModel
     {
         [Required(ErrorMessage = "Passord er påkrevd.")]
-        public string passord { get; set; }
+        public string? passord { get; set; }
 
         [Required(ErrorMessage = "Epost er påkrevd.")]
         [EmailAddress(ErrorMessage = "Ugyldig epostadresse.")]
