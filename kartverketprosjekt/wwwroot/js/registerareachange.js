@@ -246,3 +246,15 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener("DOMContentLoaded", () => {
     updateStepTitle();
 });
+
+function validateFile() {
+    const fileInput = document.getElementById('vedlegg');
+    const filePath = fileInput.value;
+    const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+
+    if (!allowedExtensions.exec(filePath)) {
+        alert('Ugyldig filtype. Vennligst last opp et bilde (JPG, JPEG, PNG, GIF).');
+        fileInput.value = ''; // Clear the input
+        return false;
+    }
+}
