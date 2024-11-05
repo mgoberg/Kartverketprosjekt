@@ -106,11 +106,11 @@ public class BrukerController : Controller
             // Nullstiller passord før lagring slik at passordet ikke finnes i klartekst.
             model.passord = null;
 
-            // Add user to the database
+            // Legger til bruker i databasen.
             await _context.AddAsync(bruker);
             await _context.SaveChangesAsync();
 
-            // Logger inn bruker etter registrering
+            // Logger inn bruker etter registrering.
             var claims = new List<Claim>
         {
             new Claim(ClaimTypes.Name, bruker.epost),
@@ -131,6 +131,8 @@ public class BrukerController : Controller
             return RedirectToAction("RegisterAreaChange", "Sak");
             
         }
+
+        // Hvis modellen ikke er gyldig, vis feilmelding.
         TempData["ErrorMessage"] = "En feil oppstod under registreringen.";
         return RedirectToAction("Index", "Home");
     }
