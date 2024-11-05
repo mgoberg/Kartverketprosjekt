@@ -5,9 +5,10 @@ using kartverketprosjekt.Data;
 using kartverketprosjekt.Models;
 using Microsoft.EntityFrameworkCore;
 using System.IO.Compression;
+using Microsoft.AspNetCore.Authorization;
 
 namespace kartverketprosjekt.Controllers;
-
+[Authorize(Roles = "3, 4")]
 public class SaksbehandlerController : Controller
 {
     private readonly KartverketDbContext _context;
