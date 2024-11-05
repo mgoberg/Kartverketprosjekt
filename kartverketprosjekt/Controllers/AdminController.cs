@@ -1,8 +1,11 @@
 ﻿using kartverketprosjekt.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace kartverketprosjekt.Controllers
+
 {
+    [Authorize(Roles = "4")]
     public class AdminController : Controller
     {
         private readonly KartverketDbContext _context;

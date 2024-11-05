@@ -71,7 +71,21 @@
             <!-- Opplastning av vedlegg (valgfritt) -->
             <label class="ubuntu-regular" for="vedlegg">Vedlegg (valgfritt):</label>
 
-            <input class="ubuntu-light" type="file" class="form-control" id="vedlegg" name="vedlegg">
+            <input class="ubuntu-light" type="file" class="form-control" id="vedlegg" name="vedlegg" accept="image/*" onchange="validateFile()">
+
+            <script>
+                function validateFile() {
+                    const fileInput = document.getElementById('vedlegg');
+                    const filePath = fileInput.value;
+                    const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+
+                    if (!allowedExtensions.exec(filePath)) {
+                        alert('Ugyldig filtype. Vennligst last opp et bilde (JPG, JPEG, PNG, GIF).');
+                        fileInput.value = ''; // Clear the input
+                        return false;
+                    }
+                }
+            </script>
 
             <!-- Layerurl (generert under av js) -->
 

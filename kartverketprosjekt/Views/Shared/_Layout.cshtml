@@ -1,5 +1,5 @@
 ﻿@using kartverketprosjekt.Data 
-@inject KartverketDbContext _context 
+@using Microsoft.AspNetCore.Identity
 
 <!DOCTYPE html>
 <html lang="en">
@@ -45,25 +45,22 @@
                         <img src="/images/kartverket-logo.svg" alt="Kartverket Logo" id="kartverketLogoNavbar">
                     </a>
                 </li>
-                @if (User.Identity.IsAuthenticated)
+                @if (User.IsInRole("3"))
                 {
-                    var brukerEpost = User.Identity.Name; // Hent e-post fra den autentiserte brukeren
-                    var user = _context.Bruker.FirstOrDefault(u => u.epost == brukerEpost); // Hent brukeren fra databasen
-
-                    if (user != null && (user.tilgangsnivaa_id >= 3)) // Endret til >= 3
-                    {
-                        <li>
-                            <a asp-controller="Saksbehandler" asp-action="CaseWorkerView">Saksbehandler</a>
-                        </li>
-                    }
-
-                    if (user != null && user.tilgangsnivaa_id == 4)
-                    {
-                        <li>
-                            <a asp-controller="Admin" asp-action="AdminView">Admin</a>
-                        </li>
-                    }
+                    <li>
+                        <a asp-controller="Saksbehandler" asp-action="CaseWorkerView">Saksbehandler</a>
+                    </li>
                 }
+                else if (User.IsInRole("4"))
+                {
+                    <li>
+                        <a asp-controller="Saksbehandler" asp-action="CaseWorkerView">Saksbehandler</a>
+                    </li>
+                    <li>
+                        <a asp-controller="Admin" asp-action="AdminView">Admin</a>
+                    </li>
+                }
+                
             @if (ViewData["RenderFooter"] != null && (bool)ViewData["RenderFooter"])  
             {
                 <li>
