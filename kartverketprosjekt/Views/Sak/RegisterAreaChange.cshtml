@@ -15,8 +15,10 @@
     <i class='bx bx-chevron-left'></i>
 </a>
 
-<h2>Korriger ved å tegne i kartet:</h2>
-
+<h2 id="stepTitle"></h2>
+<div id="progressContainer" style="margin-top: 20px;">
+    <div id="progressBar" style="width: 0%; background-color: #4caf50; height: 8px;"></div>
+</div>
 
 <div class="flex-row">
     <div class="element1">
@@ -64,7 +66,7 @@
 
             <!-- Beskrivelse (påkrevd) -->
             <label class="ubuntu-regular" for="beskrivelse">Beskrivelse:</label>
-            <textarea class="form-control, ubuntu-light" id="beskrivelse" name="beskrivelse" required placeholder="F.eks. manglende sti" maxlength="250"></textarea>
+            <textarea class="form-control, ubuntu-light" id="beskrivelse" name="beskrivelse" required placeholder="Maksimum 250 tegn" maxlength="250"></textarea>
 
             <!-- Opplastning av vedlegg (valgfritt) -->
             <label class="ubuntu-regular" for="vedlegg">Vedlegg (valgfritt):</label>
@@ -73,9 +75,10 @@
 
             <!-- Layerurl (generert under av js) -->
 
-            <!-- Type feil dropdown meny -->
-            <label class="ubuntu-regular" for="typeFeil">Type feil:</label>
-            <select class="form-control" id="typeFeil" name="type_feil">
+            <!-- Type dropdown meny -->
+            <label class="ubuntu-regular" for="typeFeil">Type:</label>
+            <select class="form-control" id="typeFeil" name="type_feil" required>
+                <option value="" disabled selected>...</option>
                 <option value="Annet">Annet</option>
                 <option value="Feil i vei">Vei</option>
                 <option value="Feil i tursti">Tursti</option>
@@ -110,17 +113,23 @@
 
 @section Scripts {
     <script>
+        // steg for progressbar
+        const totalSteps = 2; 
+        let currentStep = 0;
 
+        // array med de ulike stegenes tekst
+        const stepTitles = [
+            "Bruk tegneverktøyet i kartet for å markere feil",
+            "Fyll ut skjemaet for å fullføre",
+            "Send inn"
+        ];
 
         // Simulerer at brukeren trykker på knappen for å endre til land for å ha det som initielle kartlag. Hvis ikke blir ikke kart URL'en sendt med form dataen
-
         document.addEventListener('DOMContentLoaded', function () {
             changeToLand();
         });
 
-        function changeToLand() {
-            changeTileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png', '&copy; <a href="http://www.kartverket.no/">Kartverket</a>', 'btn-changeToLand');
-        }
+       
 
 
         var searchControl = new L.esri.Controls.Geosearch().addTo(map); // Add the geocoding searchbar
@@ -153,6 +162,12 @@
 
             // Legg til det nye elementet
             drawnItems.addLayer(layer);
+           
+            if (currentStep == 0)
+            {
+                goToNextStep();
+
+            }
 
             var geoJsonData = layer.toGeoJSON();
             var geoJsonString = JSON.stringify(geoJsonData);
@@ -226,12 +241,16 @@
 
         // Håndterer sletting av tegnet element
         map.on(L.Draw.Event.DELETED, function (e) {
+            currentStep = 0;
+            updateStepTitle();
+            updateProgressBar();
             var layers = e.layers;
             layers.eachLayer(function (layer) {
                 // Tøm skjemaet når et element blir slettet
                 document.getElementById('geoJsonInput').value = '';
                 document.getElementById('Nord').value = '';
                 document.getElementById('Ost').value = '';
+                
             });
         });
 
@@ -280,6 +299,69 @@
             modal.style.display = "none"; // Skjul modalen
         });
 
+        
+
+        function updateProgressBar() {
+            let progress = (currentStep / totalSteps) * 100;
+            document.getElementById("progressBar").style.width = progress + "%";
+            updateStepTitle();
+        }
+
+        // Call updateProgressBar() when the user moves to the next step.
+        function goToNextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateProgressBar();
+            }
+        }
+        function goToPreviousStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                updateProgressBar();
+            }
+        }
+
+        function updateStepTitle() {
+            const stepTitleElement = document.getElementById("stepTitle");
+            stepTitleElement.textContent = stepTitles[currentStep];
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Select the form and required fields
+            const form = document.getElementById("areaChangeForm");
+            const requiredFields = form.querySelectorAll("[required]");
+            let debounceTimeout;
+
+            // Check if all required fields are filled
+            function areAllFieldsFilled() {
+                return Array.from(requiredFields).every(field => field.value.trim() !== "");
+            }
+
+            // Function to check fields and navigate steps
+            function checkRequiredFields() {
+                if (currentStep === 1) { // Ensure we're on step 2
+                    if (areAllFieldsFilled()) {
+                        goToNextStep(); // Advance to the next step if all fields are filled
+                    }
+                } else if (currentStep > 1 && !areAllFieldsFilled()) {
+                    goToPreviousStep(); // Go back to the previous step if fields are erased
+                }
+            }
+
+            // Monitor each required field for changes
+            requiredFields.forEach(field => {
+                field.addEventListener("input", function () {
+                    // Clear the previous timeout and set a new one
+                    clearTimeout(debounceTimeout);
+                    debounceTimeout = setTimeout(checkRequiredFields, 300); // Adjust delay as needed
+                });
+            });
+        });
+
+
+        document.addEventListener("DOMContentLoaded", () => {
+            updateStepTitle();
+        });
     </script>
 
     
