@@ -85,9 +85,12 @@
                         </li>
                     }
                 }
+            @if (ViewData["RenderFooter"] != null && (bool)ViewData["RenderFooter"])  
+            {
                 <li>
                     <a href="#footer">Kontakt</a>
                 </li>
+            }
                 <li>
                     <a id="darkModeToggle">
                         <i class='bx bx-sun'></i>
@@ -95,7 +98,7 @@
                         <i class='bx bx-moon'></i>                     
                     </a>
                 </li>
-               
+            
                 @if (User.Identity.IsAuthenticated)
                 {
                     <li>
