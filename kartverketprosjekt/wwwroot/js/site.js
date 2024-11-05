@@ -1,6 +1,23 @@
 ﻿
 //sjekker om darkmode ligger i localstorage slik at de som har valgt det får darkmode
+document.addEventListener('DOMContentLoaded', (event) => {
+    const navbar = document.getElementById('navbar');
+    let lastScrollTop = 0;
 
+    window.addEventListener('scroll', () => {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        if (scrollTop > lastScrollTop && scrollTop > 100) {
+            // Scroll down
+            navbar.classList.add('navbar-hidden');
+        } else {
+            // Scroll up
+            navbar.classList.remove('navbar-hidden');
+        }
+
+        lastScrollTop = scrollTop;
+    });
+});
 
 if (localStorage.getItem('darkMode') === 'enabled') {
     document.body.classList.add('dark-mode');

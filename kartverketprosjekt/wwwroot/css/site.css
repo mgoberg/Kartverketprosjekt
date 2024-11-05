@@ -159,11 +159,10 @@ main {
     position: fixed;
     /* Make the navbar fixed */
     top: 0;
-    /* Start the navbar off-screen */
     width: 100%;
     z-index: 2000;
     /* Ensure it appears above other elements */
-    /*transition: top 1.2s ease-in-out;*/
+    transition: transform 0.3s ease-in-out;
     /* Add transition for smooth animation */
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
     /* Add shadow for 3D effect */
@@ -205,6 +204,10 @@ main {
                     /* Change cursor to pointer */
                     color: var(--button-text-hover-color);
                 }
+.navbar-hidden {
+    transform: translateY(-100%);
+    transition: transform 0.3s ease-in-out;
+}
 
 #menuButton {
     background-color: var(--navbar-background-color);
