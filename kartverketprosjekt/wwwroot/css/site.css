@@ -501,6 +501,9 @@ form input[type="file"] {
     resize: none;
 }
 
+.hidden-form {
+    all: unset;
+}
 
 /* Style for the select element */
 select.form-control {
@@ -832,7 +835,7 @@ a {
 }
 
 .table-container {
-    max-height: 300px; 
+    max-height: 500px; 
     overflow-y: auto; /* Enables vertical scrolling when content overflows */
 }
 
@@ -880,7 +883,21 @@ a {
            
             cursor: pointer;
         }
+.admin-row {
+    background-color: #ffdddd; /* Light red for Admin */
+}
 
+.user-row {
+    background-color: #ddffdd; /* Light green for User */
+}
+
+.guest-row {
+    background-color: #ddddff; /* Light blue for Guest */
+}
+
+.default-row {
+    background-color: #f9f9f9; /* Light gray for other cases */
+}
 .stats-table-container {
     display: flex; /* Use Flexbox */
     gap: 20px; /* Space between sections */

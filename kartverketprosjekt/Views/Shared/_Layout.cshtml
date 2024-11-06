@@ -90,7 +90,7 @@
        @if (User.Identity.IsAuthenticated)
         {
         <div id="dropdown-content">
-            <a asp-controller="Home" asp-action="MyPage">Min side</a>
+            <a asp-controller="Bruker" asp-action="MyPage">Min side</a>
             <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="logout-link">Logg ut</a>
                 <form id="logout-form" asp-controller="Bruker" asp-action="Logout" method="post" style="display: none;">
                 </form>

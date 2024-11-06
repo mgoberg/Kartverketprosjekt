@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 
 public class BrukerController : Controller
@@ -16,6 +14,28 @@ public class BrukerController : Controller
     public BrukerController(KartverketDbContext context)
     {
         _context = context;
+    }
+
+    public async Task<IActionResult> MyPage()
+    {
+        // Hent e-post fra den innloggede brukeren
+        var bruker = User.Identity.Name;
+
+        // Legg til en sjekk for null
+        if (string.IsNullOrEmpty(bruker))
+        {
+            return RedirectToAction("Index", "Home"); // Hvis brukeren ikke er innlogget, omdiriger
+        }
+
+        Console.WriteLine($"Brukerens e-post: {bruker}");
+
+        // Hent saker knyttet til brukeren fra databasen
+        var saker = await _context.Sak
+            .Where(s => s.epost_bruker == bruker)
+            .ToListAsync();
+
+        // Send sakene til viewet
+        return View(saker);
     }
 
     // POST login
@@ -62,8 +82,8 @@ public class BrukerController : Controller
         }
 
         // If user is not found or password is incorrect, show an error message
-        ViewBag.ErrorMessage = "Invalid login attempt";
-        return View("Index");
+        TempData["ErrorMessage"] = "Feil epost eller passord";
+        return RedirectToAction("Index", "Home");
     }
 
     private bool IsHashedPassword(string password)
@@ -153,11 +173,11 @@ public class BrukerController : Controller
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Passordet er oppdatert.";
-            return RedirectToAction("Mypage", "Home"); // Redirect to /Home/Mypage
+            return RedirectToAction("Mypage");
         }
 
         TempData["ErrorMessage"] = "Kunne ikke oppdatere passordet.";
-        return RedirectToAction("Mypage", "Home"); // Redirect to /Home/Mypage with an error message
+        return RedirectToAction("Mypage");
     }
 
     [HttpPost]
@@ -175,11 +195,11 @@ public class BrukerController : Controller
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Navnet er oppdatert.";
-            return RedirectToAction("Mypage", "Home"); // Redirect to /Home/Mypage
+            return RedirectToAction("Mypage");
         }
 
         TempData["ErrorMessage"] = "Kunne ikke oppdatere navnet.";
-        return RedirectToAction("Mypage", "Home"); // Redirect to /Home/Mypage with an error message
+        return RedirectToAction("Mypage");
     }
 
     // TODO: Her må vi gjøre slik at passordet må kunne skrives uten hash for å bekrefte sletting
@@ -199,7 +219,7 @@ public class BrukerController : Controller
             {
                 TempData["ErrorMessage"] = "Bruker finnes ikke.";
                 Console.WriteLine("User not found");
-                return RedirectToAction("Mypage", "Home");
+                return RedirectToAction("Mypage");
             }
 
 
@@ -224,7 +244,7 @@ public class BrukerController : Controller
             {
                 TempData["ErrorMessage"] = "Feil passord. Vennligst prøv igjen.";
                 Console.WriteLine("Invalid password");
-                return RedirectToAction("Mypage", "Home");
+                return RedirectToAction("Mypage");
             }
 
             // Slett brukeren
@@ -240,9 +260,34 @@ public class BrukerController : Controller
         {
             Console.WriteLine($"Error deleting user: {ex.Message}");
             TempData["ErrorMessage"] = "Det oppstod en feil ved sletting av brukeren.";
-            return RedirectToAction("Mypage", "Home");
+            return RedirectToAction("Mypage");
         }
     }
+    [HttpPost]
+    public IActionResult DeleteCase(int id)
+    {
+        // Find the case in the database based on ID
+        var sak = _context.Sak.Include(s => s.Kommentarer).FirstOrDefault(s => s.id == id);
 
+        if (sak != null)
+        {
+            // Remove all comments associated with the case
+            _context.Kommentar.RemoveRange(sak.Kommentarer);
+
+            // Remove the case from the database
+            _context.Sak.Remove(sak);
+            _context.SaveChanges();
+
+            // Set success message in TempData
+            TempData["SuccessMessage"] = $"Sak: {id} ble slettet";
+
+            return RedirectToAction("Mypage");
+        }
+
+        // Set error message in TempData if case is not found
+        TempData["ErrorMessage"] = "Kunne ikke slette sak";
+
+        return RedirectToAction("Mypage");
+    }
 }
 
