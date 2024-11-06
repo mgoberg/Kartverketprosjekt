@@ -65,14 +65,24 @@ window.addEventListener('click', function (event) {
     }
 });
 
+const menuButtonFirstChild = document.getElementById('dropdown-content').firstElementChild;
 $(document).ready(function () {
     // Funksjon som sjekker om det finnes en endret status
     function checkNotificationStatus() {
         $.getJSON('/Bruker/HarEndretStatus', function (result) {
             if (result) {
                 $('#notificationMessage').show();
+                $('#notificationDot').show();
+                // Add class to menuButton's first child
+                
+                menuButtonFirstChild.classList.add('notificationAlertAnimation');
+
+                    setTimeout(() => {
+                        $('#notificationMessage').addClass('fade-out');
+                    }, 3500);
             } else {
                 $('#notificationMessage').hide(); // Fjern klassen hvis ingen notifikasjon
+                $('#notificationDot').hide(); // Fjern klassen hvis ingen notifikasjon
             }
         });
     }
@@ -94,11 +104,18 @@ $(document).ready(function () {
     $('#menuButton').on('click', function () {
         // Fjern den røde prikken
         $('#menuButton').removeClass('notification-active');
-        $('#notificationMessage').hide();
 
+        $('#notificationMessage').hide();
+        $('#notificationDot').hide();
         // Nullstill notifikasjonen på serveren
         resetNotificationStatus();
     });
+
+        function removeNotificationAnimation() {
+            menuButtonFirstChild.classList.remove('notificationAlertAnimation');
+        }
+
+        menuButtonFirstChild.addEventListener('click', removeNotificationAnimation);
 });
 
 

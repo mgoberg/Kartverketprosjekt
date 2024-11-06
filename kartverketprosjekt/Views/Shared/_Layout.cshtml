@@ -79,6 +79,7 @@
                 {
                     <li>
                         <button id="menuButton">
+                            <div id="notificationDot" style="display: none;"></div>
                             <i class='bx bx-menu' id="menu"></i>
                             <i class='bx bx-x' id="menu" style="display: none;"></i>
                         </button>
@@ -88,8 +89,8 @@
             </ul>
         </nav>
 
-        <div id="notificationMessage" class="notification-message" style="display: none;">
-            <p>En av sakene dine har fått endret status, sjekk den på dine sider.</p>
+        <div id="notificationMessage"  style="display: none;">
+            <p>En av sakene dine har endret status, sjekk mine sider.</p>
         </div>
        @if (User.Identity.IsAuthenticated)
         {
