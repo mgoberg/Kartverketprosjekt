@@ -16,7 +16,7 @@
     --button-background-hover-color: rgba(100, 221, 138, 1);
     --button-text-color: #ffffff;
     --footer-text-color: #ffffff;
-    --footer-background-gradient: linear-gradient(0deg, rgba(26, 131, 59, 1) 10%, rgba(39, 40, 42, 0) 100%);
+    --footer-background-color: #e0e0e0;
     --footer-h1: white;
     --box-background-color: #ffffff;
     --box-background-color-alternate: #f9f9f9;
@@ -40,7 +40,7 @@ body.dark-mode {
     --button-text-color: #ffffff;
     --footer-text-color: #000;
     --footer-h1: black;
-    --footer-background-gradient: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(39,40,42,0) 100%);
+    --footer-background-color: #494a4c;
     --box-background-color: #3e3f41;
     --box-background-color-alternate: #323234;
 }
@@ -555,11 +555,11 @@ select.form-control {
 
 #footer {
     /*background-color: #0d1b2a; /* ikke gradient */
-    background: var(--footer-background-gradient);
-    color: var(--footer-text-color);
+    background: var(--footer-background-color);
+    color: var(--text-color);
     text-align: center;
     /* Center the text */
-    padding-top: 50px;
+    
     /* Add padding around the footer */
     padding-bottom: 50px;
     position: relative;
@@ -577,7 +577,7 @@ select.form-control {
     flex-wrap: nowrap;
     padding: 50px 120px;
     /* Add padding around the container */
-    margin: 10vw 15vw;
+    margin: 5vw 20vw;
     box-sizing: border-box;
     /* Include padding in the element's total width and height */
     border: none;
@@ -587,7 +587,7 @@ select.form-control {
     0 4px 3px rgba(0, 0, 0, 0.1); /* Outer shadow for raised look */
 }
 
-@media (max-width: 800px) {
+@media (max-width: 1000px) {
     #footerContainer {
         flex-direction: column;
         /* make items align in column on phone-screen */
@@ -596,7 +596,7 @@ select.form-control {
 
 #footer-h1 {
     color: var(--footer-h1);
-    margin-top: 200px;
+    /*margin-top: 200px;*/
 }
 
 .bx {
@@ -1252,3 +1252,8 @@ h4 {
 }
 
 
+.footer-separator {
+    width: 100%;
+    border-top: 10px solid var(--button-background-color);
+    top: 0;
+}

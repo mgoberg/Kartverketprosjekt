@@ -79,7 +79,7 @@ $(document).ready(function () {
 
                     setTimeout(() => {
                         $('#notificationMessage').addClass('fade-out');
-                    }, 3500);
+                    }, 2000);
             } else {
                 $('#notificationMessage').hide(); // Fjern klassen hvis ingen notifikasjon
                 $('#notificationDot').hide(); // Fjern klassen hvis ingen notifikasjon
