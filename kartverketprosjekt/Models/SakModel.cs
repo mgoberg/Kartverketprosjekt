@@ -22,6 +22,8 @@ namespace kartverketprosjekt.Models
         public string? Fylkesnummer { get; set; }
         // Relasjon til Kommentarer
         public ICollection<KommentarModel> Kommentarer { get; set; } = new List<KommentarModel>();
+
+        public bool status_endret { get; set; } = false;
     }
 }
 

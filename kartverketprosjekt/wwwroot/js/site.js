@@ -65,6 +65,43 @@ window.addEventListener('click', function (event) {
     }
 });
 
+$(document).ready(function () {
+    // Funksjon som sjekker om det finnes en endret status
+    function checkNotificationStatus() {
+        $.getJSON('/Bruker/HarEndretStatus', function (result) {
+            if (result) {
+                $('#notificationMessage').show();
+            } else {
+                $('#notificationMessage').hide(); // Fjern klassen hvis ingen notifikasjon
+            }
+        });
+    }
+
+    // Funksjon som nullstiller notifikasjonen når brukeren trykker på menuButton
+    function resetNotificationStatus() {
+        $.post('/Bruker/ResetNotificationStatus', function () {
+            console.log('Notifikasjonstatus er nullstilt');
+        });
+    }
+
+    // Kjør sjekk på notifikasjoner ved sideinnlasting
+    checkNotificationStatus();
+
+    // Kjør sjekk på notifikasjoner hvert 20. sekund
+    setInterval(checkNotificationStatus, 20000);
+
+    // Når brukeren klikker på menuButton, resetter vi notifikasjonen
+    $('#menuButton').on('click', function () {
+        // Fjern den røde prikken
+        $('#menuButton').removeClass('notification-active');
+        $('#notificationMessage').hide();
+
+        // Nullstill notifikasjonen på serveren
+        resetNotificationStatus();
+    });
+});
+
+
 
 
 //  DUPLISERT KODE SOM IKKE SKAL KJØRES PÅ ALLE VIEWS, DETTE ER ET SITE-WIDE SCRIPT (kan slettes)

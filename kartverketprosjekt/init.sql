@@ -32,6 +32,7 @@ CREATE TABLE Sak (
     geojson_data JSON, -- Inneholder kartdata i JSON-format
     kommune_id INT, -- Referanse til kommunen
     type_feil VARCHAR(50) NOT NULL,
+    status_endret BOOLEAN DEFAULT FALSE, -- Indikerer om status er endret
     status ENUM('Ubehandlet', 'Under Behandling', 'Løst', 'Avvist', 'Arkivert') NOT NULL,
     opprettet_dato TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     layerurl VARCHAR(255) NULL, -- URL til kartlaget

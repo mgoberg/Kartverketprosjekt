@@ -87,6 +87,10 @@
                 }
             </ul>
         </nav>
+
+        <div id="notificationMessage" class="notification-message" style="display: none;">
+            <p>En av sakene dine har fått endret status, sjekk den på dine sider.</p>
+        </div>
        @if (User.Identity.IsAuthenticated)
         {
         <div id="dropdown-content">
@@ -159,7 +163,7 @@
 
     }
     @await RenderSectionAsync("Scripts", required: false)
-    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="/js/site.js"></script>
 
 

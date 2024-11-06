@@ -289,5 +289,54 @@ public class BrukerController : Controller
 
         return RedirectToAction("Mypage");
     }
+
+
+    [HttpGet]
+    public async Task<IActionResult> HarEndretStatus()
+    {
+        try
+        {
+            // Hent den første saken hvor brukeren har en endret status (status_endret == 1)
+            var sak = await _context.Sak
+                .Where(s => s.epost_bruker == User.Identity.Name)
+                .FirstOrDefaultAsync();
+
+            if (sak != null && sak.status_endret == true)  // Sjekk om status_endret er 1
+            {
+                // Logg i konsollen for debugging
+                Console.WriteLine("Du har en notifikasjon.");
+
+                return Json(true); // Returner true for å indikere at det er en notifikasjon
+            }
+
+            // Hvis status_endret er 0, eller ingen sak finnes
+            return Json(false); // Returner false for å indikere at det ikke er noen notifikasjon
+        }
+        catch (Exception ex)
+        {
+            // Håndter eventuelle feil ved henting
+            Console.WriteLine($"Feil ved henting av sak: {ex.Message}");
+            return Json(false); // Returner false hvis det skjer en feil
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ResetNotificationStatus()
+    {
+        // Hent alle saker som er relatert til brukeren og har endret status
+        var saker = await _context.Sak
+            .Where(s => s.epost_bruker == User.Identity.Name && s.status_endret)
+            .ToListAsync();
+
+        // Sett statusEndret tilbake til false
+        foreach (var sak in saker)
+        {
+            sak.status_endret = false;
+        }
+
+        await _context.SaveChangesAsync(); // Lagre endringene til databasen
+
+        return Json(new { success = true });
+    }
 }
 

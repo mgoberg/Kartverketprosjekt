@@ -1188,3 +1188,20 @@ h4 {
     width: 350px;
 }
 
+
+.notification-message {
+    background-color: rgba(100, 221, 138, 1);
+    color: black;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    position: fixed;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000000;
+    width: 500px;
+    display: none;
+    border-radius: 25px;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
