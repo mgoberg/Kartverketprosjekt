@@ -14,5 +14,7 @@ namespace kartverketprosjekt.Models
 
         public int tilgangsnivaa_id { get; set; } = 1; // Standard verd i 1
 
+        public string? organisasjon { get; set; } = "Ingen"; // Standard verdi er Kartverket
+
     }
 }

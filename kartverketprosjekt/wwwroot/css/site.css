@@ -1261,3 +1261,23 @@ h4 {
     border-top: 10px solid var(--button-background-color);
     top: 0;
 }
+
+
+
+/* Styles for the search bar */
+.search-bar2 {
+    display: flex;
+    align-items: center; /* Ensures label and input are aligned */
+    gap: 5px; /* Space between label and input */
+    font-size: 20px;
+}
+
+/* Styles for the dropdown */
+#sortBy {
+    background-color: var(--form-background-color);
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 200px; /* Adjust width as necessary */
+    transition: 0.3s;
+}
