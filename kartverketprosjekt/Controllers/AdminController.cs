@@ -1,6 +1,9 @@
 ﻿using kartverketprosjekt.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
+using kartverketprosjekt.Models;
 
 namespace kartverketprosjekt.Controllers
 
@@ -103,5 +106,41 @@ namespace kartverketprosjekt.Controllers
             return RedirectToAction("AdminView"); // Naviger tilbake til listen over brukere
 
         }
+
+        [HttpPost]
+        public IActionResult OpprettBruker(string epost, string passord, int tilgangsnivaa, string organisasjon, string? navn)
+        {
+            if (string.IsNullOrEmpty(epost) || string.IsNullOrEmpty(passord) || string.IsNullOrEmpty(organisasjon))
+            {
+                ViewBag.ErrorMessage = "E-post, passord og organisasjon må fylles ut.";
+                return RedirectToAction("AdminView");
+            }
+
+            if (_context.Bruker.Any(b => b.epost == epost))
+            {
+                ViewBag.ErrorMessage = "En bruker med denne e-posten eksisterer allerede.";
+                return RedirectToAction("AdminView");
+            }
+
+            // Hash passordet ved hjelp av PasswordHasher
+            var passwordHasher = new PasswordHasher<BrukerModel>();
+            var nyBruker = new BrukerModel
+            {
+                epost = epost,
+                passord = passwordHasher.HashPassword(null, passord),
+                tilgangsnivaa_id = tilgangsnivaa,
+                organisasjon = organisasjon,
+                navn = navn // Navn kan være null
+            };
+
+            // Legg til ny bruker i databasen
+            _context.Bruker.Add(nyBruker);
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = $"Bruker med e-post {epost} ble opprettet.";
+            return RedirectToAction("AdminView");
+        }
     }
+
+
 }
