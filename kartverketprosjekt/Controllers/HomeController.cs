@@ -61,27 +61,7 @@ namespace kartverketprosjekt.Controllers
             return View();
         }
 
-        public async Task<IActionResult> MyPage()
-        {
-            // Hent e-post fra den innloggede brukeren
-            var bruker = User.Identity.Name;
-            
-            // Legg til en sjekk for null
-            if (string.IsNullOrEmpty(bruker))
-            {
-                return RedirectToAction("Index", "Home"); // Hvis brukeren ikke er innlogget, omdiriger
-            }
-
-            Console.WriteLine($"Brukerens e-post: {bruker}");
-
-            // Hent saker knyttet til brukeren fra databasen
-            var saker = await _context.Sak
-                .Where(s => s.epost_bruker == bruker)
-                .ToListAsync();
-
-            // Send sakene til viewet
-            return View(saker);
-        }
+        
     }
 }
 

@@ -5,9 +5,10 @@ using kartverketprosjekt.Data;
 using kartverketprosjekt.Models;
 using Microsoft.EntityFrameworkCore;
 using System.IO.Compression;
+using Microsoft.AspNetCore.Authorization;
 
 namespace kartverketprosjekt.Controllers;
-
+[Authorize(Roles = "3, 4")]
 public class SaksbehandlerController : Controller
 {
     private readonly KartverketDbContext _context;
@@ -47,19 +48,26 @@ public class SaksbehandlerController : Controller
     [HttpPost]
     public async Task<IActionResult> UpdateStatus(int id, string status)
     {
-        var sak = await _context.Sak.FindAsync(id); // Retrieve the case by ID
+        var sak = await _context.Sak.FindAsync(id); // Hent saken ved ID
         if (sak == null)
         {
             return Json(new { success = false, message = "Sak ikke funnet." });
         }
 
-        sak.status = status; // Update the status
-        await _context.SaveChangesAsync(); // Save changes to the database
+        if (sak.status != status) // Sjekk om status er endret
+        {
+            sak.status = status; // Oppdater status
+            sak.status_endret = true; // Marker at status er endret
+            await _context.SaveChangesAsync(); // Lagre endringer i databasen
 
-        return Json(new { success = true, message = "Status oppdatert." });
+            return Json(new { success = true, message = "Status oppdatert og merket som endret." });
+        }
+
+        // Hvis status ikke er endret
+        return Json(new { success = false, message = "Ny status er den samme som eksisterende status." });
     }
 
-[HttpPost]
+    [HttpPost]
     public IActionResult AddComment(int sakID, string kommentar, string epost)
     {
 

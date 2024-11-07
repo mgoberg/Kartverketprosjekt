@@ -1,5 +1,5 @@
 ﻿@using kartverketprosjekt.Data 
-@inject KartverketDbContext _context 
+@using Microsoft.AspNetCore.Identity
 
 <!DOCTYPE html>
 <html lang="en">
@@ -10,27 +10,6 @@
     @await Html.PartialAsync("_Favicons")
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    
-
-    @if (ViewContext.RouteData.Values["action"].ToString() == "CorrectMap" || ViewContext.RouteData.Values["action"].ToString() == "CorrectionOverview")
-    {
-
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-              integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-
-        <link rel="stylesheet" href="~/css/mapstyle.css" asp-append-version="true" />
-       
-
-       @*  <link rel="stylesheet" type="text/css"
-              href="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.css"> *@
-
-        
-                /*geoman library*/
-        @* <link rel="stylesheet"
-    href="https://unpkg.com/@@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" /> *@
-
-        @* <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css" /> *@
-    }
 
     @if (ViewContext.RouteData.Values["action"].ToString() == "RegisterAreaChange" || ViewContext.RouteData.Values["action"].ToString() == "AreaChangeOverview")
     {
@@ -53,8 +32,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
           rel="stylesheet">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="icon" type="image/svg+xml" href="images/kartverket-logo.svg">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png">
 
 </head>
 <body>
@@ -63,31 +42,31 @@
             <ul>
                 <li>
                     <a href="/">
-                        <img src="/images/kartverket-logo-large.svg" alt="Kartverket Logo" id="kartverketLogo">
+                        <img src="/images/kartverket-logo.svg" alt="Kartverket Logo" id="kartverketLogoNavbar">
                     </a>
                 </li>
-                @if (User.Identity.IsAuthenticated)
+                @if (User.IsInRole("3"))
                 {
-                    var brukerEpost = User.Identity.Name; // Hent e-post fra den autentiserte brukeren
-                    var user = _context.Bruker.FirstOrDefault(u => u.epost == brukerEpost); // Hent brukeren fra databasen
-
-                    if (user != null && (user.tilgangsnivaa_id >= 3)) // Endret til >= 3
-                    {
-                        <li>
-                            <a asp-controller="Saksbehandler" asp-action="CaseWorkerView">Saksbehandler</a>
-                        </li>
-                    }
-
-                    if (user != null && user.tilgangsnivaa_id == 4)
-                    {
-                        <li>
-                            <a asp-controller="Admin" asp-action="AdminView">Admin</a>
-                        </li>
-                    }
+                    <li>
+                        <a asp-controller="Saksbehandler" asp-action="CaseWorkerView">Saksbehandler</a>
+                    </li>
                 }
+                else if (User.IsInRole("4"))
+                {
+                    <li>
+                        <a asp-controller="Saksbehandler" asp-action="CaseWorkerView">Saksbehandler</a>
+                    </li>
+                    <li>
+                        <a asp-controller="Admin" asp-action="AdminView">Admin</a>
+                    </li>
+                }
+                
+            @if (ViewData["RenderFooter"] != null && (bool)ViewData["RenderFooter"])  
+            {
                 <li>
                     <a href="#footer">Kontakt</a>
                 </li>
+            }
                 <li>
                     <a id="darkModeToggle">
                         <i class='bx bx-sun'></i>
@@ -95,18 +74,12 @@
                         <i class='bx bx-moon'></i>                     
                     </a>
                 </li>
-                @if (User.Identity.IsAuthenticated)
-            {
-                <li>
-                    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="logout-link">Logg ut</a>
-                    <form id="logout-form" asp-controller="Bruker" asp-action="Logout" method="post" style="display: none;">
-                    </form>
-                    </li>
-                }
+            
                 @if (User.Identity.IsAuthenticated)
                 {
                     <li>
                         <button id="menuButton">
+                            <div id="notificationDot" style="display: none;"></div>
                             <i class='bx bx-menu' id="menu"></i>
                             <i class='bx bx-x' id="menu" style="display: none;"></i>
                         </button>
@@ -115,10 +88,14 @@
                 }
             </ul>
         </nav>
+
+        <div id="notificationMessage"  style="display: none;">
+            <p>En av sakene dine har endret status, sjekk mine sider.</p>
+        </div>
        @if (User.Identity.IsAuthenticated)
         {
         <div id="dropdown-content">
-            <a asp-controller="Home" asp-action="MyPage">Min side</a>
+            <a  asp-controller="Bruker" asp-action="MyPage">Min side</a>
             <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="logout-link">Logg ut</a>
                 <form id="logout-form" asp-controller="Bruker" asp-action="Logout" method="post" style="display: none;">
                 </form>
@@ -132,60 +109,41 @@
         </main>
     </div>
 
-    <footer id="footer">
-        <h1 id="footer-h1">Kontaktinformasjon</h1>
-
-
-        <div id="footerContainer">
-            <div class="footer-btn">
-                <a href="https://github.com/mgoberg/kartverketprosjekt">
-                    <i class='bx bxl-github bx-tada-hover'></i>
-                </a>
-                <h3 class="ubuntu-regular">GitHub</h3>
-            </div>
-
-            <div class="footer-btn">
-                <a asp-controller="Home" asp-action="Contact">
-                    <i class='bx bx-conversation bx-flashing-hover'></i>
-                </a>
-                <h3 class="ubuntu-regular">Kontakt</h3>
-            </div>
-
-            <div class="footer-btn">
-
-                <a href="https://leafletjs.com/">
-                    <i class='bx bx-code bx-burst-hover'></i>
-                </a>
-                <h3 class="ubuntu-regular">Bibliotek</h3>
-            </div>
-
-        </div>
-        <p class="ubuntu-light">&copy; - 2024 Gruppe 14</p>
-    </footer>
-
-
-
-
-    
-
-    @if (ViewContext.RouteData.Values["action"].ToString() == "CorrectMap" || ViewContext.RouteData.Values["action"].ToString() == "CorrectionOverview")
+    @if (ViewData["RenderFooter"] != null && (bool)ViewData["RenderFooter"])
     {
-        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-                integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-                /*geoman library*/
-        @* <script src="https://unpkg.com/@@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.js"></script> *@
+        <footer id="footer">
+            
+        <div class="footer-separator"></div>
 
-        @*  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script> *@
+            <div id="footerContainer">
+                <div class="footer-btn">
+                    <a href="https://github.com/mgoberg/kartverketprosjekt">
+                        <i class='bx bxl-github bx-tada-hover'></i>
+                    </a>
+                    <h3 class="ubuntu-regular">GitHub</h3>
+                </div>
 
-        
+                <div class="footer-btn">
+                    <a asp-controller="Home" asp-action="Contact">
+                        <i class='bx bx-conversation bx-flashing-hover'></i>
+                    </a>
+                    <h3 class="ubuntu-regular">Kontakt</h3>
+                </div>
 
-        @* <script src="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet/0.0.1-beta.5/esri-leaflet.js"></script>
+                <div class="footer-btn">
 
-        <script src="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.js"></script> *@
-        <script src="/js/mapstuff.js"></script>
-       
+                    <a href="https://leafletjs.com/">
+                        <i class='bx bx-code bx-burst-hover'></i>
+                    </a>
+                    <h3 class="ubuntu-regular">Bibliotek</h3>
+                </div>
+
+            </div>
+            <p class="ubuntu-light">&copy; - 2024 Gruppe 14</p>
+        </footer>
     }
+
     @if (ViewContext.RouteData.Values["action"].ToString() == "RegisterAreaChange") 
     {
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -206,7 +164,7 @@
 
     }
     @await RenderSectionAsync("Scripts", required: false)
-    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="/js/site.js"></script>
 
 

@@ -9,6 +9,12 @@
         @TempData["Message"]
     </div>
 }
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
 <div class="box-container">
     <div class="box">
         <h1>Kartverkets nye rapporteringstjeneste</h1>
@@ -53,10 +59,10 @@
 </div>
 
 
-<div class="box-container">
+<div class="box-container" style="margin-bottom: 100px;">
     <div>
         <a href="https://www.kartverket.no/">
-            <img src="/images/kartverket-logo-large.svg" />
+            <img class="kartverketLogo" src="/images/kartverket-logo.svg"/>
         </a>
     </div>
 </div>
@@ -72,6 +78,9 @@
 <div id="modal" class="modal">
     <div class="modal-content">
         <h2 id="modal-title">Logg inn</h2>
+        
+        <img class="kartverketLogo" src="/images/kartverket-logo.svg"/>
+
         <form asp-controller="Bruker" asp-action="Login" method="post" id="login-form">
             <label for="epost">Epost:</label>
             <input type="email" id="epost" name="epost" required>
@@ -82,6 +91,8 @@
         <form asp-controller="Bruker" asp-action="Register" method="post" id="register-form" style="display: none;">
             <label for="epost">Epost:</label>
             <input type="email" id="epost" name="Epost" required>
+            <label for="navn">Navn:</label>
+            <input type="text" id="navn" name="Navn" placeholder="*Ikke påkrevd">
             <label for="passord">Passord:</label>
             <input type="password" id="passord" name="Passord" required>
             <button type="submit" class="btn-primary">Registrer</button>
@@ -100,39 +111,10 @@
 
 <div class="overlay" id="overlay"></div>
 
+@{
+    ViewData["RenderFooter"] = true;
+}
+
 @section Scripts {
-    <script>
-        function showModal() {
-            // Show the login modal when "Til Kartet" is clicked and the user is not logged in
-            document.getElementById('modal').style.display = 'block';
-            document.getElementById('overlay').style.display = 'block';
-        }
-
-        function toggleForm() {
-            // Toggle between login and register forms
-            var loginForm = document.getElementById("login-form");
-            var registerForm = document.getElementById("register-form");
-            var modalTitle = document.getElementById("modal-title");
-
-            if (loginForm.style.display === "none") {
-                loginForm.style.display = "block";
-                registerForm.style.display = "none";
-                modalTitle.innerText = "Logg inn";
-            } else {
-                loginForm.style.display = "none";
-                registerForm.style.display = "block";
-                modalTitle.innerText = "Registrer";
-            }
-        }
-
-        // Close modal when clicking outside the modal content
-        window.onclick = function (event) {
-            var modal = document.getElementById("modal");
-            var overlay = document.getElementById("overlay");
-            if (event.target == modal || event.target == overlay) {
-                modal.style.display = "none";
-                overlay.style.display = "none";
-            }
-        }
-    </script>
+    <script src="/js/index.js"></script>
 }

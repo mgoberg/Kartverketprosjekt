@@ -16,7 +16,7 @@
     --button-background-hover-color: rgba(100, 221, 138, 1);
     --button-text-color: #ffffff;
     --footer-text-color: #ffffff;
-    --footer-background-gradient: linear-gradient(0deg, rgba(26, 131, 59, 1) 10%, rgba(39, 40, 42, 0) 100%);
+    --footer-background-color: #e0e0e0;
     --footer-h1: white;
     --box-background-color: #ffffff;
     --box-background-color-alternate: #f9f9f9;
@@ -38,9 +38,9 @@ body.dark-mode {
     --button-background-color: #1a833b;
     --button-background-color-alternate: #606367;
     --button-text-color: #ffffff;
-    --footer-text-color: #000000;
-    --footer-background-gradient: linear-gradient(0deg, rgba(100, 221, 138, 1) 57%, rgba(39, 40, 42, 0) 100%);
+    --footer-text-color: #000;
     --footer-h1: black;
+    --footer-background-color: #494a4c;
     --box-background-color: #3e3f41;
     --box-background-color-alternate: #323234;
 }
@@ -158,12 +158,11 @@ main {
     overflow: hidden;
     position: fixed;
     /* Make the navbar fixed */
-   /* top: -100px;*/
-    /* Start the navbar off-screen */
+    top: 0;
     width: 100%;
     z-index: 2000;
     /* Ensure it appears above other elements */
-    /*transition: top 1.2s ease-in-out;*/
+    transition: transform 0.3s ease-in-out;
     /* Add transition for smooth animation */
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
     /* Add shadow for 3D effect */
@@ -205,6 +204,10 @@ main {
                     /* Change cursor to pointer */
                     color: var(--button-text-hover-color);
                 }
+.navbar-hidden {
+    transform: translateY(-100%);
+    transition: transform 0.3s ease-in-out;
+}
 
 #menuButton {
     background-color: var(--navbar-background-color);
@@ -233,6 +236,7 @@ main {
         padding: 12px 16px;
         text-decoration: none;
         display: block;
+        text-align: center;
     }
 
         #dropdown-content a:hover {
@@ -278,15 +282,19 @@ main {
 }
 
 
-
-#kartverketLogo {
+/*logo for navbar*/
+#kartverketLogoNavbar {
     height: 40px;
     /* Adjust the height as needed */
     margin-right: 20px;
     /* Space between the logo and the nav items */
 }
 
-
+/*generell logo som toggles mellom light og darkmode*/
+.kartverketLogo {
+    height: 40px;
+    /* Adjust the height as needed */
+}
 
 #container {
     display: flex;
@@ -493,6 +501,9 @@ form input[type="file"] {
     resize: none;
 }
 
+.hidden-form {
+    all: unset;
+}
 
 /* Style for the select element */
 select.form-control {
@@ -527,13 +538,28 @@ select.form-control {
     width: 100%;
 }
 
+#progressContainer {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 8px;
+}
+
+#progressBar {
+    height: 8px;
+    width: 0;
+    background-color: #4caf50;
+    border-radius: 8px;
+    transition: width 0.3s;
+    margin-bottom: 20px;
+}
+
 #footer {
     /*background-color: #0d1b2a; /* ikke gradient */
-    background: var(--footer-background-gradient);
-    color: var(--footer-text-color);
+    background: var(--footer-background-color);
+    color: var(--text-color);
     text-align: center;
     /* Center the text */
-    padding-top: 50px;
+    
     /* Add padding around the footer */
     padding-bottom: 50px;
     position: relative;
@@ -551,7 +577,7 @@ select.form-control {
     flex-wrap: nowrap;
     padding: 50px 120px;
     /* Add padding around the container */
-    margin: 10vw 15vw;
+    margin: 5vw 20vw;
     box-sizing: border-box;
     /* Include padding in the element's total width and height */
     border: none;
@@ -561,7 +587,7 @@ select.form-control {
     0 4px 3px rgba(0, 0, 0, 0.1); /* Outer shadow for raised look */
 }
 
-@media (max-width: 800px) {
+@media (max-width: 1000px) {
     #footerContainer {
         flex-direction: column;
         /* make items align in column on phone-screen */
@@ -570,7 +596,7 @@ select.form-control {
 
 #footer-h1 {
     color: var(--footer-h1);
-    margin-top: 200px;
+    /*margin-top: 200px;*/
 }
 
 .bx {
@@ -808,10 +834,15 @@ a {
     width: 60%;
 }
 
+.table-container {
+    max-height: 500px; 
+    overflow-y: auto; /* Enables vertical scrolling when content overflows */
+}
+
 .styled-table {
     width: 100%;
     max-width: 100%;
-    table-layout: fixed; /* Ensures the table doesn't overflow */
+    table-layout: auto; /* Allows columns to adjust width based on content */
     border-collapse: collapse;
     margin-top: 20px;
     margin-bottom: 50px;
@@ -852,6 +883,50 @@ a {
            
             cursor: pointer;
         }
+.admin-row {
+    background-color: #ffdddd; /* Light red for Admin */
+}
+
+.user-row {
+    background-color: #ddffdd; /* Light green for User */
+}
+
+.guest-row {
+    background-color: #ddddff; /* Light blue for Guest */
+}
+
+.default-row {
+    background-color: #f9f9f9; /* Light gray for other cases */
+}
+.stats-table-container {
+    display: flex; /* Use Flexbox */
+    gap: 20px; /* Space between sections */
+}
+
+.stats-section {
+    flex: 1; /* Allow each section to take equal width */
+}
+
+.stats-table {
+    width: 100%; /* Full width for each table */
+    border-collapse: collapse; /* Remove gaps between cells */
+    margin-top: 20px;
+}
+
+    .stats-table th,
+    .stats-table td {
+        border: 1px solid #ddd; /* Light gray border */
+        padding: 8px; /* Padding for cells */
+        text-align: left; /* Left align text */
+    }
+
+    .stats-table th {
+        background-color: var(--box-background-color);
+    }
+
+    .stats-table tr:nth-child(odd) {
+        background-color: var(--form-background-color);
+    }
 
 .separator {
     border-top: 1px solid #ddd;
@@ -910,7 +985,7 @@ select.input-validation-error {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(2px);
+    /*backdrop-filter: blur(2px);*/
 }
 
 #confirmationModal > div {
@@ -918,7 +993,8 @@ select.input-validation-error {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: white;
+    background-color: var(--box-background-color);
+    color: var(--text-color);
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
@@ -1023,6 +1099,7 @@ select.input-validation-error {
     display: flex;
     flex-direction: row;
     gap: 20px; /* Space between the boxes */
+    padding-bottom: 100px;
 }
 .dashboard p {
    line-height: 2;
@@ -1111,39 +1188,72 @@ h4 {
     width: 350px;
 }
 
-.stats-table-container {
-    
-    display: flex; /* Use Flexbox */
-    justify-content: space-between; /* Space out the sections */
-    margin: 20px 0; /* Add some vertical spacing */
+
+#notificationMessage {
+    background-color: rgba(100, 221, 138, 1);
+    color: black;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    position: fixed;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000000;
+    width: auto;
+    display: none;
+    border-radius: 25px;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
 }
 
-.stats-section {
-    flex: 1; /* Allow the stats section to grow */
-    margin-right: 20px; /* Add spacing between sections */
+#notificationMessage.fade-out {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-100%);
+}
+#notificationDot {
+    width: 10px; /* Adjust size as needed */
+    height: 10px;
+    background-color: red;
+    border-radius: 50%;
+    position: relative;
+    top: 5px; /* Adjust position as needed */
+    right: -25px; /* Adjust position as needed */
+    display: block;
+    box-shadow: 0 0 5px 2px rgba(255, 0, 0, 0.5);
 }
 
-.styled-table {
-    flex: 2; /* Allow the user table to take more space */
-    width: 100%; /* Full width for the table */
+.notificationAlertAnimation {
+    position: relative;
+    overflow: hidden;
 }
 
-.stats-table {
-    width: 100%; /* Full width for stats table */
-    border-collapse: collapse; /* Remove gaps between cells */
+.notificationAlertAnimation:before {
+    content: '';
+    position: absolute;
+    width: 100px;
+    height: 100%;
+    background-image: linear-gradient( 120deg, rgba(255,255,255, 0) 30%, rgba(255,255,255, .8), rgba(255,255,255, 0) 70% );
+    top: 0;
+    left: -100px;
+    animation: shine 3s infinite linear; /* Animation */
 }
-
-    .stats-table th,
-    .stats-table td {
-        border: 1px solid #ddd; /* Light gray border */
-        padding: 8px; /* Padding for cells */
-        text-align: left; /* Left align text */
+@keyframes shine {
+    0% {
+        left: -100px
     }
 
-    .stats-table th {
-        background-color: var(--box-background-color);
+    20% {
+        left: 100%
     }
 
-    .stats-table tr:nth-child(odd) {
-        background-color: var(--form-background-color);
+    100% {
+        left: 100%
     }
+}
+
+
+.footer-separator {
+    width: 100%;
+    border-top: 10px solid var(--button-background-color);
+    top: 0;
+}

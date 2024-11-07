@@ -9,17 +9,38 @@ L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/
 //adds scale to map
 L.control.scale().addTo(map);
 
-
+const layerErrorTypes = {
+    'land': ['Annet', 'Veg', 'Skogbilveg', 'Privatveg', 'Kommunalveg', 'Fylkesveg', 'Europaveg', 'Riksveg', 'Bom', 'Betgongkjegle', 'Bilsperre', 'Låst bom', 'New jersey', 'Rørgelender', 'Steinblokk', 'Bom med automatisk åpner', 'Trafikkavviser', 'Adressefeil'],
+    'grey': ['Annet', 'Veg', 'Skogbilveg', 'Privatveg', 'Kommunalveg', 'Fylkesveg', 'Europaveg', 'Riksveg', 'Bom', 'Betgongkjegle', 'Bilsperre', 'Låst bom', 'New jersey', 'Rørgelender', 'Steinblokk', 'Bom med automatisk åpner', 'Trafikkavviser', 'Adressefeil'],
+    'raster': ['Annet', 'Fotrute', 'Skiløype', 'Sykkelrute', 'Annen rute', 'Hytte', 'Skilt', 'Parkering'],
+    'sea': ['Annet', 'Grunnstøtning', 'Grunne, skjær eller holme', 'Bro, kai eller konstruksjon i sjø', 'Fylling eller molo', 'Havbruk eller oppdrettsanlegg', 'Rørledning, luftspenn eller undervannskabel', 'Lykt eller merke']
+};
 
 //var popup = L.popup();
 
-
-
-
 //FUNCTIONS
 
+// Funksjon for å oppdatere feiltype i dropdown
+function updateErrorTypeDropdown(layerName) {
+    const errorTypeSelect = document.getElementById('typeFeil');
+
+    // Tøm eksisterende alternativer
+    errorTypeSelect.innerHTML = '<option value="" disabled selected>...</option>';
+
+    // Hent de nye feiltypene basert på kartlaget
+    const errorTypes = layerErrorTypes[layerName] || [];
+
+    // Legg til de nye alternativene i dropdown
+    errorTypes.forEach(function (type) {
+        const option = document.createElement('option');
+        option.value = type;
+        option.textContent = type;
+        errorTypeSelect.appendChild(option);
+    });
+}
+
 // Function to change the tile layer and update button styles
-function changeTileLayer(layerUrl, attribution, buttonId) {
+function changeTileLayer(layerUrl, attribution, buttonId, layerName) {
     // Remove all existing layers
     map.eachLayer(function (layer) {
         if (!(layer instanceof L.FeatureGroup)) {
@@ -37,21 +58,25 @@ function changeTileLayer(layerUrl, attribution, buttonId) {
         button.classList.remove('selected');
     });
     document.getElementById(buttonId).classList.add('selected');
+
+    updateErrorTypeDropdown(layerName);
 }
+
+
 // functions called by pressing the map-layer buttons
 function changeToLand() {
-    changeTileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png', '&copy; <a href="http://www.kartverket.no/">Kartverket</a>', 'btn-changeToLand');
+    changeTileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png', '&copy; <a href="http://www.kartverket.no/">Kartverket</a>', 'btn-changeToLand', 'land');
 }
 
 function changeToGrey() {
-    changeTileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topograatone/default/webmercator/{z}/{y}/{x}.png', '&copy; <a href="http://www.kartverket.no/">Kartverket</a>', 'btn-changeToGrey');
+    changeTileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topograatone/default/webmercator/{z}/{y}/{x}.png', '&copy; <a href="http://www.kartverket.no/">Kartverket</a>', 'btn-changeToGrey', 'grey');
 }
 
 function changeToRaster() {
-    changeTileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/toporaster/default/webmercator/{z}/{y}/{x}.png', '&copy; <a href="http://www.kartverket.no/">Kartverket</a>', 'btn-changeToRaster');
+    changeTileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/toporaster/default/webmercator/{z}/{y}/{x}.png', '&copy; <a href="http://www.kartverket.no/">Kartverket</a>', 'btn-changeToRaster', 'raster');
 }
 function changeToSea() {
-    changeTileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/sjokartraster/default/webmercator/{z}/{y}/{x}.png', '&copy; <a href="http://www.kartverket.no/">Kartverket</a>', 'btn-changeToSea');
+    changeTileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/sjokartraster/default/webmercator/{z}/{y}/{x}.png', '&copy; <a href="http://www.kartverket.no/">Kartverket</a>', 'btn-changeToSea', 'sea');
 }
 
 document.getElementById('toggleButton').addEventListener('click', function () {
