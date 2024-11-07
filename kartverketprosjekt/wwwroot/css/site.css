@@ -1077,6 +1077,7 @@ select.input-validation-error {
     text-overflow: ellipsis;
     max-width: 90%; /* Juster etter ønsket bredde */
     cursor: pointer;
+    font-weight: bold;
 }
 
 .comment-expanded {
@@ -1092,11 +1093,12 @@ select.input-validation-error {
         margin: 0;
         padding: 18px 4px 8px 4px;
         background-color: var(--background-color);
-        font-size: small;
+        font-size: 10px;
         font-style: italic;
         color: var(--text-color-weak);
         border: none;
         cursor: default;
+        
     }
 
 .dashboard {
@@ -1280,4 +1282,14 @@ h4 {
     border-radius: 5px;
     width: 200px; /* Adjust width as necessary */
     transition: 0.3s;
+}
+
+.comment-bold {
+    font-weight: bold;
+}
+
+.kommentar-style {
+    font-size: 14px;
+    color: var(--text-color-weak);
+    border-radius:5
 }

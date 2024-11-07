@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Min Side";
 }
+<link rel="stylesheet" href="~/css/site.css" />
 
 <a asp-controller="Home" asp-action="Index">
     <i class='bx bx-chevron-left'></i>
@@ -73,6 +74,7 @@
                 <ul>
                     @foreach (var sak in Model)
                     {
+
                         // Assign the appropriate CSS class based on the status
                         string statusClass = sak.status switch
                         {
@@ -83,18 +85,27 @@
                             "Arkivert" => "status-arkivert", // Added case for 'Arkivert'
                             _ => string.Empty
                         };
-
+                      
                         <li style="list-style-type: none;">
-                            <strong>@sak.Kommunenavn</strong> -
+                            <h4 class="ubuntu-light" style="text-align: center; letter-spacing: 1px; ">Sak i <b>@sak.Kommunenavn</b></h4>
+                            
                             <strong>Status: <span class="@statusClass">@sak.status</span></strong> -
                             Opprettet: @sak.opprettet_dato.ToString("d")
-
                             <form class="hidden-form" asp-controller="Bruker" asp-action="DeleteCase" method="post">
                                 <input type="hidden" name="id" value="@sak.id" />
-                                <button style="all: unset; cursor: pointer;" type="submit" onclick="return confirm('Er du sikker på at du vil slette denne saken?');">
-                                    <i class='bx bx-x' style="font-size: 30px; color: var(--text-color);"></i>
+                                <button class="btn-danger" type="submit" onclick="return confirm('Er du sikker på at du vil slette denne saken?');">
+                                    Slett sak
                                 </button>
                             </form>
+                            
+                            <div id="commentsSection" data-sakid='@sak.id'>
+                                <h4 class="ubuntu-light" style="text-align: center; letter-spacing: 1px; ">Kommentarer</h4>
+                                <div class="separator"></div>
+                                <div class="kommentar-style">
+                                <ul id="commentsList-@sak.id"></ul>
+                                </div>
+
+                            
                         </li>
                     }
                 </ul>
@@ -105,7 +116,8 @@
             }
         </div>
     </div>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/mypage.js"></script>
 </div>
 @{
     ViewData["RenderFooter"] = true;

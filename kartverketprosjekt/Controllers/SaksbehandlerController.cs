@@ -68,9 +68,9 @@ public class SaksbehandlerController : Controller
     }
 
     [HttpPost]
-    public IActionResult AddComment(int sakID, string kommentar, string epost)
+    public async Task<IActionResult> AddComment(int sakID, string kommentar, string epost)
     {
-
+        var sak = await _context.Sak.FindAsync(sakID);
         // Validering av input
         if (sakID <= 0 || string.IsNullOrWhiteSpace(kommentar))
         {
@@ -94,6 +94,8 @@ public class SaksbehandlerController : Controller
             Dato = DateTime.Now,
             Epost = brukerEpost
         };
+
+        sak.status_endret = true;
 
         _context.Kommentar.Add(nyKommentar);
         _context.SaveChanges();
