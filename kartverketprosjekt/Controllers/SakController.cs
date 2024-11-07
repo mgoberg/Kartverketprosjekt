@@ -38,16 +38,14 @@ namespace kartverketprosjekt.Controllers
             sak.epost_bruker = User.Identity.Name;
             
             // Hent brukerens tilgangsnivå fra databasen
-            var bruker = await _context.Bruker
-                .FirstOrDefaultAsync(b => b.epost == sak.epost_bruker);
-            if (bruker == null)
+            if(User.Identity.IsAuthenticated)
             {
-                // Hvis brukeren ikke finnes, returner en feil
-                return BadRequest("Innlogget bruker ble ikke funnet.");
+                
+                var bruker = await _context.Bruker
+                    .FirstOrDefaultAsync(b => b.epost == sak.epost_bruker);
+                sak.IsPriority = bruker.tilgangsnivaa_id == 2;
             }
-
-            // Sjekk om brukeren har en prioritert tilgangsnivå (f.eks. 2 for Prioritert Bruker)
-            sak.IsPriority = bruker.tilgangsnivaa_id == 2;
+            
 
             // Hardkodede verdier for kommune_id og status
             sak.kommune_id = 1;
