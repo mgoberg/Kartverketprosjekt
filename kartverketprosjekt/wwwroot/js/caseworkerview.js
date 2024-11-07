@@ -357,3 +357,8 @@ $(document).ready(function () {
         });
     });
 });
+
+function playSound() {
+    var audio = new Audio('/images/viktigIkkeSlett.mp3'); // Replace with the path to your sound file
+    audio.play();
+}
