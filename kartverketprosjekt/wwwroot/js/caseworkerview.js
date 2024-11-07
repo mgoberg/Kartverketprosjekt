@@ -21,14 +21,14 @@ $('#slettSakKnapp').click(function () {
             data: { id: sakID },
             success: function (result) {
                 if (result.success) {
-                    alert(result.message);  // Viser en melding til brukeren
+                    console.log(result.message);  // Viser en melding til brukeren
                     location.reload();      // Oppdaterer siden for å fjerne slettet sak fra visningen
                 } else {
-                    alert(result.message);  // Viser en feilmelding 
+                    console.log(result.message);  // Viser en feilmelding 
                 }
             },
             error: function () {
-                alert("En feil oppstod under sletting.");
+                console.log("En feil oppstod under sletting.");
             }
         });
     }
