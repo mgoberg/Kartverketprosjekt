@@ -40,6 +40,7 @@ CREATE TABLE Sak (
     Kommunenummer VARCHAR(50),      -- Kan være en string, avhengig av hvordan nummeret lagres
     Fylkesnavn VARCHAR(255),
     Fylkesnummer VARCHAR(50),
+    IsPriority BOOLEAN DEFAULT FALSE, -- Nytt felt for å indikere om saken er prioritert
     FOREIGN KEY (epost_bruker) REFERENCES Bruker(epost),
     FOREIGN KEY (kommune_id) REFERENCES Kommune(id) -- Relasjon til Kommune-tabellen
 );

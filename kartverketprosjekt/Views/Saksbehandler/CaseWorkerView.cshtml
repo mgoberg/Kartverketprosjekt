@@ -54,7 +54,7 @@
 
             @foreach (var sak in ViewBag.Saker)
             {
-                <tr data-sakid='@sak.id' data-geojson='@Html.Raw(Json.Serialize(sak.geojson_data))' data-layerurl='@sak.layerurl' data-beskrivelse='@sak.beskrivelse' data-vedlegg='@sak.vedlegg'>
+                <tr class="@(sak.IsPriority ? "priority-row":"")" data-sakid='@sak.id' data-geojson='@Html.Raw(Json.Serialize(sak.geojson_data))' data-layerurl='@sak.layerurl' data-beskrivelse='@sak.beskrivelse' data-vedlegg='@sak.vedlegg'>
                     <td>@(sak.epost_bruker ?? "ikke registrert")</td>
                     <td>@sak.type_feil</td>
                     <td>@(sak.vedlegg != null ? "Ja" : "Nei")</td>
