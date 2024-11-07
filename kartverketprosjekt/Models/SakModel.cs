@@ -24,6 +24,9 @@ namespace kartverketprosjekt.Models
         public ICollection<KommentarModel> Kommentarer { get; set; } = new List<KommentarModel>();
 
         public bool status_endret { get; set; } = false;
+
+        // Nytt felt for å indikere om saken er prioritert
+        public bool IsPriority { get; set; } = false;
     }
 }
 

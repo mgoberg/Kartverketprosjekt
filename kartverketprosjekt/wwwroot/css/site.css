@@ -504,9 +504,13 @@ form input[type="file"] {
 .hidden-form {
     all: unset;
 }
+.priority-row {
+    color: #ff6961; /* Warm red*/
+    font-weight: bold; /* Bold text for emphasis */
+}
 
-/* Style for the select element */
-select.form-control {
+    /* Style for the select element */
+    select.form-control {
     width: 100%;
     padding: 0.5rem;
     background-color: var(--form-background-color);
