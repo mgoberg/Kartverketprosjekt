@@ -27,6 +27,7 @@ namespace kartverketprosjekt.Models
 
         // Nytt felt for å indikere om saken er prioritert
         public bool IsPriority { get; set; } = false;
+
     }
 }
 

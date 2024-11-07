@@ -338,5 +338,20 @@ public class BrukerController : Controller
 
         return Json(new { success = true });
     }
+    [Route("Bruker/GetComments")]
+    [HttpGet]
+    public IActionResult GetComments(int sakId)
+    {
+        var kommentarer = _context.Kommentar.Where(c => c.SakID == sakId).ToList();
+
+        if (kommentarer != null && kommentarer.Any())
+        {
+            return Json(new { success = true, kommentarer = kommentarer });
+        }
+        else
+        {
+            return Json(new { success = false, message = "No comments found" });
+        }
+    }
 }
 

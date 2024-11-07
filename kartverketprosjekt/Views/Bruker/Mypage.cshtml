@@ -83,18 +83,23 @@
                             "Arkivert" => "status-arkivert", // Added case for 'Arkivert'
                             _ => string.Empty
                         };
-
+                       
                         <li style="list-style-type: none;">
                             <strong>@sak.Kommunenavn</strong> -
                             <strong>Status: <span class="@statusClass">@sak.status</span></strong> -
                             Opprettet: @sak.opprettet_dato.ToString("d")
-
                             <form class="hidden-form" asp-controller="Bruker" asp-action="DeleteCase" method="post">
                                 <input type="hidden" name="id" value="@sak.id" />
-                                <button style="all: unset; cursor: pointer;" type="submit" onclick="return confirm('Er du sikker på at du vil slette denne saken?');">
-                                    <i class='bx bx-x' style="font-size: 30px; color: var(--text-color);"></i>
+                                <button class="btn-danger" type="submit" onclick="return confirm('Er du sikker på at du vil slette denne saken?');">
+                                    Slett sak
                                 </button>
                             </form>
+                            <div id="commentsSection" data-sakid='@sak.id'>
+                                <h4 class="ubuntu-light" style="text-align: center; letter-spacing: 1px; ">Kommentarer</h4>
+                                <div class="separator"></div>
+                                <ul id="commentsList"></ul>
+
+                            
                         </li>
                     }
                 </ul>
@@ -105,7 +110,54 @@
             }
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Get sakId from the data attribute of the div
+            var sakID = $('#commentsSection').data('sakid'); // Access sak.id from the div
 
+            $.ajax({
+                url: '/Bruker/GetComments',  // URL to controller's GetComments method
+                type: 'GET',
+                data: { sakId: sakID },  // Pass sakID to the request
+                success: function (result) {
+                    if (result.success) {
+                        // Clear the comment list before adding new comments
+                        $('#commentsList').empty();
+
+                        // Add each comment to the list
+                        result.kommentarer.forEach(function (kommentar) {
+                            var commentText = kommentar.tekst;
+                            var commentDate = kommentar.dato;
+                            var commentAuthor = kommentar.epost;
+                            var truncatedText = truncateText(commentText, 50);
+
+                            var commentElement = $('<li class="comment comment-collapsed"></li>')
+                                .text(truncatedText)
+                                .data('fullText', commentText); // Store full text in data-fullText attribute
+                            $('#commentsList').append(commentElement);
+
+                            // Create the comment info element
+                            var commentInfoElement = $('<li class="commentInfo"></li>')
+                                .text(commentDate + ' av ' + commentAuthor);
+
+                            $('#commentsList').append(commentInfoElement);
+                        });
+                    } else {
+                        console.log('Kunne ikke hente kommentarer: ' + result.message);
+                    }
+                },
+                error: function () {
+                    console.log('En feil oppstod under henting av kommentarer.');
+                }
+            });
+        });
+
+        // Helper function to truncate text if it exceeds the specified length
+        function truncateText(text, length) {
+            return text.length > length ? text.substring(0, length) + '...' : text;
+        }
+    </script>
 </div>
 @{
     ViewData["RenderFooter"] = true;
