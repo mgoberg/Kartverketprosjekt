@@ -25,24 +25,27 @@ namespace kartverketprosjekt.Controllers
             return View();
         }
 
+        // TODO: SCRAP?
         public IActionResult Privacy()
         {
             return View();
         }
 
+        // TODO: SCRAP?
         public IActionResult ChangePassword()
         {
             return View();
         }
 
 
-        // New Contact-related actions
+        // TODO: SCRAP?
         [HttpGet]
         public IActionResult Contact()
         {
             return View();
         }
 
+        // TODO: SCRAP?
         [HttpPost]
         public IActionResult Contact(ContactModel model)
         {
@@ -56,6 +59,7 @@ namespace kartverketprosjekt.Controllers
             return View(model);
         }
 
+        // TODO: SCRAP?
         public IActionResult ContactConfirmed()
         {
             return View();
