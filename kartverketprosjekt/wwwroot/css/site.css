@@ -253,6 +253,15 @@ main {
     top: 6px;
     right: 8px;
 }
+#infoIcon {
+    font-size: 30px;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    top: 6px;
+    right: 8px;
+}
+
 /* Dropdown content styling */
 #dropdown-content {
     display: none;
@@ -805,7 +814,7 @@ a {
 }
 
 
-.text-section {
+#text-section {
     position: relative;
     background-color: var(--box-background-color-alternate);
     max-width: 800px; /* Set a maximum width for readability */

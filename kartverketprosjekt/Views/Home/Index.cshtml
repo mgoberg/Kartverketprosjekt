@@ -29,12 +29,20 @@
             <a href="@Url.Action("RegisterAreaChange", "Sak")" class="btn-primary">
                 <i class='bx bx-map-pin' id="mapIcon"></i>Til Kartet
             </a>
+
+            <a href="#accent" style="none; margin-left: 350px;">
+                <i class='bx bx-info-circle' id="infoIcon"></i>
+            </a>
         }
         else
         {
             <!-- If the user is not logged in, show the modal for login -->
             <a class="btn-primary" onclick="showModal()">
                 <i class='bx bx-map-pin' id="mapIcon"></i>Til Kartet
+            </a>
+
+            <a href="#accent" style="none; margin-left: 350px;">
+                <i class='bx bx-info-circle' id="infoIcon"></i>
             </a>
         }
     </div>
@@ -44,7 +52,7 @@
     </div>
 </div>
 
-<div class="text-section">
+<div id="text-section">
     <h2 class="ubuntu-bold-italic">Kort om tjenesten</h2>
     <p class="ubuntu-light">
         Kartverket tilbyr en tjeneste der brukere enkelt kan rapportere feil i kartet
