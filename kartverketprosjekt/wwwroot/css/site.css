@@ -1293,3 +1293,29 @@ h4 {
     color: var(--text-color-weak);
     border-radius:5
 }
+
+.status-ikke-påbegynt {
+    color: grey;
+}
+
+.status-in-progress {
+    color: orange;
+}
+
+.status-completed {
+    color: Green;
+}
+
+.status-closed {
+    color: red;
+}
+
+.status-arkivert {
+    color: Brown;
+}
+
+.updated-status {
+    color: green;
+    font-weight: bold;
+    transition: all 0.5s ease;
+}

@@ -3,6 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace kartverketprosjekt.Models
 {
+
+    //TODO: FJERN?
     public class ContactModel
     {
         [Required(ErrorMessage = "Navn er påkrevd")]

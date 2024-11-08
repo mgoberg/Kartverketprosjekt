@@ -11,6 +11,7 @@
     Administrator side
 </h1>
 
+<!-- Feilmelding, vises hvis det er en feilmelding -->
 @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
 {
     <div class="alert alert-danger">
@@ -18,23 +19,23 @@
     </div>
 }
 
+<!-- Suksessmelding, vises hvis det er en suksessmelding -->
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success">
         @TempData["SuccessMessage"]
     </div>
 }
+
+<!-- Søkefelt -->
 <div class="sorting-container2">
     <div style class="search-bar2">
         <input type="text" id="searchInput" placeholder="Skriv inn for å søke..." />
     </div>
-        </div>
+        </div>    
 
-        <!-- Search Bar aligned to the right -->
-      
-
+<!-- Statistikk -->
 <div class="stats-table-container">
-    <!-- Statistics Section -->
     <div class="stats-section">
         <table class="stats-table">
             <tr>
@@ -73,7 +74,7 @@
 
     </div>
 
-    <!-- User Table -->
+    <!-- Brukere -->
 <div class="table-container">
 
         <table id="brukerTable" class="styled-table">
@@ -117,6 +118,7 @@
     </div>
 </div>
 
+<!--Modal for å endre på brukere sitt tilgangsnivå-->
 <div class="overlay" id="modalOverlay"></div>
 
 <div class="modal" id="userModal">
@@ -151,6 +153,7 @@
     </div>
 </div>
 
+<!-- Opprette ny bruker -->
 <h2 style="text-align: center;">Opprett en ny bruker</h2>
 
 <form asp-action="OpprettBruker" method="post">
@@ -181,5 +184,8 @@
     </div>
     <button type="submit" class="btn btn-primary">Opprett bruker</button>
 </form>
+
+
+<!-- Scripts -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="/js/adminview.js"></script>

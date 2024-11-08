@@ -10,8 +10,11 @@
 
 <div class="dashboard">
     <div class="dashboard-box">
+        <!-- Henter ut data-->
         <div id="map" data-layerurl="@Model.layerurl" data-geojson="@Html.Raw(Model.geojson_data)" data-description="@Model.beskrivelse"></div>
     </div>
+
+    <!-- Kvittering -->
     <div class="dashboard-box">
         <p><strong>Referansernummer:</strong> @Model.id </p>
         <p><strong>Type:</strong> @Model.type_feil</p>
