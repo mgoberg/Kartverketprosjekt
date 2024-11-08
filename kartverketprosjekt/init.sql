@@ -12,7 +12,7 @@ CREATE TABLE Kommune (
 
 -- Opprette tabell for brukere
 CREATE TABLE Bruker (
-    epost VARCHAR(100) PRIMARY KEY,
+    epost VARCHAR(100) PRIMARY KEY NULL,
     navn VARCHAR(100) NULL,
     passord VARCHAR(255) NOT NULL,
     tilgangsnivaa_id INT,
@@ -26,7 +26,7 @@ CREATE TABLE Bruker (
 -- Opprette tabell for saker
 CREATE TABLE Sak (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    epost_bruker VARCHAR(100), -- Referanse til brukeren som rapporterer saken
+    epost_bruker VARCHAR(100) NULL, -- Referanse til brukeren som rapporterer saken
     beskrivelse TEXT NOT NULL,
     vedlegg VARCHAR(255) NULL, -- Binærdata for vedlegg
     geojson_data JSON, -- Inneholder kartdata i JSON-format
