@@ -60,6 +60,33 @@ html {
     /*changes highlight color*/
 }
 
+/* scrollbar styling */
+
+/* WebKit-based browsers */
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
+}
 
 .alert-success {
     color: var(--alert-success);
@@ -245,7 +272,7 @@ main {
         }
 
 /* Media query for fullscreen mode */
-@media (min-width: 1024px) {
+@media (min-width: 1600px) {
     #navbar ul {
         margin: 0 250px; /* Adjust the margin as needed */
     }
@@ -308,6 +335,13 @@ main {
     background-color: var(--background-color);
 }
 
+@media (min-width: 1600px) {
+    #container {
+        padding: 10px 300px;
+        /* Add side padding for larger screens */
+    }
+}
+
 h1 {
     padding-bottom: 15px;
     padding-top: 15px;
@@ -323,12 +357,6 @@ p {
     margin-bottom: 12px;
 }
     
-@media (min-width: 1024px) {
-    #container {
-        padding: 10px 300px;
-        /* Add side padding for larger screens */
-    }
-}
 
 form {
     display: flex;
@@ -336,7 +364,7 @@ form {
     /* Align elements vertically */
     width: 100%;
     /* Ensure the form takes the full width of its container */
-    max-width: 200px;
+    max-width: 300px;
     /* Optional: Set a maximum width for the form */
     margin: 0 auto;
     margin-top: 20px;
@@ -352,13 +380,13 @@ form {
     /* Optional: Add a shadow for better visibility */
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1600px) {
     form {
-        max-width: 600px;
+        max-width: 500px;
     }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1600px) {
     .flex-row {
         flex-wrap: wrap;
     }
@@ -839,7 +867,9 @@ a {
 }
 
 .table-container {
-    max-height: 500px; 
+    padding: 0;
+    margin: 0;
+    max-height: 500px;
     overflow-y: auto; /* Enables vertical scrolling when content overflows */
 }
 
@@ -1039,7 +1069,7 @@ select.input-validation-error {
     cursor: pointer;
 }
 
-#commentsSection {
+.commentsSection {
     margin-top: 20px;
     padding: 10px;
     border: 1px solid #ddd;
@@ -1049,11 +1079,11 @@ select.input-validation-error {
     margin-bottom: 20px;
 }
 
-    #commentsSection h4 {
+    .commentsSection h4 {
         margin-bottom: 10px;
     }
 
-#commentsList {
+.commentsList {
     max-height: 250px; /* Sett ønsket høyde */
     overflow-y: scroll; /* Legg til rullefelt når innholdet overstiger høyden */
     padding: 0;
@@ -1061,14 +1091,16 @@ select.input-validation-error {
     list-style-type: none; /* Fjern punktliste-stil */
 }
 
-    #commentsList > .comment {
+    .commentsList > .comment {
         font-size: 1rem;
         padding: 16px 8px 16px 8px;
         margin-bottom: 5px;
         background-color: var(--box-background-color);
-        border-radius: 3px;
+        border-radius: 8px;
         transition: 0.1s ease-in-out;
         word-wrap: break-word;
+        line-height: 1.8; 
+        box-shadow: rgba(14, 63, 126, 0.06) 0px 0px 0px 1px, rgba(42, 51, 70, 0.03) 0px 1px 1px -0.5px, rgba(42, 51, 70, 0.04) 0px 2px 2px -1px, rgba(42, 51, 70, 0.04) 0px 3px 3px -1.5px, rgba(42, 51, 70, 0.03) 0px 5px 5px -2.5px, rgba(42, 51, 70, 0.03) 0px 10px 10px -5px, rgba(42, 51, 70, 0.03) 0px 24px 24px -8px;
     }
 
 .comment-collapsed {
@@ -1089,7 +1121,7 @@ select.input-validation-error {
         }
 
 
-    #commentsList > .commentInfo {
+    .commentsList > .commentInfo {
         margin: 0;
         padding: 18px 4px 8px 4px;
         background-color: var(--background-color);
@@ -1107,18 +1139,29 @@ select.input-validation-error {
     gap: 20px; /* Space between the boxes */
     padding-bottom: 100px;
 }
-.dashboard p {
-   line-height: 2;
-}
-    .dashboard-box {
-        flex: 1;
-        padding: 20px;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        background-color: var(--box-background-color-alternate);
-        min-width: 200px;
-        min-height: 200px;
+
+    .dashboard p {
+        line-height: 2;
     }
+
+@media(max-width: 700px) {
+    .dashboard {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+.dashboard-box {
+    flex: 1; /* Ensures equal space distribution */
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: var(--box-background-color-alternate);
+    min-width: 200px;
+    min-height: 200px;
+    box-sizing: border-box; /* Ensures padding is included in the element's total width */
+}
+
 
 .btn-container {
     display: flex;
@@ -1200,7 +1243,6 @@ h4 {
     color: black;
     padding: 10px;
     text-align: center;
-    font-weight: bold;
     position: fixed;
     top: 90px;
     left: 50%;
@@ -1214,7 +1256,7 @@ h4 {
 
 #notificationMessage.fade-out {
     opacity: 0;
-    transform: translateX(-50%) translateY(-100%);
+    transform: translateX(-50%) translateY(-300%);
 }
 #notificationDot {
     width: 10px; /* Adjust size as needed */
@@ -1284,12 +1326,3 @@ h4 {
     transition: 0.3s;
 }
 
-.comment-bold {
-    font-weight: bold;
-}
-
-.kommentar-style {
-    font-size: 14px;
-    color: var(--text-color-weak);
-    border-radius:5
-}

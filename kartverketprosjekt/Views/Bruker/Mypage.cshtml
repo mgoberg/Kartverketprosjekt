@@ -28,7 +28,7 @@
 
 <div class="dashboard">
     <div class="dashboard-box">
- <h2>Kontoinstillinger </h2>
+        <h2>Kontoinstillinger </h2>
         <!-- Form for Updating Name -->
         <form asp-controller="Bruker" asp-action="UpdateName" method="post">
             @Html.AntiForgeryToken() <!-- Ensure this is included for security -->
@@ -66,55 +66,65 @@
             color: Brown;
         }
     </style>
-    <div class="table-container">
-        <div class="dashboard-box">
-            <h2>Oversikt over dine saker</h2>
-            @if (Model != null && Model.Count > 0)
-            {
-                <ul>
-                    @foreach (var sak in Model)
+    
+    <div class="dashboard-box">
+        <div class="table-container">
+        <h2 style="text-align: center;">Oversikt over dine saker</h2>
+        @if (Model != null && Model.Count > 0)
+        {
+            <ul>
+                @foreach (var sak in Model)
+                {
+
+                    // Assign the appropriate CSS class based on the status
+                    string statusClass = sak.status switch
                     {
+                        "Ubehandlet" => "status-ikke-påbegynt",
+                        "Under Behandling" => "status-in-progress",
+                        "Løst" => "status-completed",
+                        "Avvist" => "status-closed",
+                        "Arkivert" => "status-arkivert", // Added case for 'Arkivert'
+                        _ => string.Empty
+                    };
 
-                        // Assign the appropriate CSS class based on the status
-                        string statusClass = sak.status switch
-                        {
-                            "Ubehandlet" => "status-ikke-påbegynt",
-                            "Under Behandling" => "status-in-progress",
-                            "Løst" => "status-completed",
-                            "Avvist" => "status-closed",
-                            "Arkivert" => "status-arkivert", // Added case for 'Arkivert'
-                            _ => string.Empty
-                        };
-                      
-                        <li style="list-style-type: none;">
+                    <li style="list-style-type: none;">
+
+
+
+                        <div class="commentsSection" data-sakid='@sak.id'>
                             <h4 class="ubuntu-light" style="text-align: center; letter-spacing: 1px; ">Sak i <b>@sak.Kommunenavn</b></h4>
-                            
-                            <strong>Status: <span class="@statusClass">@sak.status</span></strong> -
-                            Opprettet: @sak.opprettet_dato.ToString("d")
-                            <form class="hidden-form" asp-controller="Bruker" asp-action="DeleteCase" method="post">
-                                <input type="hidden" name="id" value="@sak.id" />
-                                <button class="btn-danger" type="submit" onclick="return confirm('Er du sikker på at du vil slette denne saken?');">
-                                    Slett sak
-                                </button>
-                            </form>
-                            
-                            <div id="commentsSection" data-sakid='@sak.id'>
-                                <h4 class="ubuntu-light" style="text-align: center; letter-spacing: 1px; ">Kommentarer</h4>
-                                <div class="separator"></div>
-                                <div class="kommentar-style">
-                                <ul id="commentsList-@sak.id"></ul>
-                                </div>
 
-                            
-                        </li>
-                    }
-                </ul>
-            }
-            else
-            {
-                <p>Du har ingen saker.</p>
-            }
-        </div>
+                            <p style="text-align: center;"> <strong>Status: <span class="@statusClass">@sak.status</span></strong> -
+                                Opprettet: @sak.opprettet_dato.ToString("d")
+                            </p>
+
+
+                            <div class="separator"></div>
+                            <ul class="commentsList" id="@sak.id">
+                                <!-- her legges kommentarene -->
+                            </ul>
+
+                            <form class="hidden-form" asp-controller="Bruker" asp-action="DeleteCase" method="post">
+                                <input type="hidden" name="id" value="@sak.id"/>
+                                <div class="btn-container">
+
+                                    <button class="btn-danger" type="submit" onclick="return confirm('Er du sikker på at du vil slette denne saken?');" style="margin-top: 28px;">
+                                        Slett sak
+                                    </button>
+
+                                </div>
+                            </form>
+
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>Du har ingen saker.</p>
+        }
+    </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/js/mypage.js"></script>
