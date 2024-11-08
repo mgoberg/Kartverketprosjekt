@@ -245,7 +245,14 @@ main {
     font-size: 30px;
     background-color: var(--navbar-background-color);
 }
-
+#mapIcon {
+    font-size: 30px;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    top: 6px;
+    right: 8px;
+}
 /* Dropdown content styling */
 #dropdown-content {
     display: none;
@@ -622,6 +629,7 @@ form input[type="file"] {
 @media (max-width: 1000px) {
     #footerContainer {
         flex-direction: column;
+        padding: 50px 80px;
         /* make items align in column on phone-screen */
     }
 }
@@ -741,7 +749,7 @@ a {
 .box {
     flex: 1;
     margin-bottom: 75px;
-    height: 35vh;
+    height: 100%;
     padding: 25px;
     justify-content: center;
     align-items: center;
@@ -751,6 +759,8 @@ a {
     box-shadow: 0 7px 30px -10px rgba(150,170,180,0.5);
     max-width: 600px;
     width: 100%;
+    min-width: 400px;
+    min-height: 300px;
 }
 
         .box p {
@@ -764,7 +774,7 @@ a {
     padding: 25px;
     justify-content: center;
     align-items: center;
-    background-color: var(--background-color);
+    background-color: none;
     border-radius: 10px;
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
     height: 80vh;
@@ -782,12 +792,18 @@ a {
     max-width: 500px; /* Maximum size for the "large" version */
     width: 100%; /* Let the width adjust freely between the min and max sizes */
 }
-   
-
+ 
 
     #phone-img:hover {
         transform: translateY(-10px);
     }
+
+@media(max-width: 1200px) {
+    #phone-img {
+        display: none;
+    }
+}
+
 
 .text-section {
     position: relative;

@@ -18,18 +18,24 @@
 <div class="box-container">
     <div class="box">
         <h1>Kartverkets nye rapporteringstjeneste</h1>
-        <p>Bidra med å forbedre kartgrunnlaget til Kartverkets offentlige kart</p>
+        <p>
+            Bidra med å forbedre kartgrunnlaget til Kartverkets offentlige kart
+        </p>
 
         <!-- Conditionally render "Til Kartet" button based on user's authentication status -->
         @if (User.Identity.IsAuthenticated)
         {
             <!-- If the user is logged in, redirect them directly to RegisterAreaChange -->
-            <a href="@Url.Action("RegisterAreaChange", "Sak")" class="btn-primary">Til Kartet</a>
+            <a href="@Url.Action("RegisterAreaChange", "Sak")" class="btn-primary">
+                <i class='bx bx-map-pin' id="mapIcon"></i>Til Kartet
+            </a>
         }
         else
         {
             <!-- If the user is not logged in, show the modal for login -->
-            <a class="btn-primary" onclick="showModal()">Til Kartet</a>
+            <a class="btn-primary" onclick="showModal()">
+                <i class='bx bx-map-pin' id="mapIcon"></i>Til Kartet
+            </a>
         }
     </div>
 
@@ -59,7 +65,7 @@
 </div>
 
 
-<div class="box-container" style="margin-bottom: 100px;">
+<div class="box-container" style="margin-bottom: 200px;">
     <div>
         <a href="https://www.kartverket.no/">
             <img class="kartverketLogo" src="/images/kartverket-logo.svg"/>

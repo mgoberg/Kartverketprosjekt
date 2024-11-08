@@ -45,7 +45,15 @@
     /* Initially hide the button container */
 }
 
-@media (max-width: 1400px) {
+@media (min-width: 1600px) {
+    #buttonContainer {
+        left: 20px;
+        /* Adjust as needed */
+        right: 20px;
+        /* Adjust as needed */
+    }
+}
+@media (max-width: 800px) {
     #buttonContainer {
         left: 20px;
         /* Adjust as needed */
@@ -59,7 +67,7 @@
     /* Allow buttons to grow and shrink, with a minimum width of 100px */
     margin: 10px;
     /* Space between buttons */
-    padding: 20px;
+    padding: 22px;
     /* Adjust padding as needed */
     border: 2px solid black;
     /* Corrected border syntax */
