@@ -134,103 +134,52 @@
 
 
 
+/* Container styling */
 #verticalButtonContainer {
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: flex-start; /* Align items to the top initially */
     align-items: flex-end;
-    /* Center items vertically */
-    flex-wrap: wrap;
-    /* Allow buttons to wrap to the next line if needed */
     padding: 20px;
-    /* Add padding around the container */
+    height: 100%;
 }
 
-    #verticalButtonContainer button:hover {
-        transition-timing-function: ease-in-out;
-        transform: scale(1.1);
-        background-color: var(--button-text-hover-color);
-        color: var(--button-text-hover-color-alternate);
+    /* General button styling */
+    #verticalButtonContainer button {
+        margin: 10px 5px;
+        padding: 10px 10px;
+        background-color: var(--background-color);
+        box-shadow: 2px 3px 2px rgba(0, 0, 0, 0.3);
+        color: var(--text-color);
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        z-index: 1001;
+        transition: 0.2s;
     }
 
-#toggleButton {
-    margin: 10px 5px;
-    padding: 10px 10px;
-    background-color: var(--background-color);
-    box-shadow: 2px 3px 2px rgba(0, 0, 0, 0.3);
-    /* Add shadow for 3D effect */
-    color: var(--text-color);
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    z-index: 1001;
-    /* Ensure it appears above other elements */
-    transition: 0.2s;
-    
+        #verticalButtonContainer button:hover {
+            transition-timing-function: ease-in-out;
+            transform: scale(1.1);
+        }
+
+/* Active/toggled button styling */
+#verticalButtonContainer button.active {
+    background-color: var(--button-text-hover-color); 
+    color: var(--button-text-hover-color-alternate); 
 }
 
-#layers {
-    font-size: 30px;
-}
 
-#geolocateButton {
-    margin: 10px 5px;
-    padding: 10px 10px;
-    background-color: var(--background-color);
-    box-shadow: 2px 3px 2px rgba(0, 0, 0, 0.3);
-    /* Add shadow for 3D effect */
-    color: var(--text-color);
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    z-index: 1001;
-    /* Ensure it appears above other elements */
-    transition: 0.2s;
-    
-}
-
-#cross {
-    font-size: 30px;
-}
-
-#fullscreenButton {
-    margin: 10px 5px;
-    padding: 10px 10px;
-    background-color: var(--background-color);
-    box-shadow: 2px 3px 2px rgba(0, 0, 0, 0.3);
-    /* Add shadow for 3D effect */
-    color: var(--text-color);
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    z-index: 1001;
-    /* Ensure it appears above other elements */
-    transition: 0.2s;
-    
-}
-
+/* Optional icon styling */
+#matrikkel,
+#vegnett,
+#layers,
+#cross,
 #fullscreen {
     font-size: 30px;
 }
 
-#matrikkelkartToggleButton {
-    margin: 10px 5px;
-    padding: 10px 10px;
-    background-color: var(--background-color);
-    box-shadow: 2px 3px 2px rgba(0, 0, 0, 0.3);
-    /* Add shadow for 3D effect */
-    color: var(--text-color);
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    z-index: 1001;
-    /* Ensure it appears above other elements */
-    transition: 0.2s;
-}
 
-#matrikkel {
-    font-size: 30px;
-}
 #currentLayer {
     position: absolute;
     top: 5%;
