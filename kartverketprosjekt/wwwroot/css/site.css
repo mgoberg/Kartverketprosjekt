@@ -741,7 +741,7 @@ a {
 }
 
     .btn-danger:hover {
-    background-color: darkred; /* Mørkere rød ved hover */
+    background-color: darkred; /* MÃ¸rkere rÃ¸d ved hover */
     }
 
 .box-container {
@@ -867,7 +867,7 @@ a {
     background-color: rgba(0, 0, 0, 0.4); /* Very light overlay */
     z-index: 9998; /* Ensures it's behind the modal */
     display: none;  
-    /*backdrop-filter: blur(2px);*/  /* gjør at det lagger som faen */ 
+    /*backdrop-filter: blur(2px);*/  /* gjÃ¸r at det lagger som faen */ 
 }
 
 /* Show modal and keep the background visible */
@@ -1034,7 +1034,7 @@ select.input-validation-error {
 }
 
 
-        /* Styling for bekreftelse på innsending av Sak*/
+        /* Styling for bekreftelse pÃ¥ innsending av Sak*/
 #confirmationModal {
     display: none;
     position: fixed;
@@ -1109,8 +1109,8 @@ select.input-validation-error {
     }
 
 .commentsList {
-    max-height: 250px; /* Sett ønsket høyde */
-    overflow-y: scroll; /* Legg til rullefelt når innholdet overstiger høyden */
+    max-height: 250px; /* Sett Ã¸nsket hÃ¸yde */
+    overflow-y: scroll; /* Legg til rullefelt nÃ¥r innholdet overstiger hÃ¸yden */
     padding: 0;
     margin: 0;
     list-style-type: none; /* Fjern punktliste-stil */
@@ -1132,7 +1132,7 @@ select.input-validation-error {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 90%; /* Juster etter ønsket bredde */
+    max-width: 90%; /* Juster etter Ã¸nsket bredde */
     cursor: pointer;
     font-weight: bold;
 }
@@ -1351,3 +1351,38 @@ h4 {
     transition: 0.3s;
 }
 
+.comment-bold {
+    font-weight: bold;
+}
+
+.kommentar-style {
+    font-size: 14px;
+    color: var(--text-color-weak);
+    border-radius:5
+}
+
+.status-ikke-pÃ¥begynt {
+    color: grey;
+}
+
+.status-in-progress {
+    color: orange;
+}
+
+.status-completed {
+    color: Green;
+}
+
+.status-closed {
+    color: red;
+}
+
+.status-arkivert {
+    color: Brown;
+}
+
+.updated-status {
+    color: green;
+    font-weight: bold;
+    transition: all 0.5s ease;
+}

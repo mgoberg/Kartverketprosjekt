@@ -3,6 +3,7 @@
     ViewData["Title"] = "Ny rapport tjeneste";
 }
 
+<!-- Feedback -->
 @if (TempData["Message"] != null)
 {
     <div class="alert alert-success">
@@ -15,6 +16,8 @@
         @TempData["ErrorMessage"]
     </div>
 }
+
+
 <div class="box-container">
     <div class="box">
         <h1>Kartverkets nye rapporteringstjeneste</h1>
@@ -22,10 +25,10 @@
             Bidra med å forbedre kartgrunnlaget til Kartverkets offentlige kart
         </p>
 
-        <!-- Conditionally render "Til Kartet" button based on user's authentication status -->
+        <!-- Til kartet knapp omdirigering basert på om bruker er logget inn eller ei -->
         @if (User.Identity.IsAuthenticated)
         {
-            <!-- If the user is logged in, redirect them directly to RegisterAreaChange -->
+            <!-- Hvis logget inn, til kartet. -->
             <a href="@Url.Action("RegisterAreaChange", "Sak")" class="btn-primary">
                 <i class='bx bx-map-pin' id="mapIcon"></i>Til Kartet
             </a>
@@ -36,7 +39,7 @@
         }
         else
         {
-            <!-- If the user is not logged in, show the modal for login -->
+            <!-- Hvis ikke logget inn, vis modal for innlogging -->
             <a class="btn-primary" onclick="showModal()">
                 <i class='bx bx-map-pin' id="mapIcon"></i>Til Kartet
             </a>
@@ -44,6 +47,7 @@
             <a href="#accent" style="none; margin-left: 350px;">
                 <i class='bx bx-info-circle' id="infoIcon"></i>
             </a>
+
         }
     </div>
 
@@ -73,14 +77,15 @@
 </div>
 
 
-<div class="box-container" style="margin-bottom: 200px;">
+<!-- Kartverket logo-->
+<div class="box-container" style="margin-bottom: 100px;">
     <div>
         <a href="https://www.kartverket.no/">
             <img class="kartverketLogo" src="/images/kartverket-logo.svg"/>
         </a>
     </div>
 </div>
-
+<!-- Feedback -->
 @if (ViewBag.ErrorMessage != null)
 {
     <div class="error-message">
@@ -111,14 +116,14 @@
             <input type="password" id="passord" name="Passord" required>
             <button type="submit" class="btn-primary">Registrer</button>
         </form>
+        <div id="toggle-form">
+            <a class="btn-primary" onclick="toggleForm()">Registrer </a>
+        </div>
 
+        <h3 style="font-size: small; font-style: lighter; color: green; margin-top: 45px;">Eller</h3>
         <!-- Fortsett uten å logge inn -->
         <div id="continue-without-login">
             <a asp-controller="Sak" asp-action="RegisterAreaChange" style="text-align: center; display: block; color: var(--button-text-hover-color); padding: 15px;"><u>Fortsett uten å logge inn</u></a>
-        </div>
-
-        <div id="toggle-form">
-            <a style="text-align: center; display: block; color: var(--button-text-hover-color); padding: 15px; cursor: pointer;" onclick="toggleForm()">Registrer </a>
         </div>
     </div>
 </div>

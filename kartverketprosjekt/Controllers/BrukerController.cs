@@ -6,9 +6,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+// ***********************************************************************************************************************
+// ******BrukerController er en controller som håndterer alle funksjoner som kun skal være tilgjengelig for brukere.******
+// ***********************************************************************************************************************
 
 public class BrukerController : Controller
 {
+    
     private readonly KartverketDbContext _context;
 
     public BrukerController(KartverketDbContext context)
@@ -16,6 +20,7 @@ public class BrukerController : Controller
         _context = context;
     }
 
+    // Viser min side.
     public async Task<IActionResult> MyPage()
     {
         // Hent e-post fra den innloggede brukeren
@@ -27,7 +32,7 @@ public class BrukerController : Controller
             return RedirectToAction("Index", "Home"); // Hvis brukeren ikke er innlogget, omdiriger
         }
 
-        Console.WriteLine($"Brukerens e-post: {bruker}");
+        Console.WriteLine($"Brukerens e-post: {bruker}"); // DEBUG
 
         // Hent saker knyttet til brukeren fra databasen
         var saker = await _context.Sak
@@ -39,63 +44,66 @@ public class BrukerController : Controller
     }
 
     // POST login
+    // Metode for å logge inn en bruker.
     [ValidateAntiForgeryToken]
     [HttpPost]
     public async Task<IActionResult> Login(string epost, string password)
     {
-        // Retrieve the user from the database
+        // Henter brukeren fra databasen basert på e-post.
         var user = _context.Bruker.FirstOrDefault(u => u.epost == epost);
-
+        // Sjekker om brukeren finnes og om passordet er korrekt.
         if (user != null)
         {
             var passwordHasher = new PasswordHasher<BrukerModel>();
 
-            // Check if the password in the database is hashed or not
+            // Sjekker om passordet er hashet eller ei.
             bool isPasswordValid;
-
+            // hvis passordet er hashet så verifiseres det.
             if (IsHashedPassword(user.passord))
             {
-                // Verify hashed password
+                // Verifiserer
                 var result = passwordHasher.VerifyHashedPassword(user, user.passord, password);
                 isPasswordValid = result == PasswordVerificationResult.Success;
             }
             else
             {
-                // Compare plaintext password
+                // Sammenlikner klartekst passord
                 isPasswordValid = user.passord == password;
             }
-
+            // Hvis passordet er korrekt så logges brukeren inn.
             if (isPasswordValid)
             {
-                // Create claims for the logged-in user
+                // Oppretter Claims for brukeren med epost som navn og tilgangsnivå som rolle.
                 var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.epost),
-                new Claim(ClaimTypes.Role, user.tilgangsnivaa_id.ToString()) // Optional: Handle roles
+                new Claim(ClaimTypes.Name, user.epost), // Håndterer navnet.
+                new Claim(ClaimTypes.Role, user.tilgangsnivaa_id.ToString()) // Håndterer rollen.
             };
-
+                // ClaimsIdentity representerer brukerens identitet og tilhørende krav, som navn og rolle. Bruker Cookies for autentisering.
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                // Logger inn brukere med CookieAuthenticationDefaults.AuthenticationScheme.
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
                 return RedirectToAction("RegisterAreaChange", "Sak");
             }
         }
 
-        // If user is not found or password is incorrect, show an error message
+        // hvis brukeren ikke finnes eller passordet er feil så vises en feilmelding.
         TempData["ErrorMessage"] = "Feil epost eller passord";
         return RedirectToAction("Index", "Home");
     }
 
     private bool IsHashedPassword(string password)
     {
-        // Example: Assume that a hashed password is at least 60 characters (bcrypt or similar)
+        // Passordet hashes med PasswordHasher på en slik måte at det er lengre enn 60 tegn.
         return password.Length >= 60;
     }
 
-    // POST logout
+    // Metode for å logge ut en bruker.
     [HttpPost]
     public async Task<IActionResult> Logout()
     {
+        // Logger ut brukeren.
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
         // Set a success message for the logout
@@ -103,7 +111,9 @@ public class BrukerController : Controller
         return RedirectToAction("Index", "Home"); // Redirect to the desired page after logout
     }
 
-    // POST register
+
+   
+    // Metode for å registrere en ny bruker.
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(RegistrerModel model)
@@ -120,7 +130,7 @@ public class BrukerController : Controller
                 passord = passwordHasher.HashPassword(null, model.passord),
                 epost = model.epost,
                 navn = model.navn,
-                tilgangsnivaa_id = 1 // Set appropriate access level
+                tilgangsnivaa_id = 1 // Setter tilgangsnivå til 1 som standard.
             };
 
             // Nullstiller passord før lagring slik at passordet ikke finnes i klartekst.
@@ -157,43 +167,53 @@ public class BrukerController : Controller
         return RedirectToAction("Index", "Home");
     }
 
+
+    // Metode for å oppdatere passordet til en bruker / Endre passord.
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> UpdatePassword(string password)
     {
-        // Assume the user's email is retrieved from the session or identity information.
-        string epost = User.Identity.Name; // Adjust this as needed based on your authentication setup
+        // Henter e-post fra den innloggede brukeren. (Brukernavnet / Brukeren)
+        string epost = User.Identity.Name;
 
+        // Finner brukeren i databasen.
         var bruker = await _context.Bruker.FirstOrDefaultAsync(b => b.epost == epost);
+
+        // Sjekker om brukeren finnes.
         if (bruker != null)
         {
             var passwordHasher = new PasswordHasher<BrukerModel>();
-            bruker.passord = passwordHasher.HashPassword(bruker, password); // Hash the new password
+            bruker.passord = passwordHasher.HashPassword(bruker, password); // Hasher passordet.
 
+            // Lagrer endringene i databasen.
             await _context.SaveChangesAsync();
 
+            // Feedback på vellykket endring av passord.
             TempData["SuccessMessage"] = "Passordet er oppdatert.";
             return RedirectToAction("Mypage");
         }
-
+        // Hvis brukeren ikke finnes, vis feilmelding.
         TempData["ErrorMessage"] = "Kunne ikke oppdatere passordet.";
         return RedirectToAction("Mypage");
     }
 
+    // Metode for å oppdatere navnet til en bruker.
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> UpdateName(string navn)
     {
-        // Assume the user's email is retrieved from the session or identity information.
-        string epost = User.Identity.Name; // Adjust this as needed based on your authentication setup
+        // Henter e-post fra den innloggede brukeren. (Brukernavnet / Brukeren)
+        string epost = User.Identity.Name;
 
         var bruker = await _context.Bruker.FirstOrDefaultAsync(b => b.epost == epost);
         if (bruker != null)
         {
-            bruker.navn = navn; // Update the user's name
+            bruker.navn = navn; // Oppdaterer navnet til brukeren
 
+            // Lagrer endringene i databasen
             await _context.SaveChangesAsync();
 
+            // Feedback på vellykket endring av navn
             TempData["SuccessMessage"] = "Navnet er oppdatert.";
             return RedirectToAction("Mypage");
         }
@@ -202,27 +222,25 @@ public class BrukerController : Controller
         return RedirectToAction("Mypage");
     }
 
-    // TODO: Her må vi gjøre slik at passordet må kunne skrives uten hash for å bekrefte sletting
+    // Metode for å slette en bruker.
     [HttpPost]
     public async Task<IActionResult> DeleteUser(string passord)
     {
+
+        // Prøver å slette brukeren.
         try
         {
-            Console.WriteLine($"Received password: {passord}");
-
-            // Hent e-post fra den påloggede brukeren
+            // Hent e-post fra den påloggede brukeren.
             string epost = User.Identity.Name;
 
-            // Finn brukeren i databasen
+            // Finn brukeren i databasen.
             var bruker = await _context.Bruker.FirstOrDefaultAsync(b => b.epost == epost);
             if (bruker == null)
             {
                 TempData["ErrorMessage"] = "Bruker finnes ikke.";
-                Console.WriteLine("User not found");
+                Console.WriteLine("User not found"); // DEBUG
                 return RedirectToAction("Mypage");
             }
-
-
 
             // Sjekk om passordet er korrekt
             var passwordHasher = new PasswordHasher<BrukerModel>();
@@ -230,16 +248,17 @@ public class BrukerController : Controller
 
             if (IsHashedPassword(bruker.passord))
             {
-                // Verify hashed password
+                // Verfier det hashede passordet.
                 var result = passwordHasher.VerifyHashedPassword(bruker, bruker.passord, passord);
                 isPasswordValid = result == PasswordVerificationResult.Success;
             }
             else
             {
-                // Compare plaintext password
+                // Samenlikner klartekst passord.
                 isPasswordValid = bruker.passord == passord;
             }
 
+            // Hvis passordet er feil, vis feilmelding.
             if (!isPasswordValid)
             {
                 TempData["ErrorMessage"] = "Feil passord. Vennligst prøv igjen.";
@@ -251,11 +270,13 @@ public class BrukerController : Controller
             _context.Bruker.Remove(bruker);
             await _context.SaveChangesAsync();
             Console.WriteLine("User deleted successfully");
+            // Logg ut brukeren.
             await HttpContext.SignOutAsync();
 
             TempData["SuccessMessage"] = "Brukeren er slettet.";
             return RedirectToAction("Index", "Home"); // Redirect til ønsket side etter sletting
         }
+        // Håndter eventuelle feil.
         catch (Exception ex)
         {
             Console.WriteLine($"Error deleting user: {ex.Message}");
@@ -263,37 +284,41 @@ public class BrukerController : Controller
             return RedirectToAction("Mypage");
         }
     }
+
+    // Metode for å slette en sak.
     [HttpPost]
     public IActionResult DeleteCase(int id)
     {
-        // Find the case in the database based on ID
+        // Henter saken fra databasen basert på id.
         var sak = _context.Sak.Include(s => s.Kommentarer).FirstOrDefault(s => s.id == id);
 
+        // Sjekker om saken finnes.
         if (sak != null)
         {
-            // Remove all comments associated with the case
+            // Fjerner kommentarer assosiert med saken.
             _context.Kommentar.RemoveRange(sak.Kommentarer);
 
-            // Remove the case from the database
+            // Fjerner saken fra db.
             _context.Sak.Remove(sak);
             _context.SaveChanges();
 
-            // Set success message in TempData
+            // Sukessmelding.
             TempData["SuccessMessage"] = $"Sak: {id} ble slettet";
 
             return RedirectToAction("Mypage");
         }
 
-        // Set error message in TempData if case is not found
+        // Error melding.
         TempData["ErrorMessage"] = "Kunne ikke slette sak";
 
         return RedirectToAction("Mypage");
     }
 
-
+    // Metode for å sjekke om en saksbehandler har endret status på saken sin
     [HttpGet]
     public async Task<IActionResult> HarEndretStatus()
     {
+        // Sjekker
         try
         {
             // Sjekk om det finnes minst én sak hvor brukeren har endret status
@@ -320,34 +345,40 @@ public class BrukerController : Controller
     }
 
 
+    // Metode for å nullstille status_endret for alle saker som er relatert til brukeren
     [HttpPost]
     public async Task<IActionResult> ResetNotificationStatus()
     {
-        // Hent alle saker som er relatert til brukeren og har endret status
+        // Hent alle saker som er relatert til brukeren og har endret status.
         var saker = await _context.Sak
             .Where(s => s.epost_bruker == User.Identity.Name && s.status_endret)
             .ToListAsync();
 
-        // Sett statusEndret tilbake til false
+        // Sett statusEndret tilbake til false.
         foreach (var sak in saker)
         {
             sak.status_endret = false;
         }
 
-        await _context.SaveChangesAsync(); // Lagre endringene til databasen
+        await _context.SaveChangesAsync(); // Lagre endringene til databasen.
 
         return Json(new { success = true });
     }
+
+    // Metode for å hente kommentarer til en sak.
+    // Spesifik routing for å hente kommentarer til en sak.
     [Route("Bruker/GetComments")]
     [HttpGet]
     public IActionResult GetComments(int sakId)
     {
+        // Hent alle kommentarer til en sak basert på sakId.
         var kommentarer = _context.Kommentar.Where(c => c.SakID == sakId).ToList();
-
+        // Sjekk om det finnes kommentarer.
         if (kommentarer != null && kommentarer.Any())
         {
             return Json(new { success = true, kommentarer = kommentarer });
         }
+        // Hvis det ikke finnes kommentarer.
         else
         {
             return Json(new { success = false, message = "No comments found" });

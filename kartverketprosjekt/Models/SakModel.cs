@@ -5,6 +5,7 @@ namespace kartverketprosjekt.Models
 {
     public class SakModel
     {
+        // Modell for en sak
         public int id { get; set; }
         public string ? epost_bruker { get; set; }
         [Required]

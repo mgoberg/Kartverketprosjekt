@@ -5,16 +5,21 @@ using System.Text.Json;
 namespace kartverketprosjekt.Services
 {
     public class StedsnavnService : IStedsnavnService //kan fjernes hvis ikke vi skal implementere stedsnavn api
-    {
+    { 
+        // Service for å hente stedsnavn
         private readonly HttpClient _httpClient;
         private readonly ILogger<StedsnavnService> _logger;
         private readonly ApiSettings _apiSettings;
+
+        // Constructor for StedsnavnService
         public StedsnavnService(HttpClient httpClient, ILogger<StedsnavnService> logger, IOptions<ApiSettings> apiSettings)
         {
             _httpClient = httpClient;
             _logger = logger;
             _apiSettings = apiSettings.Value;
         }
+
+        // Metode for å hente stedsnavn
         public async Task<StedsnavnResponse> GetStedsnavnAsync(string search)
         {
             try
