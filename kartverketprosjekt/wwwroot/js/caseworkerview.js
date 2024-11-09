@@ -36,7 +36,7 @@ $('#slettSakKnapp').click(function () {
 
 // Legge til ny kommentar i listen
 $('#saveComment').click(function () {
-    var commentText = $('#caseComment').val();  // Hente innholdet fra tekstområdet
+    var commentText = $('.caseComment').val();  // Hente innholdet fra tekstområdet
 
     if (commentText.trim() !== "") {
         // Hent sakID fra dashboardet
@@ -44,10 +44,10 @@ $('#saveComment').click(function () {
 
         if (sakID !== "-") {
             // Legg til ny kommentar til listen på klientsiden
-            $('#commentsList').append('<li>' + commentText + '</li>');
+            $('.commentsList').append('<li>' + commentText + '</li>');
 
             // Tømme kommentarfeltet etter at kommentaren er lagt til
-            $('#caseComment').val('');
+            $('.caseComment').val('');
 
             // Send kommentar til backend for å lagre den
             $.ajax({
@@ -136,7 +136,7 @@ $(document).ready(function () {
             success: function (result) {
                 if (result.success) {
                     // Tøm kommentarlisten før nye kommentarer legges til
-                    $('#commentsList').empty();
+                    $('.commentsList').empty();
                     // Legg til hver kommentar i listen
                     result.kommentarer.forEach(function (kommentar) {
                         var commentText = kommentar.tekst;
@@ -147,13 +147,13 @@ $(document).ready(function () {
                         var commentElement = $('<li class="comment comment-collapsed"></li>')
                             .text(truncatedText)
                             .data('fullText', commentText); // Lagre full tekst i data-fullText-attributtet
-                        $('#commentsList').append(commentElement);
+                        $('.commentsList').append(commentElement);
 
                         var commentInfoElement = '<li class="commentInfo">' + commentDate + '  av ' + commentAuthor + '</li>';
 
-                        $('#commentsList').append(commentInfoElement);
+                        $('.commentsList').append(commentInfoElement);
 
-                        $('#commentsList').append(commentElement);
+                        $('.commentsList').append(commentElement);
                     });
                 } else {
                     alert('Kunne ikke hente kommentarer: ' + result.message);

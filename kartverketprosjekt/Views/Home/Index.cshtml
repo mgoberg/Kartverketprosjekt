@@ -21,18 +21,33 @@
 <div class="box-container">
     <div class="box">
         <h1>Kartverkets nye rapporteringstjeneste</h1>
-        <p>Bidra med å forbedre kartgrunnlaget til Kartverkets offentlige kart</p>
+        <p>
+            Bidra med å forbedre kartgrunnlaget til Kartverkets offentlige kart
+        </p>
 
         <!-- Til kartet knapp omdirigering basert på om bruker er logget inn eller ei -->
         @if (User.Identity.IsAuthenticated)
         {
             <!-- Hvis logget inn, til kartet. -->
-            <a href="@Url.Action("RegisterAreaChange", "Sak")" class="btn-primary">Til Kartet</a>
+            <a href="@Url.Action("RegisterAreaChange", "Sak")" class="btn-primary">
+                <i class='bx bx-map-pin' id="mapIcon"></i>Til Kartet
+            </a>
+
+            <a href="#accent" style="none; margin-left: 350px;">
+                <i class='bx bx-info-circle' id="infoIcon"></i>
+            </a>
         }
         else
         {
-            <!-- Hvis ikke logget inn, vis modal. -->
-            <a class="btn-primary" onclick="showModal()">Til Kartet</a>
+            <!-- Hvis ikke logget inn, vis modal for innlogging -->
+            <a class="btn-primary" onclick="showModal()">
+                <i class='bx bx-map-pin' id="mapIcon"></i>Til Kartet
+            </a>
+
+            <a href="#accent" style="none; margin-left: 350px;">
+                <i class='bx bx-info-circle' id="infoIcon"></i>
+            </a>
+
         }
     </div>
 
@@ -41,7 +56,7 @@
     </div>
 </div>
 
-<div class="text-section">
+<div id="text-section">
     <h2 class="ubuntu-bold-italic">Kort om tjenesten</h2>
     <p class="ubuntu-light">
         Kartverket tilbyr en tjeneste der brukere enkelt kan rapportere feil i kartet
@@ -60,6 +75,7 @@
     </div>
 
 </div>
+
 
 <!-- Kartverket logo-->
 <div class="box-container" style="margin-bottom: 100px;">

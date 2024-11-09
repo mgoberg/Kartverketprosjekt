@@ -29,23 +29,25 @@
 <!-- Dashbord -->
 <div class="dashboard">
     <div class="dashboard-box">
+
  <h2>Kontoinstillinger </h2>
-        <!-- Form for å oppdatere navnet sitt -->
+        <!-- Form for Ã¥ oppdatere navnet sitt -->
         <form asp-controller="Bruker" asp-action="UpdateName" method="post">
             @Html.AntiForgeryToken() <!-- Ensure this is included for security -->
-                <label for="Navn">Oppdater navnet ditt</label>
-                <input type="text" id="Navn" name="navn" placeholder="Skriv inn nytt navn" required />
+            <label for="Navn">Oppdater navnet ditt</label>
+            <input type="text" id="Navn" name="navn" placeholder="Skriv inn nytt navn" required />
             <button type="submit" class="btn-primary">Oppdater Navn</button>
         </form>
         <!-- Endre Passord Form -->
         <form asp-controller="Bruker" asp-action="UpdatePassword" method="post">
             @Html.AntiForgeryToken()
-                <label for="Password">Nytt passord:</label>
-                <input type="password" id="Password" name="Password" placeholder="Skriv inn nytt passord" required />
+            <label for="Password">Nytt passord:</label>
+            <input type="password" id="Password" name="Password" placeholder="Skriv inn nytt passord" required />
             <button type="submit" class="btn-primary">Oppdater Passord</button>
         </form>
 
     </div>
+
     
     <!-- Mine saker -->
     <div class="table-container">
@@ -54,28 +56,29 @@
             @if (Model != null && Model.Count > 0)
             {
                 <ul>
-                    <!-- Looper igjennom sak for å vise alle saker. -->
+                    <!-- Looper igjennom sak for Ã¥ vise alle saker. -->
                     @foreach (var sak in Model)
                     {
 
-                        // Henter ut riktig CSS-klasse basert på status for fargelegging av tekst.
+                        // Henter ut riktig CSS-klasse basert pÃ¥ status for fargelegging av tekst.
                         string statusClass = sak.status switch
                         {
-                            "Ubehandlet" => "status-ikke-påbegynt",
+                            "Ubehandlet" => "status-ikke-pÃ¥begynt",
                             "Under Behandling" => "status-in-progress",
-                            "Løst" => "status-completed",
+                            "LÃ¸st" => "status-completed",
                             "Avvist" => "status-closed",
                             "Arkivert" => "status-arkivert", 
                             _ => string.Empty
                         };
-                      
+
                         <li style="list-style-type: none;">
+
                             <h4 class="ubuntu-light" style="text-align: center; letter-spacing: 1px; ">Sak i <b>@sak.Kommunenavn</b></h4>              
                             <strong>Status: <span class="@statusClass">@sak.status</span></strong> -
                             Opprettet: @sak.opprettet_dato.ToString("d")
                             <form class="hidden-form" asp-controller="Bruker" asp-action="DeleteCase" method="post">
                                 <input type="hidden" name="id" value="@sak.id" />
-                                <button class="btn-danger" type="submit" onclick="return confirm('Er du sikker på at du vil slette denne saken?');">
+                                <button class="btn-danger" type="submit" onclick="return confirm('Er du sikker pÃ¥ at du vil slette denne saken?');">
                                     Slett sak
                                 </button>
                             </form>                          
@@ -96,9 +99,19 @@
 
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="/js/mypage.js"></script>
 </div>
+
+<div class="box-container" style="margin-bottom: 200px;">
+    <div>
+        <a href="https://www.kartverket.no/">
+            <img class="kartverketLogo" src="/images/kartverket-logo.svg" />
+        </a>
+    </div>
+</div>
+
 @{
     ViewData["RenderFooter"] = true;
 }
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="/js/mypage.js"></script>

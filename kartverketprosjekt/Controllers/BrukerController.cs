@@ -321,12 +321,11 @@ public class BrukerController : Controller
         // Sjekker
         try
         {
-            // Hent den første saken hvor brukeren har en endret status (status_endret == 1)
-            var sak = await _context.Sak
-                .Where(s => s.epost_bruker == User.Identity.Name)
-                .FirstOrDefaultAsync();
+            // Sjekk om det finnes minst én sak hvor brukeren har endret status
+            var hasStatusChanged = await _context.Sak
+                .AnyAsync(s => s.epost_bruker == User.Identity.Name && s.status_endret == true);
 
-            if (sak != null && sak.status_endret == true)  // Sjekk om status_endret er 1
+            if (hasStatusChanged)
             {
                 // Logg i konsollen for debugging
                 Console.WriteLine("Du har en notifikasjon.");
@@ -334,7 +333,7 @@ public class BrukerController : Controller
                 return Json(true); // Returner true for å indikere at det er en notifikasjon
             }
 
-            // Hvis status_endret er 0, eller ingen sak finnes
+            // Hvis ingen sak har status_endret == true
             return Json(false); // Returner false for å indikere at det ikke er noen notifikasjon
         }
         catch (Exception ex)
@@ -344,6 +343,7 @@ public class BrukerController : Controller
             return Json(false); // Returner false hvis det skjer en feil
         }
     }
+
 
     // Metode for å nullstille status_endret for alle saker som er relatert til brukeren
     [HttpPost]

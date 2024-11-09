@@ -39,8 +39,9 @@ function updateErrorTypeDropdown(layerName) {
 }
 
 
-// Create a global variable to hold the Matrikkelkart WMS layer
+// global variabel for å holde Matrikkelkart og vegnett WMS lag
 var matrikkelkartWMSLayer;
+var vegnettWMSLayer;
 
 
 // Function to change the tile layer and update button styles
@@ -90,11 +91,38 @@ function toggleMatrikkelkartLayer() {
             map.addLayer(matrikkelkartWMSLayer); // Add layer if it's not visible
         }
     }
+    document.getElementById('matrikkelkartToggleButton').classList.toggle('active');
 }
 
 // Button event listener for the toggle
 document.getElementById('matrikkelkartToggleButton').addEventListener('click', toggleMatrikkelkartLayer);
 
+function toggleVegnettLayer() {
+    // Check if the Vegnett WMS layer already exists
+    if (!vegnettWMSLayer) {
+        // Create and add the Vegnett WMS layer if it doesn't exist
+        vegnettWMSLayer = L.tileLayer.wms("https://openwms.statkart.no/skwms1/wms.vegnett2", {
+            layers: 'vegnett2',  // Adjust layer name if needed
+            format: 'image/png',
+            transparent: true,
+            version: '1.3.0',
+            attribution: "&copy; <a href='https://www.statkart.no/'>Statkart</a>"
+        }).addTo(map);
+
+        vegnettWMSLayer.bringToFront();
+    } else {
+        // Toggle the visibility of the Vegnett WMS layer
+        if (map.hasLayer(vegnettWMSLayer)) {
+            map.removeLayer(vegnettWMSLayer); // Remove layer if it's already visible
+        } else {
+            map.addLayer(vegnettWMSLayer); // Add layer if it's not visible
+            vegnettWMSLayer.bringToFront(); // Ensure it's on top if re-added
+        }
+    }
+    document.getElementById('vegnettToggleButton').classList.toggle('active');
+}
+
+document.getElementById('vegnettToggleButton').addEventListener('click', toggleVegnettLayer);
 // functions called by pressing the map-layer buttons
 function changeToLand() {
     changeTileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png', '&copy; <a href="http://www.kartverket.no/">Kartverket</a>', 'btn-changeToLand', 'Topografisk');
@@ -118,6 +146,7 @@ document.getElementById('toggleButton').addEventListener('click', function () {
     } else {
         buttonContainer.style.display = 'none';
     }
+    document.getElementById('toggleButton').classList.toggle('active');
 });
 
 document.getElementById('geolocateButton').addEventListener('click', function () {

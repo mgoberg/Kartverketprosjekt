@@ -32,7 +32,9 @@ Og til slutt:
 `SELECT * FROM Bruker;`
 
 Preview av index:
-![image](https://github.com/user-attachments/assets/78baa97f-8d91-4853-b8d1-2d132f1a034a)
+![image](https://github.com/user-attachments/assets/66530791-cd30-4d25-aec0-1011a474374a)
+
+Preview av innmeldingside: ![image](https://github.com/user-attachments/assets/8e177b23-2729-4c4f-baca-30d7b2c3bee4)
 
 Preview av saksbehandler dashboard:
 ![image](https://github.com/user-attachments/assets/8ffa36b5-b8a8-493d-91fc-c891d851a5ab)
