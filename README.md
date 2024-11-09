@@ -65,7 +65,8 @@ Nå har du en databasecontainer som kjører i Docker. Du kan starte applikasjone
 ## **Forhåndsvisning av prosjektet**
 
 ### **1. Index-side**  
-![Index preview](https://github.com/user-attachments/assets/66530791-cd30-4d25-aec0-1011a474374a)
+![image](https://github.com/user-attachments/assets/c4890ea1-9d3a-492d-9b81-b1982cf50445)
+
 
 ### **2. Innmeldingsside**  
 ![Innmeldingsside preview](https://github.com/user-attachments/assets/8e177b23-2729-4c4f-baca-30d7b2c3bee4)
