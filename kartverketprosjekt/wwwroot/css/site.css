@@ -1134,7 +1134,7 @@ select.input-validation-error {
     text-overflow: ellipsis;
     max-width: 90%; /* Juster etter ønsket bredde */
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 500;
 }
 
 .comment-expanded {

@@ -8,9 +8,9 @@
 });
 $(document).ready(function () {
     // Loop through each comment section and fetch comments dynamically
-    $('[id^="commentsSection"]').each(function () {
+    $('[class^="commentsSection"]').each(function () {
         var sakID = $(this).data('sakid'); // Get sakId from data attribute
-        var commentsListId = '#commentsList-' + sakID; // Target specific ul by sakId
+        var commentsListId = '.commentsList#' + sakID; // Correct the selector for the specific ul element
 
         $.ajax({
             url: '/Bruker/GetComments',  // Controller's GetComments method
@@ -28,16 +28,17 @@ $(document).ready(function () {
                         var commentAuthor = kommentar.epost;
                         var truncatedText = truncateText(commentText, 50);
 
+
+                        var commentInfoElement = '<li class="commentInfo">' + commentDate + ' av ' + commentAuthor + '</li>';
+                        $(commentsListId).append(commentInfoElement);
+
                         var commentElement = $('<li class="comment comment-collapsed"></li>')
                             .text(truncatedText)
                             .data('fullText', commentText); // Store full text in data-fullText attribute
 
                         $(commentsListId).append(commentElement);
 
-                        var commentInfoElement = '<li class="commentInfo">' + commentDate + '  av ' + commentAuthor + '</li>';
 
-                        $(commentsListId).append(commentInfoElement);
-                        $(commentsListId).append(commentElement);
                     });
                 } else {
                     console.log('Kunne ikke hente kommentarer: ' + result.message);
@@ -50,7 +51,7 @@ $(document).ready(function () {
     });
 });
 
-// Helper function to truncate text if it exceeds the specified length
+// Truncate text function
 function truncateText(text, length) {
     return text.length > length ? text.substring(0, length) + '...' : text;
 }
