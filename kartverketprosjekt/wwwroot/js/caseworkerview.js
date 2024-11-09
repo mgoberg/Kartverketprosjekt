@@ -81,6 +81,12 @@ $('#saveComment').click(function () {
 
 $(document).ready(function () {
     $('#casesTable tbody tr').click(function () {
+        // Fjern 'selected-row' klasse fra alle rader
+        $('#casesTable tbody tr').removeClass('selected-row');
+
+        // Legg til 'selected-row' klasse til den klikkede raden
+        $(this).addClass('selected-row');
+
         // Hente data fra tabellen
         var sakID = $(this).data('sakid');  // Hent sakID fra data-attribute
         var epost = $(this).find('td:eq(0)').text();
@@ -98,7 +104,7 @@ $(document).ready(function () {
         // Konvertere GeoJSON-strengen til et objekt
         if (typeof geojson === "string") {
             try {
-                geojson = JSON.parse(geojson);  // Ingen erstatning nødvendig hvis formatet er riktig
+                geojson = JSON.parse(geojson);
             } catch (error) {
                 console.error("Error parsing GeoJSON: ", error);
                 return; // Avslutt funksjonen hvis det oppstod en feil
@@ -114,9 +120,9 @@ $(document).ready(function () {
         $('#dashboardFylke').text(fylke);
         $('#dashboardKommune').text(kommune);
         $('#dashboardStatus').text(status);
-        $('#dashboardSaksbehandler').text(saksbehandler); 
+        $('#dashboardSaksbehandler').text(saksbehandler);
         $('#dashboarddato').text(dato);
-
+    
         $(document).on('click', '.comment', function () {
             $(this).toggleClass('comment-expanded');
             if ($(this).hasClass('comment-expanded')) {

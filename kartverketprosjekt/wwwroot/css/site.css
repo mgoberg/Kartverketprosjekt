@@ -555,8 +555,9 @@ form input[type="file"] {
     all: unset;
 }
 .priority-row {
-    color: #ff6961; /* Warm red*/
-    font-weight: bold; /* Bold text for emphasis */
+    color: #000;
+    font-weight: 500; /* Bold text for emphasis */
+    background-color: #ffdddd !important;
 }
 
     /* Style for the select element */
@@ -963,6 +964,12 @@ a {
 .default-row {
     background-color: #f9f9f9; /* Light gray for other cases */
 }
+
+.styled-table tbody tr.selected-row {
+    background-color: #ddffdd !important;
+    color: #000;
+}
+
 .stats-table-container {
     display: flex; /* Use Flexbox */
     gap: 20px; /* Space between sections */
@@ -1355,16 +1362,6 @@ h4 {
     border-radius: 5px;
     width: 200px; /* Adjust width as necessary */
     transition: 0.3s;
-}
-
-.comment-bold {
-    font-weight: bold;
-}
-
-.kommentar-style {
-    font-size: 14px;
-    color: var(--text-color-weak);
-    border-radius:5
 }
 
 .status-ikke-påbegynt {
