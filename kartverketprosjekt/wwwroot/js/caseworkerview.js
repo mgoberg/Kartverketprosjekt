@@ -199,15 +199,17 @@ $(document).ready(function () {
     });
 });
 
-  
-// Change status event
+
+
+
+// Endre status event
 $('#changeStatus').change(function () {
-    var sakID = $('#dashboardSakID').text();  // Get the SakID from the dashboard
-    var newStatus = $(this).val(); // Get the new status from the dropdown
+    var sakID = $('#dashboardSakID').text().trim(); // Get SakID from dashboard
+    var newStatus = $(this).val(); // Get new status from dropdown
 
     if (sakID !== "-") {
         $.ajax({
-            url: '/Saksbehandler/UpdateStatus', // URL to your controller's update method
+            url: '/Saksbehandler/UpdateStatus', // Path to UpdateStatus method
             type: 'POST',
             data: {
                 id: sakID,
@@ -215,8 +217,17 @@ $('#changeStatus').change(function () {
             },
             success: function (result) {
                 if (result.success) {
-                    alert('Status oppdatert!'); // Notify the user
-                    location.reload(); // Reload the page to reflect changes
+                    console.log('Status oppdatert!'); // Feedback
+
+                    // Dynamically update status in the clicked row of the table
+                    $('#casesTable tbody tr').each(function () {
+                        if ($(this).data('sakid') == sakID) {
+                            $(this).find('td:eq(5)').text(newStatus); // Update status column
+                        }
+                    });
+
+                    // Also update dashboard status dynamically
+                    $('#dashboardStatus').text(newStatus);
                 } else {
                     alert('Kunne ikke oppdatere status.');
                 }
@@ -360,7 +371,42 @@ $(document).ready(function () {
     });
 });
 
+// Åpner vedlegg modal
+function openVedleggModal(imagePath) {
+    document.getElementById('attachmentImage').src = imagePath; // Kilde
+    document.getElementById('modalOverlay').style.display = 'block'; // overlay
+    document.getElementById('vedleggModal').style.display = 'block'; // viser vedlegg modal
+}
+
+// Funksjon for å lukke modal
+function closeVedleggModal() {
+    document.getElementById('modalOverlay').style.display = 'none'; // gjemmer modal
+    document.getElementById('vedleggModal').style.display = 'none'; // gjemmer modal
+}
+
+// Click event listener for å hente ut vedlegg
+document.querySelectorAll('#casesTable tbody tr').forEach(function (row) {
+    row.addEventListener('click', function () {
+        var vedlegg = row.getAttribute('data-vedlegg'); // henter vedlegget
+        if (vedlegg) {
+            var imagePath = '/uploads/' + vedlegg; // filepath
+            document.getElementById('visVedleggKnapp').style.display = 'inline'; // viser knappen
+            document.getElementById('visVedleggKnapp').onclick = function () {
+                openVedleggModal(imagePath); // Caller funksjonen
+            };
+        } else {
+            document.getElementById('visVedleggKnapp').style.display = 'block'; // PH
+        }
+    });
+});
+
+// Close modal når man trykker på overlay.
+document.getElementById('modalOverlay').addEventListener('click', function () {
+    closeVedleggModal();
+});
+
+// TODO: Fjern denne funksjonen
 function playSound() {
-    var audio = new Audio('/images/viktigIkkeSlett.mp3'); // Replace with the path to your sound file
+    var audio = new Audio('/images/viktigIkkeSlett.mp3'); // path til lydfil
     audio.play();
 }

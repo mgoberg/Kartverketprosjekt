@@ -2,6 +2,8 @@
 {
     public class KommentarModel
     {
+
+        // Modell for en kommentar
         public int Id { get; set; }
         public int SakID { get; set; }
         public string Tekst { get; set; }

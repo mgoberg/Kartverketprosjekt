@@ -7,7 +7,13 @@ using Microsoft.EntityFrameworkCore;
 using System.IO.Compression;
 using Microsoft.AspNetCore.Authorization;
 
+// ****************************************************************************************************************************
+// ***********SaksbehandlerController er en controller som håndterer alle funksjoner for en saksbehandler og admin.************
+// ****************************************************************************************************************************
+
 namespace kartverketprosjekt.Controllers;
+
+// Gir tilgang til SaksbehandlerController kun for brukere med rolle 3 og 4 (saksbehandler og admin brukere)
 [Authorize(Roles = "3, 4")]
 public class SaksbehandlerController : Controller
 {
@@ -22,6 +28,7 @@ public class SaksbehandlerController : Controller
         return User.Identity.Name; // Henter brukerens e-post fra identiteten
     }
 
+    // Metode for å vise saksbehandler viewet.
     public IActionResult CaseWorkerView()
     {
         // Hent den autentiserte brukerens e-post
@@ -45,10 +52,13 @@ public class SaksbehandlerController : Controller
         return View();
     }
 
+    // Metode for å oppdatere status på en sak.
     [HttpPost]
     public async Task<IActionResult> UpdateStatus(int id, string status)
     {
         var sak = await _context.Sak.FindAsync(id); // Hent saken ved ID
+
+        // Hvis saken ikke finnes i databasen returneres en feilmelding.
         if (sak == null)
         {
             return Json(new { success = false, message = "Sak ikke funnet." });
@@ -69,6 +79,7 @@ public class SaksbehandlerController : Controller
    
 
 
+    // Metode for å legge til en kommentar på en sak.
     [HttpPost]
     public async Task<IActionResult> AddComment(int sakID, string kommentar, string epost)
     {
@@ -89,6 +100,7 @@ public class SaksbehandlerController : Controller
             return Json(new { success = false, message = "Bruker ikke funnet." });
         }
 
+        // Opprett en ny kommentar.
         var nyKommentar = new KommentarModel()
         {
             SakID = sakID,
@@ -97,16 +109,21 @@ public class SaksbehandlerController : Controller
             Epost = brukerEpost
         };
 
+        // Endre status_endret til true for notifikasjon.
         sak.status_endret = true;
 
+        // Legg til kommentaren i databasen.
         _context.Kommentar.Add(nyKommentar);
         _context.SaveChanges();
 
         return Json(new { success = true });
     }
+
+    // Metode for å hent kommentarer for en sak.
     [HttpGet]
     public JsonResult GetComments(int sakId)
     {
+        // Hent alle kommentarer for en sak.
         var kommentarer = _context.Kommentar
             .Where(k => k.SakID == sakId)
             .Select(k => new
@@ -119,6 +136,7 @@ public class SaksbehandlerController : Controller
         return Json(new { success = true, kommentarer });
     }
 
+    // Metode for å slette en sak.
     [HttpPost]
     public IActionResult Delete(int id)
     {

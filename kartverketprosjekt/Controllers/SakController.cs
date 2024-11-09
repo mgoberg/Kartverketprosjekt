@@ -5,6 +5,10 @@ using kartverketprosjekt.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
+// ****************************************************************************************************************************
+// ***********SakController er en controller som håndterer alle funksjoner i forbeindelse med opprettelse av en sak.***********
+// ****************************************************************************************************************************
+
 namespace kartverketprosjekt.Controllers
 {
     public class SakController : Controller
@@ -16,8 +20,9 @@ namespace kartverketprosjekt.Controllers
 
         private readonly IKommuneInfoService _kommuneInfoService;
 
-        private readonly IStedsnavnService _stedsnavnService; //kan fjernes hvis ikke vi skal implementere stedsnavn api
+        private readonly IStedsnavnService _stedsnavnService; // Kan fjernes hvis ikke vi skal implementere stedsnavn api
 
+        // Konstruktør for SakController.
         public SakController(DiscordBot discordBot, KartverketDbContext context, ILogger<HomeController> logger, IKommuneInfoService kommuneInfoService, IStedsnavnService stedsnavnService)
         {
             _discordBot = discordBot; // Initialize the DiscordBot
@@ -26,6 +31,11 @@ namespace kartverketprosjekt.Controllers
             _stedsnavnService = stedsnavnService; //kan fjernes hvis ikke vi skal implementere stedsnavn api
         }
 
+
+
+
+      
+        // Metode for å vise registreringssiden for en sak.
 
         [HttpGet]
         public async Task<IActionResult> RegisterAreaChange()
@@ -37,6 +47,9 @@ namespace kartverketprosjekt.Controllers
 
             return View();
         }
+
+
+        // Metode for å registrere en sak.
 
         [HttpPost]
         public async Task<IActionResult> RegisterAreaChange(SakModel sak, IFormFile vedlegg, double nord, double ost, int koordsys)
@@ -61,28 +74,29 @@ namespace kartverketprosjekt.Controllers
             // Sjekk om vedlegg er lastet opp
             if (vedlegg != null && vedlegg.Length > 0)
             {
-                // Define the path to save the file
+                // Definerer filsti for opplasting av vedlegg.
                 var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
 
-                // Ensure the uploads directory exists
+                // Sikrer at mappen eksisterer.
                 if (!Directory.Exists(uploadsPath))
                 {
                     Directory.CreateDirectory(uploadsPath);
                 }
 
-                // Generate a unique file name
+                // Genererer et unikt filnavn for vedlegget.
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(vedlegg.FileName);
                 var filePath = Path.Combine(uploadsPath, fileName);
 
-                // Save the file
+                // Lagrer vedlegget på "serveren".
                 await using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await vedlegg.CopyToAsync(stream);
                 }
 
-                // Store the file path (relative to wwwroot) in the SakModel
-                sak.vedlegg = fileName; // Change this if you have a different property type
+                // Sender filnavnet til sak-objektet.
+                sak.vedlegg = fileName;
             }
+
             // Gjør API-kall med nord og ost
             var kommuneInfo = await _kommuneInfoService.GetKommuneInfoAsync(nord, ost, koordsys);
             if (kommuneInfo != null)
@@ -119,11 +133,11 @@ namespace kartverketprosjekt.Controllers
             return RedirectToAction("AreaChangeOverview");
         }
 
-
+        // Metode for å vise kvitteringen på en sak.
         [HttpGet]
         public IActionResult AreaChangeOverview()
         {
-            // Retrieve the ID from TempData
+            // Hvis TempData inneholder id, hent saken basert på id.
             if (TempData.ContainsKey("id"))
             {
                 int id = (int)TempData["id"];
@@ -139,7 +153,7 @@ namespace kartverketprosjekt.Controllers
                 return View(sak); // Sender den innsendte saken til viewet
             }
 
-            return NotFound(); // Handle case where no ID is found in TempData
+            return NotFound(); // Handle når id ikke er i TempData.
         }
 
     }

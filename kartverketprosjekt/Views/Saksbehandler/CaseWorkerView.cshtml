@@ -166,42 +166,6 @@
                 </div>
             </div>
         </div>
-
-        <script>
-            // Function to open the vedlegg modal with the selected image path
-            function openVedleggModal(imagePath) {
-                document.getElementById('attachmentImage').src = imagePath; // Set the image source
-                document.getElementById('modalOverlay').style.display = 'block'; // Show the overlay
-                document.getElementById('vedleggModal').style.display = 'block'; // Show the vedlegg modal
-            }
-
-            // Function to close the vedlegg modal
-            function closeVedleggModal() {
-                document.getElementById('modalOverlay').style.display = 'none'; // Hide the overlay
-                document.getElementById('vedleggModal').style.display = 'none'; // Hide the vedlegg modal
-            }
-
-            // Add click event listeners to the table rows
-            document.querySelectorAll('#casesTable tbody tr').forEach(function (row) {
-                row.addEventListener('click', function () {
-                    var vedlegg = row.getAttribute('data-vedlegg'); // Get the vedlegg from the row
-                    if (vedlegg) {
-                        var imagePath = '/uploads/' + vedlegg; // Set the path to the image
-                        document.getElementById('visVedleggKnapp').style.display = 'inline'; // Show the button
-                        document.getElementById('visVedleggKnapp').onclick = function () {
-                            openVedleggModal(imagePath); // Call function to open vedlegg modal with the image
-                        };
-                    } else {
-                        document.getElementById('visVedleggKnapp').style.display = 'block'; // PH
-                    }
-                });
-            });
-
-            // Close vedlegg modal when overlay is clicked
-            document.getElementById('modalOverlay').addEventListener('click', function () {
-                closeVedleggModal();
-            });
-        </script>
     </div>
                  
             <!-- Status dropdown -->

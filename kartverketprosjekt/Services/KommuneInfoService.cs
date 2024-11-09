@@ -6,18 +6,21 @@ namespace kartverketprosjekt.Services
 {
     public class KommuneInfoService : IKommuneInfoService
     {
+        // Service for å hente kommune og fylke info
         private readonly HttpClient _httpClient;
         private readonly ILogger<KommuneInfoService> _logger;
         private readonly ApiSettings _apiSettings;
 
         public KommuneInfoService(HttpClient httpClient, ILogger<KommuneInfoService> logger, IOptions<ApiSettings> apisettings)
         {
+            // Constructor for KommuneInfoService
             _httpClient = httpClient;
             _logger = logger;
             _apiSettings = apisettings.Value;
         }
         public async Task<KommuneInfo> GetKommuneInfoAsync(double nord, double ost, int koordsys)
         {
+            // Metode for å hente kommune og fylke info
             try
             {
                 var response = await _httpClient.GetAsync($"{_apiSettings.KommuneInfoApiBaseUrl}punkt?nord={nord}&ost={ost}&koordsys={koordsys}");

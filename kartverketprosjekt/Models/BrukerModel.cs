@@ -4,6 +4,8 @@ namespace kartverketprosjekt.Models
 {
     public class BrukerModel
     {
+
+        // Modell for en bruker
         [Key]
         [EmailAddress]
         public string epost { get; set; }
