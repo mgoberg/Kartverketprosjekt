@@ -37,8 +37,8 @@ public class SaksbehandlerController : Controller
             return Forbid();
         }
 
-        // Henter alle saker fra databasen
-        var saker = _context.Sak.ToList();
+        // Retrieve all cases with the assigned caseworker details
+        var saker = _context.Sak.Include(s => s.Saksbehandler).ToList();
 
         // Oppretter en ViewBag eller ViewData for å sende data til visningen
         ViewData["Saker"] = saker;
@@ -66,6 +66,8 @@ public class SaksbehandlerController : Controller
         // Hvis status ikke er endret
         return Json(new { success = false, message = "Ny status er den samme som eksisterende status." });
     }
+   
+
 
     [HttpPost]
     public async Task<IActionResult> AddComment(int sakID, string kommentar, string epost)

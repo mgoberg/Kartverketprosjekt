@@ -16,5 +16,6 @@ namespace kartverketprosjekt.Models
 
         public string? organisasjon { get; set; } = "Ingen"; // Standard verdi er Kartverket
 
+       
     }
 }

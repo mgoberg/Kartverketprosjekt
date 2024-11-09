@@ -46,6 +46,7 @@
                 <th>Fylke</th>
                 <th>Kommune</th>
                 <th>Status</th>
+                <th>Saksbehandler</th>
                 <th>Dato</th>
                 <th>Kartlag</th>
             </tr>
@@ -61,6 +62,7 @@
                     <td>@(sak.Fylkesnavn ?? "NULL")</td>
                     <td>@(sak.Kommunenavn ?? "NULL")</td>
                     <td>@sak.status</td>
+                    <td>@(sak.Saksbehandler?.epost ?? "Ikke tildelt")</td> 
                     <td>@sak.opprettet_dato.ToString("dd.MM.yyyy")</td>
                     @if (sak.layerurl == "https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png")
                     {
@@ -137,6 +139,10 @@
                     <tr>
                         <td><strong>Status:</strong></td>
                         <td><span class="ubuntu-light" id="dashboardStatus">-</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Saksbehandler:</strong></td>
+                        <td><span class="ubuntu-light" id="dashboardSaksbehandler">-</span></td>
                     </tr>
                     <tr>
                         <td><strong>Dato:</strong></td>

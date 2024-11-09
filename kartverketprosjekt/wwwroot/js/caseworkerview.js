@@ -91,7 +91,8 @@ $(document).ready(function () {
         var fylke = $(this).find('td:eq(3)').text();
         var kommune = $(this).find('td:eq(4)').text();
         var status = $(this).find('td:eq(5)').text();
-        var dato = $(this).find('td:eq(6)').text();
+        var saksbehandler = $(this).find('td:eq(6)').text();
+        var dato = $(this).find('td:eq(7)').text();
         var kartlagUrl = $(this).data('layerurl');
 
         // Konvertere GeoJSON-strengen til et objekt
@@ -113,6 +114,7 @@ $(document).ready(function () {
         $('#dashboardFylke').text(fylke);
         $('#dashboardKommune').text(kommune);
         $('#dashboardStatus').text(status);
+        $('#dashboardSaksbehandler').text(saksbehandler); 
         $('#dashboarddato').text(dato);
 
         $(document).on('click', '.comment', function () {
@@ -197,7 +199,7 @@ $(document).ready(function () {
     });
 });
 
-
+  
 // Change status event
 $('#changeStatus').change(function () {
     var sakID = $('#dashboardSakID').text();  // Get the SakID from the dashboard

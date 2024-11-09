@@ -3,6 +3,7 @@ using kartverketprosjekt.Data;
 using kartverketprosjekt.Models;
 using kartverketprosjekt.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace kartverketprosjekt.Controllers
 {
@@ -24,13 +25,19 @@ namespace kartverketprosjekt.Controllers
             _kommuneInfoService = kommuneInfoService;
             _stedsnavnService = stedsnavnService; //kan fjernes hvis ikke vi skal implementere stedsnavn api
         }
-      
+
 
         [HttpGet]
-        public IActionResult RegisterAreaChange()
+        public async Task<IActionResult> RegisterAreaChange()
         {
+            // Load available caseworkers (brukere with tilgangsnivaa_id = 3, indicating Saksbehandler role)
+            ViewBag.Saksbehandlere = new SelectList(await _context.Bruker
+                .Where(b => b.tilgangsnivaa_id == 3) // Filter by Saksbehandler role
+                .ToListAsync(), "epost", "navn");
+
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> RegisterAreaChange(SakModel sak, IFormFile vedlegg, double nord, double ost, int koordsys)
         {
@@ -84,6 +91,18 @@ namespace kartverketprosjekt.Controllers
                 sak.Kommunenummer = kommuneInfo.Kommunenummer;
                 sak.Fylkesnavn = kommuneInfo.Fylkesnavn;
                 sak.Fylkesnummer = kommuneInfo.Fylkesnummer;
+            }
+
+            // Auto-assign the caseworker with the least number of cases
+            var leastAssignedCaseworker = await _context.Bruker
+                .Where(b => b.tilgangsnivaa_id == 3) // Only caseworkers
+                .OrderBy(b => _context.Sak.Count(s => s.SaksbehandlerId == b.epost)) // Order by case count
+                .FirstOrDefaultAsync();
+
+            // Assign the caseworker with the fewest cases
+            if (leastAssignedCaseworker != null)
+            {
+                sak.SaksbehandlerId = leastAssignedCaseworker.epost;
             }
 
             // Lagre saken i databasen

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace kartverketprosjekt.Models
 {
@@ -28,6 +29,13 @@ namespace kartverketprosjekt.Models
         // Nytt felt for å indikere om saken er prioritert
         public bool IsPriority { get; set; } = false;
 
+        // This is the foreign key to caseworker, referencing the column `saksbehandler_id`
+        [Column("saksbehandler_id")]
+        public string? SaksbehandlerId { get; set; }
+
+        // Navigation property for the caseworker
+        [ForeignKey("SaksbehandlerId")]
+        public BrukerModel? Saksbehandler { get; set; }
     }
 }
 
