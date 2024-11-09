@@ -261,6 +261,12 @@ main {
     top: 6px;
     right: 8px;
 }
+#loadIcon {
+    font-size: 25px;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
 
 /* Dropdown content styling */
 #dropdown-content {
