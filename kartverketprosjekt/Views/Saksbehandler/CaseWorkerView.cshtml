@@ -170,6 +170,16 @@
                  
             <!-- Status dropdown -->
             <div class="dashboard-box">
+        <h4 class="ubuntu-light">Endre saksbehandler</h4>
+        <select class="form-control" id="changeSaksbehandler" onchange="changeSaksbehandler(this)">
+            <option disabled selected>Velg saksbehandler</option>
+            @foreach (var saksbehandler in ViewBag.Saksbehandlere)
+            {
+                <option value="@saksbehandler.epost">@saksbehandler.navn</option>
+            }
+        </select>
+
+
                 <h4 class="ubuntu-light">Endre status</h4>
                 <select class="form-control" id="changeStatus">
                     <option value="Ubehandlet" selected>Ubehandlet</option>
