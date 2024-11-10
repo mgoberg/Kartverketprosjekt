@@ -49,6 +49,7 @@
         <p class="contact-info">Kontakt: AMUND SIN MAIL HER</p>
     </div>
 
+
     <div class="member-card">
         <img src="~/images/Anders.jpg" alt="Bilde av Anders">
         <h3>Anders</h3>
@@ -78,3 +79,10 @@
     </div>
    
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
