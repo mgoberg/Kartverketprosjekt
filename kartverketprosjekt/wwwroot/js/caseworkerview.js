@@ -416,3 +416,49 @@ function playSound() {
     var audio = new Audio('/images/viktigIkkeSlett.mp3'); // path til lydfil
     audio.play();
 }
+
+// Function to change saksbehandler
+function changeSaksbehandler(element) {
+    const sakID = $('#dashboardSakID').text().trim(); // Get SakID from dashboard
+    const saksbehandlerEpost = $(element).val(); // Get new saksbehandler e-post from dropdown
+    const saksbehandlerNavn = $(element).find("option:selected").text(); // Get name of selected saksbehandler
+
+    if (sakID === "-") {
+        alert("Velg en sak før du endrer saksbehandler.");
+        return;
+    }
+
+    // AJAX request to update saksbehandler
+    $.ajax({
+        url: '/Saksbehandler/EndreSaksbehandler', // Path to EndreSaksbehandler method
+        type: 'POST',
+        data: {
+            sakId: sakID,
+            saksbehandlerEpost: saksbehandlerEpost
+        },
+        success: function (response) {
+            if (response.success) {
+                console.log('Saksbehandler oppdatert!');
+
+                // Dynamically update saksbehandler in the clicked row of the table
+                $('#casesTable tbody tr').each(function () {
+                    if ($(this).data('sakid') == sakID) {
+                        $(this).find('td:eq(6)').text(saksbehandlerEpost); // Update saksbehandler column
+                    }
+                });
+
+                // Also update saksbehandler in the dashboard dynamically
+                $('#dashboardSaksbehandler').text(saksbehandlerEpost);
+            } else {
+                alert('Kunne ikke oppdatere saksbehandler.');
+            }
+        },
+        error: function () {
+            alert('En feil oppstod under oppdatering av saksbehandler.');
+        }
+    });
+}
+
+
+
+        

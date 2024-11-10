@@ -18,6 +18,7 @@ namespace kartverketprosjekt.Controllers;
 public class SaksbehandlerController : Controller
 {
     private readonly KartverketDbContext _context;
+    private dynamic saksbehandlere;
 
     public SaksbehandlerController(KartverketDbContext context)
     {
@@ -49,9 +50,16 @@ public class SaksbehandlerController : Controller
 
         // Oppretter en ViewBag eller ViewData for å sende data til visningen
         ViewData["Saker"] = saker;
+
+        ViewBag.Saksbehandlere = GetSaksbehandlere(); // Ensure this method returns a valid list
+
         return View();
     }
-
+    private List<BrukerModel> GetSaksbehandlere()
+    {
+        // Assuming that saksbehandlere are users with role 3 or 4
+        return _context.Bruker.Where(b => b.tilgangsnivaa_id == 3 || b.tilgangsnivaa_id == 4).ToList();
+    }
     // Metode for å oppdatere status på en sak.
     [HttpPost]
     public async Task<IActionResult> UpdateStatus(int id, string status)
@@ -76,7 +84,7 @@ public class SaksbehandlerController : Controller
         // Hvis status ikke er endret
         return Json(new { success = false, message = "Ny status er den samme som eksisterende status." });
     }
-   
+
 
 
     // Metode for å legge til en kommentar på en sak.
@@ -130,7 +138,7 @@ public class SaksbehandlerController : Controller
             {
                 k.Tekst,
                 k.Dato,
-                k.Epost 
+                k.Epost
             }).ToList();
 
         return Json(new { success = true, kommentarer });
@@ -157,5 +165,29 @@ public class SaksbehandlerController : Controller
         return Json(new { success = false, message = "Sak ikke funnet." });
     }
 
+    [HttpPost]
+    public IActionResult EndreSaksbehandler(int sakId, string saksbehandlerEpost)
+    {
+        var sak = _context.Sak.Find(sakId);
+        if (sak == null)
+        {
+            return Json(new { success = false, message = "Sak ikke funnet." });
+        }
 
-}
+        // Finn saksbehandler basert på e-post
+        var saksbehandler = _context.Bruker.FirstOrDefault(b => b.epost == saksbehandlerEpost);
+        if (saksbehandler == null)
+        {
+            return Json(new { success = false, message = "Saksbehandler ikke funnet." });
+        }
+
+        // Oppdater saksbehandler-ID
+        sak.SaksbehandlerId = saksbehandler.epost;
+        _context.SaveChanges();
+
+        return Json(new { success = true, message = "Saksbehandler oppdatert." });
+    }
+
+}     
+
+
