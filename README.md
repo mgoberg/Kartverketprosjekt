@@ -1,5 +1,4 @@
 # 🚀 **Kartverket Prosjektet for Gruppe 14!** 🚀
-
 ## **For å sette opp prosjektet og koble opp databasen, følg disse trinnene:**
 
 ### 🌿 **Trinn 1: Sørg for å være i riktig branch**  
@@ -10,19 +9,31 @@
 Start prosjektet i dockerfile modus slik at docker containeren som kjører applikasjonen kjører.
 
 ### 🌐 **Trinn 3: Opprett et Docker-nettverk**  
-For å opprette et nettverk, kjør denne kommandoen:  
-`docker network create kartverket-network`
+For å opprette et nettverk, kjør denne kommandoen:
+
+    docker network create kartverket-network
 
 ### 🔗 **Trinn 4: Koble applikasjonscontaineren til nettverket**  
-Koble webapplikasjonen til nettverket med:  
-`docker network connect kartverket-network kartverketprosjekt`
+Koble webapplikasjonen til nettverket med:
+
+    docker network connect kartverket-network kartverketprosjekt
 
 ### 🚀 **Trinn 5: Start databasen**  
-Bygg og start databasen med:  
-`docker-compose up --build`
+Bygg og start databasen med:
+
+    docker-compose up --build
 
 ### 🎊 **Da var alt klart!**  
 Nå har du en databasecontainer som kjører i Docker. Du kan starte applikasjonen og teste all funksjonalitet.
+
+> [!WARNING]
+> Hvis det er gjort endringer i database struktur vil du måtte bygge databasen på nytt.
+> Dette kan gjøres ved å kjøre:
+>
+> `docker-compose down`deretter:   `docker-volume prune`
+>
+> **Merk deg at dette fjerner *alle* tidligere oppføringer i databasen**
+
 
 ---
 
@@ -49,19 +60,43 @@ Nå har du en databasecontainer som kjører i Docker. Du kan starte applikasjone
 - **System stats**: Administrator har tilgang på et stats-bord som innholder all statistikk for systemet.
 
 ### 🌐 **Geofunksjoner**
-- **Kartintegrasjon med Leaflet**: Alle saker vises på et interaktivt kart.
+- **Kartintegrasjon med Leaflet[^1]**: Alle saker vises på et interaktivt kart.
 - **GeoJSON-støtte**: Brukerinnsendte data konverteres og vises som GeoJSON på kartet for saksbehandlere.
-- **Eiendomsinndeling**: Eiendomsgrenser kan toggles i kartet.
-- **Oppmerking av veier**: Veier kan toggles i kartet.
-- **Kartlag**: Kartlag: Topografisk kart som standard, gråtone, turkart og sjøkart.
-
+- **Eiendomsinndeling[^2]**: Eiendomsgrenser kan toggles i kartet.
+- **Oppmerking av veier[^3]**: Veier kan toggles i kartet.
+- **Kartlag**[^4]: vekslbart kartlag: Topografisk kart som standard, gråtone, turkart og sjøkart.
+> [!NOTE]
+> **Alle Kartlagstjenester er fra kartverkets datasett og oppdateres jevnlig.**
 
 ### 🤖 **Ekstra funksjonalitet**
 - **Slack/Discord Bot**: Automatiske oppdateringer sendes til en kanal når nye saker blir rapportert.
-- **Dashboard**: Oversikt over alle rapporterte saker, med søk og filtrering.
+- **Dashboard**: Oversikt over alle rapporterte saker, med søk og filtrering
+---
+## **System arkitektur**
+### **MVC-modellen i .NET**:
+
+  I dette prosjektet bruker vi *Model-View-Controller (MVC)* mønsteret, som er et designmønster ofte brukt i .NET-applikasjoner. MVC-modellen hjelper til med å skille ansvar innen applikasjonen:
+
+- **Model**: Representerer applikasjonens data og forretningslogikk. Modellen er ansvarlig for å hente data fra databasen, behandle dem og sende dem til kontrolleren.
+- **View**: Representerer brukergrensesnittet. Visningen viser data fra modellen til brukeren og sender brukerinput til kontrolleren.
+- **Controller**: Fungerer som en mellommann mellom modellen og visningen. Kontrolleren mottar input fra visningen, behandler den, og returnerer den passende visningen som svar.
+  
+  Denne separasjonen av bekymringer gjør applikasjonen mer modulær, enklere å teste og vedlikeholde. Det lar utviklere jobbe med forskjellige deler av applikasjonen samtidig uten å forstyrre hverandre.
+---
+## **Testing**
+### **Unit Testing:**
+  *Ikke enda implementert:*
+- [ ] Kontrollere
+- [ ] API modeller
+- [ ] Javascript funskjoner
+- [ ] Database initialisering
+- [ ] Docker
+      
+### **Testing scenarioer:**
+Se egen mappe for dette:
+[Testing scenarioer](docs/)
 
 ---
-
 ## **Forhåndsvisning av prosjektet**
 
 ### **1. Index-side**  
@@ -76,3 +111,11 @@ Nå har du en databasecontainer som kjører i Docker. Du kan starte applikasjone
 
 ### **4. Discord/Slack Bot**  
 ![Bot preview](https://github.com/user-attachments/assets/e1738455-0a17-4ef2-bbef-2113d2fc8618)
+
+
+[^1]: Leaflet javascript bilbiotek: [Leaflet](https://leafletjs.com/)
+[^2]: WMS-kartoverleggs-tjeneste (vegnett) [geonorge](https://www.geonorge.no/)
+[^3]: WMS-kartoverleggs-tjeneste (matrikkel) [geonorge](https://kartkatalog.geonorge.no/metadata/matrikkelkart-wms/30dda4c6-2cba-4378-b2e7-26f644df9d99)
+[^4]: WMS-kartlag-tjeneste [Kartverket](https://kartkatalog.geonorge.no/metadata/vegnett2-wms/302fcb0e-a7dc-44f4-a336-8c9ee9709d73?search=vegnett)
+
+
