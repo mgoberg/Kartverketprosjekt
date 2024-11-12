@@ -94,7 +94,7 @@ Nå har du en databasecontainer som kjører i Docker. Du kan starte applikasjone
       
 ### **Testing scenarioer:**
 Se egen mappe for dette:
-[Testing scenarioer](docs/)
+[Testing scenarioer](kartverketprosjekt/docs/)
 
 ---
 ## **Forhåndsvisning av prosjektet**
