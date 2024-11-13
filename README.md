@@ -11,17 +11,22 @@ Start prosjektet i dockerfile modus slik at docker containeren som kjører appli
 ### 🌐 **Trinn 3: Opprett et Docker-nettverk**  
 For å opprette et nettverk, kjør denne kommandoen:
 
-    docker network create kartverket-network
+```css
+docker network create kartverket-network
+```
 
 ### 🔗 **Trinn 4: Koble applikasjonscontaineren til nettverket**  
-Koble webapplikasjonen til nettverket med:
+Koble webapplikasjonen til nettverket med:'
 
-    docker network connect kartverket-network kartverketprosjekt
-
+```css
+docker network connect kartverket-network kartverketprosjekt
+```
 ### 🚀 **Trinn 5: Start databasen**  
 Bygg og start databasen med:
 
-    docker-compose up --build
+```css
+docker-compose up --build
+```
 
 ### 🎊 **Da var alt klart!**  
 Nå har du en databasecontainer som kjører i Docker. Du kan starte applikasjonen og teste all funksjonalitet.
