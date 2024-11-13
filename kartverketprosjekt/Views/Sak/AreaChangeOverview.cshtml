@@ -10,8 +10,11 @@
 
 <div class="dashboard">
     <div class="dashboard-box">
+        <!-- Henter ut data-->
         <div id="map" data-layerurl="@Model.layerurl" data-geojson="@Html.Raw(Model.geojson_data)" data-description="@Model.beskrivelse"></div>
     </div>
+
+    <!-- Kvittering -->
     <div class="dashboard-box">
         <p><strong>Referansernummer:</strong> @Model.id </p>
         <p><strong>Type:</strong> @Model.type_feil</p>
@@ -51,6 +54,14 @@
         {
             <p><strong>Vedlegg:</strong> Nei</p>
         }
+    </div>
+</div>
+
+<div class="box-container" style="margin-bottom: 200px;">
+    <div>
+        <a href="https://www.kartverket.no/">
+            <img class="kartverketLogo" src="/images/kartverket-logo.svg" />
+        </a>
     </div>
 </div>
 

@@ -1,35 +1,49 @@
 ﻿using kartverketprosjekt.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
+using kartverketprosjekt.Models;
+
+// ****************************************************************************************************************************
+// ******AdminController er en controller som håndterer alle funksjoner som kun skal være tilgjengelig for Administrator.******
+// ****************************************************************************************************************************
 
 namespace kartverketprosjekt.Controllers
 
 {
+
+
+    // Gir tilgang til AdminController kun for brukere med rolle 4 (admin brukere)
     [Authorize(Roles = "4")]
     public class AdminController : Controller
     {
+        // Dependency injection for å få tilgang til databasen.
         private readonly KartverketDbContext _context;
 
+        // Konstruktør for AdminController
         public AdminController(KartverketDbContext context)
         {
             _context = context;
         }
+
+        // Metode for å vise admin viewet.
         public IActionResult AdminView()
         {
-            // Retrieve the total count of cases (saker) from the database
+            // Henter alle saker fra databasen og teller de.
             int caseCount = _context.Sak.Count();
 
-            // Retrieve the total count of users from the database
+            // Henter alle brukere fra databasen og teller de.
             int userCount = _context.Bruker.Count();
 
-            // Optional: Additional stats, like cases by status or date range
+            // Henter ut stats for antall saker i de forskjellige statusene.
             int openCasesUnbehandlet = _context.Sak.Count(s => s.status == "Ubehandlet");
             int openCasesUnderBehandling = _context.Sak.Count(s => s.status == "Under Behandling");
             int openCasesAvvist = _context.Sak.Count(s => s.status == "Avvist");
             int openCasesArkivert = _context.Sak.Count(s => s.status == "Arkivert");
             int closedCases = _context.Sak.Count(s => s.status == "Løst");
 
-            // Pass the counts to the view using ViewData or a view model
+            // Bruker ViewData for å sende data til viewet.
             ViewData["CaseCount"] = caseCount;
             ViewData["UserCount"] = userCount;
             ViewData["OpenCasesUnbehandlet"] = openCasesUnbehandlet;
@@ -42,9 +56,11 @@ namespace kartverketprosjekt.Controllers
             return View(users); // Send brukerne til viewet
         }
 
+        //Metode for å endre tilgangsnivået til en bruker fra admin bruker.
         [HttpPost]
         public IActionResult UpdateAccess(string userId, int newAccessLevel)
         {
+            // Finner Bruker med bruker med id.
             var user = _context.Bruker.Find(userId);
             if (user != null)
             {
@@ -56,10 +72,11 @@ namespace kartverketprosjekt.Controllers
             return RedirectToAction("AdminView"); // Naviger tilbake til listen over brukere
         }
 
-
+           // Metode for å slette en bruker fra admin brukeren.
         [HttpPost]
         public IActionResult SlettBruker(string epost)
-        {
+        { 
+            // Sjekk om e-post er fylt ut
             if (string.IsNullOrEmpty(epost))
             {
                 return BadRequest("E-post må være oppgitt.");
@@ -103,5 +120,43 @@ namespace kartverketprosjekt.Controllers
             return RedirectToAction("AdminView"); // Naviger tilbake til listen over brukere
 
         }
+
+        // Metode for å opprette en ny bruker fra admin brukeren.
+        [HttpPost]
+        public IActionResult OpprettBruker(string epost, string passord, int tilgangsnivaa, string organisasjon, string? navn)
+        {
+            // Sjekk om e-post, passord og organisasjon er fylt ut.
+            if (string.IsNullOrEmpty(epost) || string.IsNullOrEmpty(passord) || string.IsNullOrEmpty(organisasjon))
+            {
+                ViewBag.ErrorMessage = "E-post, passord og organisasjon må fylles ut.";
+                return RedirectToAction("AdminView");
+            }
+            // Sjekk om e-posten allerede eksisterer i databasen
+            if (_context.Bruker.Any(b => b.epost == epost))
+            {
+                ViewBag.ErrorMessage = "En bruker med denne e-posten eksisterer allerede.";
+                return RedirectToAction("AdminView");
+            }
+
+            // Hash passordet ved hjelp av PasswordHasher
+            var passwordHasher = new PasswordHasher<BrukerModel>();
+            var nyBruker = new BrukerModel
+            {
+                epost = epost,
+                passord = passwordHasher.HashPassword(null, passord),
+                tilgangsnivaa_id = tilgangsnivaa,
+                organisasjon = organisasjon,
+                navn = navn // Navn kan være null
+            };
+
+            // Legg til ny bruker i databasen
+            _context.Bruker.Add(nyBruker);
+            _context.SaveChanges();
+            // Sett en suksessmelding
+            TempData["SuccessMessage"] = $"Bruker med e-post {epost} ble opprettet.";
+            return RedirectToAction("AdminView");
+        }
     }
+
+
 }

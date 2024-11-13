@@ -174,8 +174,13 @@ confirmBtn.addEventListener("click", function () {
     // Legger til det skjulte inputet i skjemaet
     areaChangeForm.appendChild(mapStateInput);
 
+    // legger inn loader ikon
+    confirmBtn.innerHTML = "<i class='bx bx-loader bx-spin' id='loadIcon'></i>";
+
     modal.style.display = "none"; // Skjul modalen
     areaChangeForm.submit(); // Send inn skjemaet manuelt
+
+    
 });
 
 // Funksjon for å lukke modalen

@@ -46,6 +46,7 @@
                 <th>Fylke</th>
                 <th>Kommune</th>
                 <th>Status</th>
+                <th>Saksbehandler</th>
                 <th>Dato</th>
                 <th>Kartlag</th>
             </tr>
@@ -54,13 +55,14 @@
 
             @foreach (var sak in ViewBag.Saker)
             {
-                <tr data-sakid='@sak.id' data-geojson='@Html.Raw(Json.Serialize(sak.geojson_data))' data-layerurl='@sak.layerurl' data-beskrivelse='@sak.beskrivelse' data-vedlegg='@sak.vedlegg'>
+                <tr class="@(sak.IsPriority ? "priority-row":"")" data-sakid='@sak.id' data-geojson='@Html.Raw(Json.Serialize(sak.geojson_data))' data-layerurl='@sak.layerurl' data-beskrivelse='@sak.beskrivelse' data-vedlegg='@sak.vedlegg'>
                     <td>@(sak.epost_bruker ?? "ikke registrert")</td>
                     <td>@sak.type_feil</td>
                     <td>@(sak.vedlegg != null ? "Ja" : "Nei")</td>
                     <td>@(sak.Fylkesnavn ?? "NULL")</td>
                     <td>@(sak.Kommunenavn ?? "NULL")</td>
                     <td>@sak.status</td>
+                    <td>@(sak.Saksbehandler?.epost ?? "Ikke tildelt")</td> 
                     <td>@sak.opprettet_dato.ToString("dd.MM.yyyy")</td>
                     @if (sak.layerurl == "https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png")
                     {
@@ -139,6 +141,10 @@
                         <td><span class="ubuntu-light" id="dashboardStatus">-</span></td>
                     </tr>
                     <tr>
+                        <td><strong>Saksbehandler:</strong></td>
+                        <td><span class="ubuntu-light" id="dashboardSaksbehandler">-</span></td>
+                    </tr>
+                    <tr>
                         <td><strong>Dato:</strong></td>
                         <td><span class="ubuntu-light" id="dashboarddato">-</span></td>
                     </tr>
@@ -160,46 +166,20 @@
                 </div>
             </div>
         </div>
-
-        <script>
-            // Function to open the vedlegg modal with the selected image path
-            function openVedleggModal(imagePath) {
-                document.getElementById('attachmentImage').src = imagePath; // Set the image source
-                document.getElementById('modalOverlay').style.display = 'block'; // Show the overlay
-                document.getElementById('vedleggModal').style.display = 'block'; // Show the vedlegg modal
-            }
-
-            // Function to close the vedlegg modal
-            function closeVedleggModal() {
-                document.getElementById('modalOverlay').style.display = 'none'; // Hide the overlay
-                document.getElementById('vedleggModal').style.display = 'none'; // Hide the vedlegg modal
-            }
-
-            // Add click event listeners to the table rows
-            document.querySelectorAll('#casesTable tbody tr').forEach(function (row) {
-                row.addEventListener('click', function () {
-                    var vedlegg = row.getAttribute('data-vedlegg'); // Get the vedlegg from the row
-                    if (vedlegg) {
-                        var imagePath = '/uploads/' + vedlegg; // Set the path to the image
-                        document.getElementById('visVedleggKnapp').style.display = 'inline'; // Show the button
-                        document.getElementById('visVedleggKnapp').onclick = function () {
-                            openVedleggModal(imagePath); // Call function to open vedlegg modal with the image
-                        };
-                    } else {
-                        document.getElementById('visVedleggKnapp').style.display = 'block'; // PH
-                    }
-                });
-            });
-
-            // Close vedlegg modal when overlay is clicked
-            document.getElementById('modalOverlay').addEventListener('click', function () {
-                closeVedleggModal();
-            });
-        </script>
     </div>
                  
             <!-- Status dropdown -->
             <div class="dashboard-box">
+        <h4 class="ubuntu-light">Endre saksbehandler</h4>
+        <select class="form-control" id="changeSaksbehandler" onchange="changeSaksbehandler(this)">
+            <option disabled selected>Velg saksbehandler</option>
+            @foreach (var saksbehandler in ViewBag.Saksbehandlere)
+            {
+                <option value="@saksbehandler.epost">@saksbehandler.navn</option>
+            }
+        </select>
+
+
                 <h4 class="ubuntu-light">Endre status</h4>
                 <select class="form-control" id="changeStatus">
                     <option value="Ubehandlet" selected>Ubehandlet</option>
@@ -211,16 +191,16 @@
 
                 <!-- Kommentar-seksjon -->
                 <h4 class="ubuntu-light">Legg til kommentar</h4>
-                <textarea id="caseComment" rows="4" cols="50" placeholder="Skriv en kommentar..."></textarea><br/>
+                <textarea class="caseComment" rows="4" cols="50" placeholder="Skriv en kommentar..."></textarea><br/>
                 <div class="btn-container">
                     <button class="btn-secondary" id="saveComment">Lagre kommentar</button>
                 </div>
 
                 <!-- Viser lagrede kommentarer -->
-                <div id="commentsSection">
+                <div class="commentsSection">
                     <h4 class="ubuntu-light" style="text-align: center; letter-spacing: 1px; ">Kommentarer</h4>
                     <div class="separator"></div>
-                    <ul id="commentsList">
+                    <ul class="commentsList">
                         <!-- her legges kommentarene -->
                     </ul>
                 </div>
@@ -238,7 +218,13 @@
             </div>
 
         </div>
- 
+<div class="box-container" style="margin-bottom: 200px;">
+    <div>
+        <a href="https://www.kartverket.no/">
+            <img class="kartverketLogo" src="/images/kartverket-logo.svg" />
+        </a>
+    </div>
+</div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 

@@ -12,7 +12,7 @@ CREATE TABLE Kommune (
 
 -- Opprette tabell for brukere
 CREATE TABLE Bruker (
-    epost VARCHAR(100) PRIMARY KEY,
+    epost VARCHAR(100) PRIMARY KEY NULL,
     navn VARCHAR(100) NULL,
     passord VARCHAR(255) NOT NULL,
     tilgangsnivaa_id INT,
@@ -26,7 +26,7 @@ CREATE TABLE Bruker (
 -- Opprette tabell for saker
 CREATE TABLE Sak (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    epost_bruker VARCHAR(100), -- Referanse til brukeren som rapporterer saken
+    epost_bruker VARCHAR(100) NULL, -- Referanse til brukeren som rapporterer saken
     beskrivelse TEXT NOT NULL,
     vedlegg VARCHAR(255) NULL, -- Binærdata for vedlegg
     geojson_data JSON, -- Inneholder kartdata i JSON-format
@@ -40,9 +40,12 @@ CREATE TABLE Sak (
     Kommunenummer VARCHAR(50),      -- Kan være en string, avhengig av hvordan nummeret lagres
     Fylkesnavn VARCHAR(255),
     Fylkesnummer VARCHAR(50),
+    IsPriority BOOLEAN DEFAULT FALSE, -- Nytt felt for å indikere om saken er prioritert
+    saksbehandler_id VARCHAR(100), -- Nytt felt for å lagre epost til saksbehandler
     FOREIGN KEY (epost_bruker) REFERENCES Bruker(epost),
-    FOREIGN KEY (kommune_id) REFERENCES Kommune(id) -- Relasjon til Kommune-tabellen
-);
+    FOREIGN KEY (kommune_id) REFERENCES Kommune(id), -- Relasjon til Kommune-tabellen
+    FOREIGN KEY (saksbehandler_id) REFERENCES Bruker(epost)
+);  
 
 CREATE TABLE Kommentar (
     Id INT AUTO_INCREMENT PRIMARY KEY, -- Bruk AUTO_INCREMENT i stedet for IDENTITY
@@ -244,6 +247,10 @@ VALUES ('testprio@example.com', 'TestPrioritertBruker', 'Test', 2, 'Statens Vegv
 -- Testbruker med tilgangsnivå 'Saksbehandler'
 INSERT INTO Bruker (epost, navn, passord, tilgangsnivaa_id, kommune_id)
 VALUES ('testsaksbehandler@example.com', 'TestSaksbehandler', 'Test', 3, 1);
+
+-- Testbruker med tilgangsnivå 'Saksbehandler'
+INSERT INTO Bruker (epost, navn, passord, tilgangsnivaa_id, kommune_id)
+VALUES ('testsaksbehandler2@example.com', 'TestSaksbehandler2', 'Test', 3, 1);
 
 -- Testbruker med tilgangsnivå 'Administrator'
 INSERT INTO Bruker (epost, navn, passord, tilgangsnivaa_id)

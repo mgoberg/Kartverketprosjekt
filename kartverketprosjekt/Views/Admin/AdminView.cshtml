@@ -6,10 +6,12 @@
 <a asp-controller="Home" asp-action="Index">
     <i class='bx bx-chevron-left'></i>
 </a>
+
 <h1>
     Administrator side
 </h1>
 
+<!-- Feilmelding, vises hvis det er en feilmelding -->
 @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
 {
     <div class="alert alert-danger">
@@ -17,6 +19,7 @@
     </div>
 }
 
+<!-- Suksessmelding, vises hvis det er en suksessmelding -->
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success">
@@ -24,8 +27,15 @@
     </div>
 }
 
+<!-- Søkefelt -->
+<div class="sorting-container2">
+    <div style class="search-bar2">
+        <input type="text" id="searchInput" placeholder="Skriv inn for å søke..." />
+    </div>
+        </div>    
+
+<!-- Statistikk -->
 <div class="stats-table-container">
-    <!-- Statistics Section -->
     <div class="stats-section">
         <table class="stats-table">
             <tr>
@@ -61,27 +71,26 @@
                 <td>@ViewData["ClosedCases"]</td>
             </tr>
         </table>
+
     </div>
 
-    
-
-
-    <!-- User Table -->
-
+    <!-- Brukere -->
 <div class="table-container">
 
-        <table class="styled-table">
+        <table id="brukerTable" class="styled-table">
+
             <thead> 
             <tr>
                 <th>E-post</th>
                 <th>Tilgangsnivå</th>
+                <th>Organisasjon</th>
             
             </tr>
             </thead>
             <tbody>
             @foreach (var bruker in Model)
             {
-                <tr data-toggle="modal" data-target="#userModal" data-epost="@bruker.epost" data-tilgangsnivaa="@bruker.tilgangsnivaa_id">
+                <tr data-toggle="modal" data-target="#userModal" data-epost="@bruker.epost" data-tilgangsnivaa="@bruker.tilgangsnivaa_id" data-organisasjon="@bruker.organisasjon">
                     <td>@bruker.epost</td>
                     <td>
                         @if (bruker.tilgangsnivaa_id == 1)
@@ -101,6 +110,7 @@
                             <text>Administrator (4)</text>
                         }
                     </td>
+                    <td>@bruker.organisasjon</td>
                 </tr>
             }
             </tbody>
@@ -108,6 +118,7 @@
     </div>
 </div>
 
+<!--Modal for å endre på brukere sitt tilgangsnivå-->
 <div class="overlay" id="modalOverlay"></div>
 
 <div class="modal" id="userModal">
@@ -142,6 +153,36 @@
     </div>
 </div>
 
-
-
+<!-- Opprette ny bruker -->
+<h2 style="text-align: center;">Opprett en ny bruker</h2>
+<form asp-action="OpprettBruker" method="post">
+    <div class="form-group">
+        <label for="epost">E-post:</label>
+        <input type="email" name="epost" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label for="passord">Passord:</label>
+        <input type="password" name="passord" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label for="navn">Navn (valgfritt):</label>
+        <input type="text" id="navn" name="navn">
+    </div>
+    <div class="form-group">
+        <label for="tilgangsnivaa">Tilgangsnivå:</label>
+        <select name="tilgangsnivaa" class="form-control" required>
+            <option value="1">Nivå 1 (bruker)</option>
+            <option value="2">Nivå 2 (prioritert bruker)</option>
+            <option value="3">Nivå 3 (saksbehandler)</option>
+            <option value="4">Nivå 4 (administrator)</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="organisasjon">Organisasjon:</label>
+        <input type="text" name="organisasjon" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Opprett bruker</button>
+</form>
+<!-- Scripts -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="/js/adminview.js"></script>

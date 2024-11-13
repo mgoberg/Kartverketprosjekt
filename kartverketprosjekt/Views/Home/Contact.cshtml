@@ -1,45 +1,88 @@
-﻿@model kartverketprosjekt.Models.ContactModel
-
-@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Kontakt";
-}
-<a asp-controller="Home" asp-action="Index">
-    <i class='bx bx-chevron-left'></i>
-</a>
-<h2>Kontakt oss</h2>
-
+<h2>Gruppe 14</h2>
 <style>
     h2 {
         text-align: center;
     }
+
+    .members-container {
+        display: flex;
+        gap: 10px; /* Space between the cards */
+        justify-items: center; /* Center cards horizontally in their grid cells */
+        margin: 20px;
+    }
+
+ 
+ 
+
+    .member-card {
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        text-align: center;
+        width: 250px; /* Reduced card width */
+    }
+
+    .member-card h3 {
+        margin-top: 10px;
+    }
+
+    .member-card img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 10px;
+    }
+
+    .contact-info {
+        font-style: italic;
+    }
+    
 </style>
 
-<form asp-controller="Home" asp-action="Contact" method="post" novalidate>
-    <div class="form">
-        <span asp-validation-for="Name" class="text-danger"></span>
-        <input asp-for="Name" class="form-control" placeholder="Navn..."/>
+<div class="members-container">
+    <div class="member-card">
+        <img src="~/images/Amund.jpg" alt="Bilde av Amund">
+        <h3>Amund</h3>
+        <p><strong>Interesser:</strong> AI-Teknologi, prosjektstyring og frontend utvikling.</p>
+        <p class="contact-info">Kontakt: AmundM@Uia.no</p>
     </div>
-    <div class="form">
-        <span asp-validation-for="Email" class="text-danger"></span>
-        <input asp-for="Email" type="email" class="form-control" placeholder="Epost..."/>
-    </div>
-    <div class="form">
-        <label asp-for="Subject">Sak:</label>
-        <input asp-for="Subject" class="form-control" placeholder="Sak ID"/>
-        <span asp-validation-for="Subject" class="text-danger"></span>
-        <input asp-for="Subject" class="form-control" placeholder="Hva gjelder det?..."/>
-    </div>
-    <div class="form">
-        <span asp-validation-for="Message" class="text-danger"></span>
-        <textarea asp-for="Message" rows="8" class="form-control" placeholder="Beskrivelse av saken..."></textarea>
 
+
+    <div class="member-card">
+        <img src="~/images/Anders.jpg" alt="Bilde av Anders">
+        <h3>Anders</h3>
+        <p><strong>Interesser:</strong> Fullstack-utvikling, maskinlæring, og datasikkerhet.</p>
+        <p class="contact-info">Kontakt: AndersTF@uia.no</p>
     </div>
-    <button type="submit" class="btn btn-primary">Send</button>
-</form>
+
+    <div class="member-card">
+        <img src="~/images/Simon.jpg" alt="Bilde av Simon">
+        <h3>Simon</h3>
+        <p><strong>Interesser:</strong> Full-Stack webutvikling og UX-Design.</p>
+        <p class="contact-info">Kontakt: SimonP@Uia.no</p>
+    </div>
+
+    <div class="member-card">
+        <img src="~/images/Jone.jpg" alt="Bilde av Jone">
+        <h3>Jone</h3>
+        <p><strong>Interesser:</strong> Frontend utvikling, databaser og arkitektur.</p>
+        <p class="contact-info">Kontakt: JoneM@Uia.no</p>
+    </div>
+
+    <div class="member-card">
+        <img src="~/images/Martin.jpg" alt="Bilde av Martin">
+        <h3>Martin</h3>
+        <p><strong>Interesser:</strong> Backend, sikkerhet og systemer.</p>
+        <p class="contact-info">Kontakt: MartinGoberg@gmail.com</p>
+    </div>
+   
+</div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+

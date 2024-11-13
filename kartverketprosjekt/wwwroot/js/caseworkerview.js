@@ -21,14 +21,14 @@ $('#slettSakKnapp').click(function () {
             data: { id: sakID },
             success: function (result) {
                 if (result.success) {
-                    alert(result.message);  // Viser en melding til brukeren
+                    console.log(result.message);  // Viser en melding til brukeren
                     location.reload();      // Oppdaterer siden for å fjerne slettet sak fra visningen
                 } else {
-                    alert(result.message);  // Viser en feilmelding 
+                    console.log(result.message);  // Viser en feilmelding 
                 }
             },
             error: function () {
-                alert("En feil oppstod under sletting.");
+                console.log("En feil oppstod under sletting.");
             }
         });
     }
@@ -36,7 +36,7 @@ $('#slettSakKnapp').click(function () {
 
 // Legge til ny kommentar i listen
 $('#saveComment').click(function () {
-    var commentText = $('#caseComment').val();  // Hente innholdet fra tekstområdet
+    var commentText = $('.caseComment').val();  // Hente innholdet fra tekstområdet
 
     if (commentText.trim() !== "") {
         // Hent sakID fra dashboardet
@@ -44,10 +44,10 @@ $('#saveComment').click(function () {
 
         if (sakID !== "-") {
             // Legg til ny kommentar til listen på klientsiden
-            $('#commentsList').append('<li>' + commentText + '</li>');
+            $('.commentsList').append('<li>' + commentText + '</li>');
 
             // Tømme kommentarfeltet etter at kommentaren er lagt til
-            $('#caseComment').val('');
+            $('.caseComment').val('');
 
             // Send kommentar til backend for å lagre den
             $.ajax({
@@ -81,6 +81,12 @@ $('#saveComment').click(function () {
 
 $(document).ready(function () {
     $('#casesTable tbody tr').click(function () {
+        // Fjern 'selected-row' klasse fra alle rader
+        $('#casesTable tbody tr').removeClass('selected-row');
+
+        // Legg til 'selected-row' klasse til den klikkede raden
+        $(this).addClass('selected-row');
+
         // Hente data fra tabellen
         var sakID = $(this).data('sakid');  // Hent sakID fra data-attribute
         var epost = $(this).find('td:eq(0)').text();
@@ -91,13 +97,14 @@ $(document).ready(function () {
         var fylke = $(this).find('td:eq(3)').text();
         var kommune = $(this).find('td:eq(4)').text();
         var status = $(this).find('td:eq(5)').text();
-        var dato = $(this).find('td:eq(6)').text();
+        var saksbehandler = $(this).find('td:eq(6)').text();
+        var dato = $(this).find('td:eq(7)').text();
         var kartlagUrl = $(this).data('layerurl');
 
         // Konvertere GeoJSON-strengen til et objekt
         if (typeof geojson === "string") {
             try {
-                geojson = JSON.parse(geojson);  // Ingen erstatning nødvendig hvis formatet er riktig
+                geojson = JSON.parse(geojson);
             } catch (error) {
                 console.error("Error parsing GeoJSON: ", error);
                 return; // Avslutt funksjonen hvis det oppstod en feil
@@ -113,8 +120,9 @@ $(document).ready(function () {
         $('#dashboardFylke').text(fylke);
         $('#dashboardKommune').text(kommune);
         $('#dashboardStatus').text(status);
+        $('#dashboardSaksbehandler').text(saksbehandler);
         $('#dashboarddato').text(dato);
-
+    
         $(document).on('click', '.comment', function () {
             $(this).toggleClass('comment-expanded');
             if ($(this).hasClass('comment-expanded')) {
@@ -136,7 +144,7 @@ $(document).ready(function () {
             success: function (result) {
                 if (result.success) {
                     // Tøm kommentarlisten før nye kommentarer legges til
-                    $('#commentsList').empty();
+                    $('.commentsList').empty();
                     // Legg til hver kommentar i listen
                     result.kommentarer.forEach(function (kommentar) {
                         var commentText = kommentar.tekst;
@@ -147,13 +155,13 @@ $(document).ready(function () {
                         var commentElement = $('<li class="comment comment-collapsed"></li>')
                             .text(truncatedText)
                             .data('fullText', commentText); // Lagre full tekst i data-fullText-attributtet
-                        $('#commentsList').append(commentElement);
+                        $('.commentsList').append(commentElement);
 
                         var commentInfoElement = '<li class="commentInfo">' + commentDate + '  av ' + commentAuthor + '</li>';
 
-                        $('#commentsList').append(commentInfoElement);
+                        $('.commentsList').append(commentInfoElement);
 
-                        $('#commentsList').append(commentElement);
+                        $('.commentsList').append(commentElement);
                     });
                 } else {
                     alert('Kunne ikke hente kommentarer: ' + result.message);
@@ -198,14 +206,16 @@ $(document).ready(function () {
 });
 
 
-// Change status event
+
+
+// Endre status event
 $('#changeStatus').change(function () {
-    var sakID = $('#dashboardSakID').text();  // Get the SakID from the dashboard
-    var newStatus = $(this).val(); // Get the new status from the dropdown
+    var sakID = $('#dashboardSakID').text().trim(); // Get SakID from dashboard
+    var newStatus = $(this).val(); // Get new status from dropdown
 
     if (sakID !== "-") {
         $.ajax({
-            url: '/Saksbehandler/UpdateStatus', // URL to your controller's update method
+            url: '/Saksbehandler/UpdateStatus', // Path to UpdateStatus method
             type: 'POST',
             data: {
                 id: sakID,
@@ -213,8 +223,17 @@ $('#changeStatus').change(function () {
             },
             success: function (result) {
                 if (result.success) {
-                    alert('Status oppdatert!'); // Notify the user
-                    location.reload(); // Reload the page to reflect changes
+                    console.log('Status oppdatert!'); // Feedback
+
+                    // Dynamically update status in the clicked row of the table
+                    $('#casesTable tbody tr').each(function () {
+                        if ($(this).data('sakid') == sakID) {
+                            $(this).find('td:eq(5)').text(newStatus); // Update status column
+                        }
+                    });
+
+                    // Also update dashboard status dynamically
+                    $('#dashboardStatus').text(newStatus);
                 } else {
                     alert('Kunne ikke oppdatere status.');
                 }
@@ -358,7 +377,88 @@ $(document).ready(function () {
     });
 });
 
+// Åpner vedlegg modal
+function openVedleggModal(imagePath) {
+    document.getElementById('attachmentImage').src = imagePath; // Kilde
+    document.getElementById('modalOverlay').style.display = 'block'; // overlay
+    document.getElementById('vedleggModal').style.display = 'block'; // viser vedlegg modal
+}
+
+// Funksjon for å lukke modal
+function closeVedleggModal() {
+    document.getElementById('modalOverlay').style.display = 'none'; // gjemmer modal
+    document.getElementById('vedleggModal').style.display = 'none'; // gjemmer modal
+}
+
+// Click event listener for å hente ut vedlegg
+document.querySelectorAll('#casesTable tbody tr').forEach(function (row) {
+    row.addEventListener('click', function () {
+        var vedlegg = row.getAttribute('data-vedlegg'); // henter vedlegget
+        if (vedlegg) {
+            var imagePath = '/uploads/' + vedlegg; // filepath
+            document.getElementById('visVedleggKnapp').style.display = 'inline'; // viser knappen
+            document.getElementById('visVedleggKnapp').onclick = function () {
+                openVedleggModal(imagePath); // Caller funksjonen
+            };
+        } else {
+            document.getElementById('visVedleggKnapp').style.display = 'block'; // PH
+        }
+    });
+});
+
+// Close modal når man trykker på overlay.
+document.getElementById('modalOverlay').addEventListener('click', function () {
+    closeVedleggModal();
+});
+
+// TODO: Fjern denne funksjonen
 function playSound() {
-    var audio = new Audio('/images/viktigIkkeSlett.mp3'); // Replace with the path to your sound file
+    var audio = new Audio('/images/viktigIkkeSlett.mp3'); // path til lydfil
     audio.play();
 }
+
+// Function to change saksbehandler
+function changeSaksbehandler(element) {
+    const sakID = $('#dashboardSakID').text().trim(); // Get SakID from dashboard
+    const saksbehandlerEpost = $(element).val(); // Get new saksbehandler e-post from dropdown
+    const saksbehandlerNavn = $(element).find("option:selected").text(); // Get name of selected saksbehandler
+
+    if (sakID === "-") {
+        alert("Velg en sak før du endrer saksbehandler.");
+        return;
+    }
+
+    // AJAX request to update saksbehandler
+    $.ajax({
+        url: '/Saksbehandler/EndreSaksbehandler', // Path to EndreSaksbehandler method
+        type: 'POST',
+        data: {
+            sakId: sakID,
+            saksbehandlerEpost: saksbehandlerEpost
+        },
+        success: function (response) {
+            if (response.success) {
+                console.log('Saksbehandler oppdatert!');
+
+                // Dynamically update saksbehandler in the clicked row of the table
+                $('#casesTable tbody tr').each(function () {
+                    if ($(this).data('sakid') == sakID) {
+                        $(this).find('td:eq(6)').text(saksbehandlerEpost); // Update saksbehandler column
+                    }
+                });
+
+                // Also update saksbehandler in the dashboard dynamically
+                $('#dashboardSaksbehandler').text(saksbehandlerEpost);
+            } else {
+                alert('Kunne ikke oppdatere saksbehandler.');
+            }
+        },
+        error: function () {
+            alert('En feil oppstod under oppdatering av saksbehandler.');
+        }
+    });
+}
+
+
+
+        

@@ -23,6 +23,9 @@
 <div class="flex-row">
     <div class="element1">
         <div id="map">
+            <div id="currentLayer">
+                Kartlag: <span id="layerName">Topografisk</span>
+            </div>
             <div id="verticalButtonContainer">
                 <button id="toggleButton">
                     <i class='bx bx-layer' id="layers"></i>
@@ -32,6 +35,12 @@
                 </button>
                 <button id="fullscreenButton">
                     <i class='bx bx-fullscreen' id="fullscreen"></i>
+                </button>
+                <button id="vegnettToggleButton">
+                    <i class='bx bx-car' id="vegnett"></i>
+                </button>
+                <button id="matrikkelkartToggleButton">
+                    <i class='bx bx-buildings' id="matrikkel"></i>
                 </button>
             </div>
             <div id="buttonContainer">
@@ -48,7 +57,7 @@
                     <button id="btn-changeToSea" onclick="changeToSea()"></button>
                 </div>
             </div>
-            
+
 
         </div>
     </div>
@@ -98,7 +107,9 @@
                     <span class="close">&times;</span>
                     <h2>Bekreft innsending</h2>
                     <p>Er du sikker på at du vil sende inn saken?</p>
-                    <button class="btn btn-danger" id="confirmSubmit">Bekreft</button>
+                    <button class="btn btn-danger" id="confirmSubmit">
+                        Bekreft
+                    </button>
                 </div>
             </div>
 
