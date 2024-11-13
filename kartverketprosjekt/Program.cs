@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using kartverketprosjekt.Services;
 using kartverketprosjekt.API_Models;
 using Discord; // Add this
-using Discord.WebSocket; // Add this
+using Discord.WebSocket;
+using kartverketprosjekt.Models;
+using Microsoft.AspNetCore.Identity; // Add this
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +20,21 @@ builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSet
 // Register services and their interfaces
 builder.Services.AddHttpClient<IKommuneInfoService, KommuneInfoService>();
 builder.Services.AddHttpClient<IStedsnavnService, StedsnavnService>(); // Can be removed if not needed
+
+
+builder.Services.AddScoped<IAutentiseringService, AutentiseringService>();
+
+builder.Services.AddScoped<PasswordHasher<BrukerModel>>();
+
+builder.Services.AddScoped<IBrukerService, BrukerService>();
+
+builder.Services.AddScoped<INotifikasjonService, NotifikasjonService>();
+
+builder.Services.AddScoped<ISakService, SakService>();
+
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+builder.Services.AddScoped<IPasswordHasher<BrukerModel>, PasswordHasher<BrukerModel>>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
