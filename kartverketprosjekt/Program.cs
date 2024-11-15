@@ -14,6 +14,7 @@ using kartverketprosjekt.Services.API;
 using kartverketprosjekt.Services.Sak;
 using kartverketprosjekt.Services.Autentisering;
 using kartverketprosjekt.Services.Bruker;
+using kartverketprosjekt.Services.File;
 using kartverketprosjekt.Services.Notifikasjon; // Add this
 
 
@@ -36,6 +37,8 @@ builder.Services.AddScoped<INotifikasjonService, NotifikasjonService>();
 builder.Services.AddScoped<ISakService, SakService>();
 
 builder.Services.AddScoped<IAdminService, AdminService>();
+
+builder.Services.AddScoped<IFileService, FileService>();
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

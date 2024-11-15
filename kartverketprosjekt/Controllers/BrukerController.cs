@@ -1,11 +1,7 @@
-﻿using kartverketprosjekt.Data;
-using kartverketprosjekt.Models;
+﻿using kartverketprosjekt.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using Microsoft.EntityFrameworkCore;
 using kartverketprosjekt.Services.Sak;
 using kartverketprosjekt.Services.Autentisering;
 using kartverketprosjekt.Services.Bruker;
@@ -16,7 +12,6 @@ using kartverketprosjekt.Services.Notifikasjon;
 
 public class BrukerController : Controller
 {
-    
     private readonly IAutentiseringService _autentiseringService;
     private readonly IBrukerService _brukerService;
     private readonly INotifikasjonService _notifikasjonService;
