@@ -1,9 +1,5 @@
-﻿using kartverketprosjekt.Data;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Text;
-using kartverketprosjekt.Models;
 using kartverketprosjekt.Services.Admin;
 
 // ****************************************************************************************************************************
@@ -11,10 +7,7 @@ using kartverketprosjekt.Services.Admin;
 // ****************************************************************************************************************************
 
 namespace kartverketprosjekt.Controllers
-
 {
-
-
     // Gir tilgang til AdminController kun for brukere med rolle 4 (admin brukere)
     [Authorize(Roles = "4")]
     public class AdminController : Controller
