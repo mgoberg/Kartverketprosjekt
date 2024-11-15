@@ -87,6 +87,20 @@ Nå har du en databasecontainer som kjører i Docker. Du kan starte applikasjone
 - **Controller**: Fungerer som en mellommann mellom modellen og visningen. Kontrolleren mottar input fra visningen, behandler den, og returnerer den passende visningen som svar.
   
   Denne separasjonen av bekymringer gjør applikasjonen mer modulær, enklere å teste og vedlikeholde. Det lar utviklere jobbe med forskjellige deler av applikasjonen samtidig uten å forstyrre hverandre.
+
+### Service-basert-arkitektur _(Business layer)_
+På grunnlag av at controllerene var direkte avhengig av databasen for en stor del av metodene, var det nødvendig å ta i bruk en service-basert-arkitektur i tillegg til mvc. Dette ble gjort ved å refaktorere logikken til metodene som krevde database skrivning/lesing inn i en service som ble injisert ved **Dependency Injection (DI)** inn i relevante controller.
+
+Eksempel på dette er **BrukerController** som bruker **AutentiseringService** og **BrukerService** som blir injisert som interfaces. Dette fjerner den direkte avhengigheten av databasen i controlleren men gjør også koden mer gjenbrukbar da man kan bruke services på tvers av controllere. 
+
+> [!NOTE]
+> Dette gjør at controllere _**kun**_ har som oppgave å "route" HTTP request og sende informasjon til relevante view.
+
+### Repository-pattern _(Data access layer)_
+- Repositories for å isolere database logikk for testing og utvekslbarhet
+
+> [!WARNING]
+> Refaktorering til **service-basert-arkitektur** er i verks, **repositories** er ikke implementert
 ---
 ## **Testing**
 ### **Unit Testing:**

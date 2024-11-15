@@ -1,11 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Threading.Tasks;
-using kartverketprosjekt.Data;
-using kartverketprosjekt.Models;
-using Microsoft.EntityFrameworkCore;
-using System.IO.Compression;
+﻿using kartverketprosjekt.Services.Bruker;
+using kartverketprosjekt.Services.Kommentar;
+using kartverketprosjekt.Services.Sak;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 // ****************************************************************************************************************************
 // ***********SaksbehandlerController er en controller som håndterer alle funksjoner for en saksbehandler og admin.************
@@ -13,181 +10,94 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace kartverketprosjekt.Controllers;
 
-// Gir tilgang til SaksbehandlerController kun for brukere med rolle 3 og 4 (saksbehandler og admin brukere)
 [Authorize(Roles = "3, 4")]
 public class SaksbehandlerController : Controller
 {
-    private readonly KartverketDbContext _context;
-    private dynamic saksbehandlere;
+    private readonly ISakService _sakService;
+    private readonly IKommentarService _kommentarService;
+    private readonly IBrukerService _brukerService;
 
-    public SaksbehandlerController(KartverketDbContext context)
+    public SaksbehandlerController(ISakService sakService, IKommentarService kommentarService, IBrukerService brukerService)
     {
-        _context = context;
-    }
-    private string GetAuthenticatedUserEmail()
-    {
-        return User.Identity.Name; // Henter brukerens e-post fra identiteten
+        _sakService = sakService;
+        _kommentarService = kommentarService;
+        _brukerService = brukerService;
     }
 
-    // Metode for å vise saksbehandler viewet.
     public IActionResult CaseWorkerView()
     {
-        // Hent den autentiserte brukerens e-post
-        var brukerEpost = GetAuthenticatedUserEmail();
+        var brukerEpost = User.Identity.Name;
+        var user = _brukerService.GetUserByEmail(brukerEpost);
 
-        // Sjekk om brukeren finnes i Bruker-tabellen
-        var user = _context.Bruker.FirstOrDefault(u => u.epost == brukerEpost);
-
-        // Sjekk om brukeren har tilgangsnivå 3 eller høyere
         if (user == null || user.tilgangsnivaa_id < 3)
-        {
-            // Returner en 403 Forbidden-statuskode hvis tilgangsnivået er lavere enn 3
             return Forbid();
-        }
 
-        // Retrieve all cases with the assigned caseworker details
-        var saker = _context.Sak.Include(s => s.Saksbehandler).ToList();
-
-        // Oppretter en ViewBag eller ViewData for å sende data til visningen
-        ViewData["Saker"] = saker;
-
-        ViewBag.Saksbehandlere = GetSaksbehandlere(); // Ensure this method returns a valid list
-
+        ViewData["Saker"] = _sakService.GetAllSaker();
+        ViewBag.Saksbehandlere = _brukerService.GetSaksbehandlere();
         return View();
     }
-    private List<BrukerModel> GetSaksbehandlere()
-    {
-        // Assuming that saksbehandlere are users with role 3 or 4
-        return _context.Bruker.Where(b => b.tilgangsnivaa_id == 3 || b.tilgangsnivaa_id == 4).ToList();
-    }
-    // Metode for å oppdatere status på en sak.
+
     [HttpPost]
     public async Task<IActionResult> UpdateStatus(int id, string status)
     {
-        var sak = await _context.Sak.FindAsync(id); // Hent saken ved ID
-
-        // Hvis saken ikke finnes i databasen returneres en feilmelding.
-        if (sak == null)
+        try
         {
-            return Json(new { success = false, message = "Sak ikke funnet." });
+            await _sakService.UpdateStatus(id, status);
+            return Json(new { success = true });
         }
-
-        if (sak.status != status) // Sjekk om status er endret
+        catch (Exception ex)
         {
-            sak.status = status; // Oppdater status
-            sak.status_endret = true; // Marker at status er endret
-            await _context.SaveChangesAsync(); // Lagre endringer i databasen
-
-            return Json(new { success = true, message = "Status oppdatert og merket som endret." });
+            return Json(new { success = false, message = ex.Message });
         }
-
-        // Hvis status ikke er endret
-        return Json(new { success = false, message = "Ny status er den samme som eksisterende status." });
     }
 
-
-
-    // Metode for å legge til en kommentar på en sak.
     [HttpPost]
-    public async Task<IActionResult> AddComment(int sakID, string kommentar, string epost)
+    public async Task<IActionResult> AddComment(int sakID, string kommentar)
     {
-        var sak = await _context.Sak.FindAsync(sakID);
-        // Validering av input
-        if (sakID <= 0 || string.IsNullOrWhiteSpace(kommentar))
+        try
         {
-            return Json(new { success = false, message = "Ugyldig sakID eller kommentar." });
+            var brukerEpost = User.Identity.Name;
+            await _kommentarService.AddComment(sakID, kommentar, brukerEpost);
+            return Json(new { success = true });
         }
-
-        // Hent e-post til den innloggede brukeren
-        var brukerEpost = GetAuthenticatedUserEmail();
-
-        // Sjekk om brukeren eksisterer i Bruker-tabellen
-        var bruker = _context.Bruker.FirstOrDefault(b => b.epost == brukerEpost);
-        if (bruker == null)
+        catch (Exception ex)
         {
-            return Json(new { success = false, message = "Bruker ikke funnet." });
+            return Json(new { success = false, message = ex.Message });
         }
-
-        // Opprett en ny kommentar.
-        var nyKommentar = new KommentarModel()
-        {
-            SakID = sakID,
-            Tekst = kommentar,
-            Dato = DateTime.Now,
-            Epost = brukerEpost
-        };
-
-        // Endre status_endret til true for notifikasjon.
-        sak.status_endret = true;
-
-        // Legg til kommentaren i databasen.
-        _context.Kommentar.Add(nyKommentar);
-        _context.SaveChanges();
-
-        return Json(new { success = true });
     }
 
-    // Metode for å hent kommentarer for en sak.
     [HttpGet]
     public JsonResult GetComments(int sakId)
     {
-        // Hent alle kommentarer for en sak.
-        var kommentarer = _context.Kommentar
-            .Where(k => k.SakID == sakId)
-            .Select(k => new
-            {
-                k.Tekst,
-                k.Dato,
-                k.Epost
-            }).ToList();
-
+        var kommentarer = _kommentarService.GetComments(sakId);
         return Json(new { success = true, kommentarer });
     }
 
-    // Metode for å slette en sak.
     [HttpPost]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        // Finn saken i databasen basert på ID
-        var sak = _context.Sak.Include(s => s.Kommentarer).FirstOrDefault(s => s.id == id);
-
-        if (sak != null)
+        try
         {
-            // Fjern alle kommentarer tilhørende saken
-            _context.Kommentar.RemoveRange(sak.Kommentarer);
-
-            // Fjern saken fra databasen
-            _context.Sak.Remove(sak);
-            _context.SaveChanges();
-            return Json(new { success = true, message = "Sak og tilhørende kommentarerer slettet." });
+            await _sakService.DeleteCase(id);
+            return Json(new { success = true });
         }
-
-        return Json(new { success = false, message = "Sak ikke funnet." });
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
     }
 
     [HttpPost]
-    public IActionResult EndreSaksbehandler(int sakId, string saksbehandlerEpost)
+    public async Task<IActionResult> EndreSaksbehandler(int sakId, string saksbehandlerEpost)
     {
-        var sak = _context.Sak.Find(sakId);
-        if (sak == null)
+        try
         {
-            return Json(new { success = false, message = "Sak ikke funnet." });
+            await _sakService.AssignSaksbehandler(sakId, saksbehandlerEpost);
+            return Json(new { success = true });
         }
-
-        // Finn saksbehandler basert på e-post
-        var saksbehandler = _context.Bruker.FirstOrDefault(b => b.epost == saksbehandlerEpost);
-        if (saksbehandler == null)
+        catch (Exception ex)
         {
-            return Json(new { success = false, message = "Saksbehandler ikke funnet." });
+            return Json(new { success = false, message = ex.Message });
         }
-
-        // Oppdater saksbehandler-ID
-        sak.SaksbehandlerId = saksbehandler.epost;
-        _context.SaveChanges();
-
-        return Json(new { success = true, message = "Saksbehandler oppdatert." });
     }
-
-}     
-
-
+}
