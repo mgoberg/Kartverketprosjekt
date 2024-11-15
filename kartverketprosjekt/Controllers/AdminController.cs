@@ -1,14 +1,13 @@
-﻿
-// ****************************************************************************************************************************
-// ******AdminController er en controller som håndterer alle funksjoner som kun skal være tilgjengelig for Administrator.******
-// ****************************************************************************************************************************
-
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using kartverketprosjekt.Services.Admin;
 using System.Threading.Tasks;
 
 namespace kartverketprosjekt.Controllers
+
+// ****************************************************************************************************************************
+// ******AdminController er en controller som håndterer alle funksjoner som kun skal være tilgjengelig for Administrator.******
+// ****************************************************************************************************************************
 {
     // AdminController handles functions accessible only to administrators.
     [Authorize(Roles = "4")]

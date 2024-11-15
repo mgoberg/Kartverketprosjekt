@@ -1,4 +1,5 @@
-﻿using kartverketprosjekt.Services.Bruker;
+﻿using kartverketprosjekt.Models;
+using kartverketprosjekt.Services.Bruker;
 using kartverketprosjekt.Services.Kommentar;
 using kartverketprosjekt.Services.Sak;
 using Microsoft.AspNetCore.Authorization;
@@ -67,11 +68,23 @@ public class SaksbehandlerController : Controller
     }
 
     [HttpGet]
-    public JsonResult GetComments(int sakId)
+    public async Task<IActionResult> GetComments(int sakId)
     {
-        var kommentarer = _kommentarService.GetComments(sakId);
-        return Json(new { success = true, kommentarer });
+        // Fetch comments dynamically based on the sakId
+        var kommentarer = await _kommentarService.GetComments(sakId);
+
+        // Check if there are comments for the sakId
+        if (kommentarer != null && kommentarer.Any())
+        {
+            return Json(new { success = true, kommentarer = kommentarer });
+        }
+        else
+        {
+            // Return a success response with an empty array to avoid previous comments showing up
+            return Json(new { success = true, kommentarer = new List<KommentarModel>() });
+        }
     }
+
 
     [HttpPost]
     public async Task<IActionResult> Delete(int id)
