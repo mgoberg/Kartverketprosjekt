@@ -87,6 +87,14 @@ Nå har du en databasecontainer som kjører i Docker. Du kan starte applikasjone
 - **Controller**: Fungerer som en mellommann mellom modellen og visningen. Kontrolleren mottar input fra visningen, behandler den, og returnerer den passende visningen som svar.
   
   Denne separasjonen av bekymringer gjør applikasjonen mer modulær, enklere å teste og vedlikeholde. Det lar utviklere jobbe med forskjellige deler av applikasjonen samtidig uten å forstyrre hverandre.
+
+  ### Service-basert-arkitektur
+- Services for gjenbrukbar logikk
+### Repository-pattern
+- Repositories for å isolere database logikk for testing og utvekslbarhet
+
+> [!WARNING]
+> Refaktorering til **service-basert-arkitektur** er i verks, **repositories** er ikke implementert
 ---
 ## **Testing**
 ### **Unit Testing:**
