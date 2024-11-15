@@ -121,5 +121,45 @@ namespace kartverketprosjekt.Services.Sak
         {
             return _context.Sak.FirstOrDefault(s => s.id == id);
         }
+
+        public async Task UpdateStatus(int id, string status)
+        {
+            var sak = await _context.Sak.FindAsync(id);
+            if (sak == null) throw new Exception("Sak ikke funnet.");
+
+            if (sak.status != status)
+            {
+                sak.status = status;
+                sak.status_endret = true;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task DeleteCase(int id)
+        {
+            var sak = await _context.Sak.Include(s => s.Kommentarer).FirstOrDefaultAsync(s => s.id == id);
+            if (sak == null) throw new Exception("Sak ikke funnet.");
+
+            _context.Kommentar.RemoveRange(sak.Kommentarer);
+            _context.Sak.Remove(sak);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AssignSaksbehandler(int sakId, string saksbehandlerEpost)
+        {
+            var sak = await _context.Sak.FindAsync(sakId);
+            if (sak == null) throw new Exception("Sak ikke funnet.");
+
+            var saksbehandler = await _context.Bruker.FirstOrDefaultAsync(b => b.epost == saksbehandlerEpost);
+            if (saksbehandler == null) throw new Exception("Saksbehandler ikke funnet.");
+
+            sak.SaksbehandlerId = saksbehandler.epost;
+            await _context.SaveChangesAsync();
+        }
+
+        public List<SakModel> GetAllSaker()
+        {
+            return _context.Sak.Include(s => s.Saksbehandler).ToList();
+        }
     }
 }

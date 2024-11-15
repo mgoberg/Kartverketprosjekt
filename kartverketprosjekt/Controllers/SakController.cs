@@ -3,7 +3,7 @@ using kartverketprosjekt.Models;
 using kartverketprosjekt.Services.Sak;
 
 // ****************************************************************************************************************************
-// ***********SakController er en controller som håndterer alle funksjoner i forbeindelse med opprettelse av en sak.***********
+// ***********SakController er en controller som håndterer alle funksjoner i forbindelse med opprettelse av en sak.***********
 // ****************************************************************************************************************************
 
 namespace kartverketprosjekt.Controllers

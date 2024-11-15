@@ -1,12 +1,9 @@
 ﻿using kartverketprosjekt.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using kartverketprosjekt.Data;
-using kartverketprosjekt.API_Models;
-using Microsoft.Extensions.Options;
 
 namespace kartverketprosjekt.Services.Autentisering
 {
