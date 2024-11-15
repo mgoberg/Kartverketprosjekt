@@ -1,109 +1,98 @@
 ﻿using kartverketprosjekt.Data;
 using kartverketprosjekt.Models;
+using kartverketprosjekt.Repositories.Bruker;
+using kartverketprosjekt.Repositories.Sak;
 using Microsoft.AspNetCore.Identity;
 
 namespace kartverketprosjekt.Services.Admin
 {
     public class AdminService : IAdminService
     {
-        private readonly KartverketDbContext _context;
+        private readonly IBrukerRepository _brukerRepository;
+        private readonly ISakRepository _sakRepository;
+        private readonly PasswordHasher<BrukerModel> _passwordHasher;
 
-        public AdminService(KartverketDbContext context)
+        public AdminService(IBrukerRepository brukerRepository, ISakRepository sakRepository)
         {
-            _context = context;
+            _brukerRepository = brukerRepository;
+            _sakRepository = sakRepository;
+            _passwordHasher = new PasswordHasher<BrukerModel>();
         }
 
-        public AdminStats GetAdminViewStats()
+        public async Task<AdminStats> GetAdminViewStatsAsync()
         {
+            var users = await _brukerRepository.GetAllUsersAsync();
+
             return new AdminStats
             {
-                CaseCount = _context.Sak.Count(),
-                UserCount = _context.Bruker.Count(),
-                OpenCasesUnbehandlet = _context.Sak.Count(s => s.status == "Ubehandlet"),
-                OpenCasesUnderBehandling = _context.Sak.Count(s => s.status == "Under Behandling"),
-                OpenCasesAvvist = _context.Sak.Count(s => s.status == "Avvist"),
-                OpenCasesArkivert = _context.Sak.Count(s => s.status == "Arkivert"),
-                ClosedCases = _context.Sak.Count(s => s.status == "Løst"),
-                Users = _context.Bruker.ToList()
+                CaseCount = await _sakRepository.GetCaseCountAsync(),
+                UserCount = await _brukerRepository.GetUserCountAsync(),
+                OpenCasesUnbehandlet = await _sakRepository.GetCaseCountByStatusAsync("Ubehandlet"),
+                OpenCasesUnderBehandling = await _sakRepository.GetCaseCountByStatusAsync("Under Behandling"),
+                OpenCasesAvvist = await _sakRepository.GetCaseCountByStatusAsync("Avvist"),
+                OpenCasesArkivert = await _sakRepository.GetCaseCountByStatusAsync("Arkivert"),
+                ClosedCases = await _sakRepository.GetCaseCountByStatusAsync("Løst"),
+                Users = users
             };
         }
-        public bool UpdateUserAccess(string userId, int newAccessLevel, out string message)
+        public async Task<(bool Success, string Message)> CreateUserAsync(string epost, string passord, int tilgangsnivaa, string organisasjon, string? navn)
         {
-            var user = _context.Bruker.Find(userId);
+            // Check if the email is already registered
+            var existingUser = await _brukerRepository.GetUserByEmailAsync(epost);
+            if (existingUser != null)
+            {
+                return (false, "En bruker med denne e-posten eksisterer allerede.");
+            }
+
+            // Create a new user model
+            var newUser = new BrukerModel
+            {
+                epost = epost,
+                navn = navn,
+                organisasjon = organisasjon,
+                tilgangsnivaa_id = tilgangsnivaa,
+                passord = _passwordHasher.HashPassword(null, passord) // Hash the password
+            };
+
+            // Save the new user
+            await _brukerRepository.AddUserAsync(newUser);
+            return (true, $"Brukeren {epost} ble opprettet.");
+        }
+        public async Task<(bool Success, string Message)> UpdateUserAccessAsync(string userId, int newAccessLevel)
+        {
+            var user = await _brukerRepository.GetUserByIdAsync(userId);
             if (user != null)
             {
                 user.tilgangsnivaa_id = newAccessLevel;
-                _context.SaveChanges();
-                message = $"Endret tilgangsnivå for {userId} til: {newAccessLevel}";
-                return true;
+                await _brukerRepository.SaveChangesAsync();
+                return (true, $"Endret tilgangsnivå for {userId} til: {newAccessLevel}");
             }
 
-            message = "Bruker ikke funnet.";
-            return false;
+            return (false, "Bruker ikke funnet.");
         }
-        public bool DeleteUser(string email, string loggedInUserEmail, out string errorMessage)
-        {
-            if (string.IsNullOrEmpty(email))
-            {
-                errorMessage = "E-post må være oppgitt.";
-                return false;
-            }
 
-            var user = _context.Bruker.FirstOrDefault(u => u.epost == email);
+        public async Task<(bool Success, string Message)> DeleteUserAsync(string email, string loggedInUserEmail)
+        {
+            var user = await _brukerRepository.GetUserByEmailAsync(email);
             if (user == null)
             {
-                errorMessage = "Bruker ikke funnet.";
-                return false;
+                return (false, "Bruker ikke funnet.");
             }
 
             if (user.epost == loggedInUserEmail)
             {
-                errorMessage = "Du kan ikke slette din egen konto.";
-                return false;
+                return (false, "Du kan ikke slette din egen konto.");
             }
 
-            var linkedCases = _context.Sak.Any(s => s.epost_bruker == user.epost);
+            var linkedCases = (await _sakRepository.GetAllCasesAsync()).Any(s => s.epost_bruker == user.epost);
             if (linkedCases)
             {
-                errorMessage = "Brukeren kan ikke slettes fordi det finnes saker knyttet til denne brukeren.";
-                return false;
+                return (false, "Brukeren kan ikke slettes fordi det finnes saker knyttet til denne brukeren.");
             }
 
-            _context.Bruker.Remove(user);
-            _context.SaveChanges();
-            errorMessage = $"{user.epost} ble slettet.";
-            return true;
+            await _brukerRepository.DeleteUserAsync(user);
+            return (true, $"{user.epost} ble slettet.");
         }
-        public bool CreateUser(string email, string password, int accessLevel, string organization, string? name, out string errorMessage)
-        {
-            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(organization))
-            {
-                errorMessage = "E-post, passord og organisasjon må fylles ut.";
-                return false;
-            }
-
-            if (_context.Bruker.Any(b => b.epost == email))
-            {
-                errorMessage = "En bruker med denne e-posten eksisterer allerede.";
-                return false;
-            }
-
-            var passwordHasher = new PasswordHasher<BrukerModel>();
-            var newUser = new BrukerModel
-            {
-                epost = email,
-                passord = passwordHasher.HashPassword(null, password),
-                tilgangsnivaa_id = accessLevel,
-                organisasjon = organization,
-                navn = name
-            };
-
-            _context.Bruker.Add(newUser);
-            _context.SaveChanges();
-            errorMessage = $"Bruker med e-post {email} ble opprettet.";
-            return true;
-        }
-
     }
 
     public class AdminStats
@@ -117,5 +106,5 @@ namespace kartverketprosjekt.Services.Admin
         public int ClosedCases { get; set; }
         public List<BrukerModel> Users { get; set; }
     }
-
 }
+

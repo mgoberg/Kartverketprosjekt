@@ -16,7 +16,11 @@ using kartverketprosjekt.Services.Autentisering;
 using kartverketprosjekt.Services.Bruker;
 using kartverketprosjekt.Services.File;
 using kartverketprosjekt.Services.Kommentar;
-using kartverketprosjekt.Services.Notifikasjon; // Add this
+using kartverketprosjekt.Services.Notifikasjon;
+using kartverketprosjekt.Repositories.Bruker;
+using kartverketprosjekt.Repositories.Kommentar;
+using kartverketprosjekt.Repositories.Notifikasjon;
+using kartverketprosjekt.Repositories.Sak; // Add this
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,8 +28,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Bind the API settings from appsettings.json
 builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSettings"));
 
-// Register services and their interfaces
 builder.Services.AddHttpClient<IKommuneInfoService, KommuneInfoService>();
+
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+// Services og tilsvarende interface
 builder.Services.AddScoped<IAutentiseringService, AutentiseringService>();
 builder.Services.AddScoped<PasswordHasher<BrukerModel>>();
 builder.Services.AddScoped<IBrukerService, BrukerService>();
@@ -34,16 +40,21 @@ builder.Services.AddScoped<ISakService, SakService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IKommentarService, KommentarService>();
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IPasswordHasher<BrukerModel>, PasswordHasher<BrukerModel>>();
+
+// Repositories og tilsvarende interface
+builder.Services.AddScoped<IBrukerRepository, BrukerRepository>();
+builder.Services.AddScoped<ISakRepository, SakRepository>();
+builder.Services.AddScoped<IKommentarRepository, KommentarRepository>();
+builder.Services.AddScoped<INotifikasjonRepository, NotifikasjonRepository>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Configure your DbContext here
+// Database konfigurasjon
 builder.Services.AddDbContext<KartverketDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
-    new MySqlServerVersion(new Version(11, 3, 2)))); // Adjust version as needed
+    new MySqlServerVersion(new Version(11, 3, 2)))); 
 
 // Enable authentication with cookies
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

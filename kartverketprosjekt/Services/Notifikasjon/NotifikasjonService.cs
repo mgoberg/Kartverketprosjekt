@@ -1,27 +1,25 @@
-﻿using kartverketprosjekt.Data;
+﻿using kartverketprosjekt.Repositories.Notifikasjon;
 using kartverketprosjekt.Services.Notifikasjon;
-using Microsoft.EntityFrameworkCore;
 
 public class NotifikasjonService : INotifikasjonService
 {
-    private readonly KartverketDbContext _context;
+    private readonly INotifikasjonRepository _notifikasjonRepository;
 
-    public NotifikasjonService(KartverketDbContext context)
+    public NotifikasjonService(INotifikasjonRepository notifikasjonRepository)
     {
-        _context = context;
+        _notifikasjonRepository = notifikasjonRepository;
     }
 
+    // Check if the user has any status changes to be notified about
     public async Task<bool> HarEndretStatus(string brukerEpost)
     {
         try
         {
-            // Sjekk om det finnes minst én sak hvor brukeren har endret status
-            var hasStatusChanged = await _context.Sak
-                .AnyAsync(s => s.epost_bruker == brukerEpost && s.status_endret == true);
+            bool hasStatusChanged = await _notifikasjonRepository.HasStatusChangedAsync(brukerEpost);
 
             if (hasStatusChanged)
             {
-                // Logg i konsollen for debugging
+                // Log for debugging purposes
                 Console.WriteLine("Du har en notifikasjon.");
                 return true; // Return true for notification
             }
@@ -36,21 +34,12 @@ public class NotifikasjonService : INotifikasjonService
         }
     }
 
+    // Reset the notification status for a user
     public async Task<bool> ResetNotificationStatus(string brukerEpost)
     {
         try
         {
-            var saker = await _context.Sak
-                .Where(s => s.epost_bruker == brukerEpost && s.status_endret)
-                .ToListAsync();
-
-            foreach (var sak in saker)
-            {
-                sak.status_endret = false;
-            }
-
-            await _context.SaveChangesAsync();
-            return true;
+            return await _notifikasjonRepository.ResetNotificationStatusAsync(brukerEpost);
         }
         catch (Exception ex)
         {
