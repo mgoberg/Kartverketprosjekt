@@ -4,6 +4,7 @@ using kartverketprosjekt.Models;
 using kartverketprosjekt.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using kartverketprosjekt.Services.API;
 
 // ****************************************************************************************************************************
 // ***********SakController er en controller som håndterer alle funksjoner i forbeindelse med opprettelse av en sak.***********
@@ -20,15 +21,13 @@ namespace kartverketprosjekt.Controllers
 
         private readonly IKommuneInfoService _kommuneInfoService;
 
-        private readonly IStedsnavnService _stedsnavnService; // Kan fjernes hvis ikke vi skal implementere stedsnavn api
 
         // Konstruktør for SakController.
-        public SakController(DiscordBot discordBot, KartverketDbContext context, ILogger<HomeController> logger, IKommuneInfoService kommuneInfoService, IStedsnavnService stedsnavnService)
+        public SakController(DiscordBot discordBot, KartverketDbContext context, ILogger<HomeController> logger, IKommuneInfoService kommuneInfoService)
         {
             _discordBot = discordBot; // Initialize the DiscordBot
             _context = context;
             _kommuneInfoService = kommuneInfoService;
-            _stedsnavnService = stedsnavnService; //kan fjernes hvis ikke vi skal implementere stedsnavn api
         }
 
 

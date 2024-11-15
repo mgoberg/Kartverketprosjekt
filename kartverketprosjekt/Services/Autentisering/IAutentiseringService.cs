@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace kartverketprosjekt.Services
+namespace kartverketprosjekt.Services.Autentisering
 {
     public interface IAutentiseringService
     {

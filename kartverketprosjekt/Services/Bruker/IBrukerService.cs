@@ -1,6 +1,6 @@
 ﻿using kartverketprosjekt.Models;
 
-namespace kartverketprosjekt.Services
+namespace kartverketprosjekt.Services.Bruker
 {
     public interface IBrukerService
     {

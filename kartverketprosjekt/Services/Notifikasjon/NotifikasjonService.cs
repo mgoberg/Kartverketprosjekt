@@ -1,5 +1,5 @@
 ﻿using kartverketprosjekt.Data;
-using kartverketprosjekt.Services;
+using kartverketprosjekt.Services.Notifikasjon;
 using Microsoft.EntityFrameworkCore;
 
 public class NotifikasjonService : INotifikasjonService
