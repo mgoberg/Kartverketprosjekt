@@ -1,26 +1,25 @@
 ﻿using kartverketprosjekt.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using kartverketprosjekt.Data;
+using kartverketprosjekt.Repositories.Bruker;
 
 namespace kartverketprosjekt.Services.Autentisering
 {
     public class AutentiseringService : IAutentiseringService
     {
-        private readonly KartverketDbContext _context;
+        private readonly IBrukerRepository _brukerRepository;
         private readonly PasswordHasher<BrukerModel> _passwordHasher;
 
-        public AutentiseringService(KartverketDbContext context, PasswordHasher<BrukerModel> passwordHasher)
+        public AutentiseringService(IBrukerRepository brukerRepository, PasswordHasher<BrukerModel> passwordHasher)
         {
-            _context = context;
+            _brukerRepository = brukerRepository;
             _passwordHasher = passwordHasher;
         }
 
         public async Task<(bool Success, string ErrorMessage, ClaimsPrincipal? Principal)> LoginAsync(string epost, string password)
         {
-            var user = await _context.Bruker.FirstOrDefaultAsync(u => u.epost == epost);
+            var user = await _brukerRepository.GetUserByEmailAsync(epost);
             if (user == null)
                 return (false, "Feil epost eller passord", null);
 
@@ -45,6 +44,5 @@ namespace kartverketprosjekt.Services.Autentisering
 
         public bool IsHashedPassword(string password) => password.Length >= 60;
     }
-
-
 }
+

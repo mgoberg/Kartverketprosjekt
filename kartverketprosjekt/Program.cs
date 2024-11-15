@@ -16,7 +16,9 @@ using kartverketprosjekt.Services.Autentisering;
 using kartverketprosjekt.Services.Bruker;
 using kartverketprosjekt.Services.File;
 using kartverketprosjekt.Services.Kommentar;
-using kartverketprosjekt.Services.Notifikasjon; // Add this
+using kartverketprosjekt.Services.Notifikasjon;
+using kartverketprosjekt.Repositories.Bruker;
+using kartverketprosjekt.Repositories.Sak; // Add this
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,6 +38,10 @@ builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IKommentarService, KommentarService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IPasswordHasher<BrukerModel>, PasswordHasher<BrukerModel>>();
+
+//repositories
+builder.Services.AddScoped<IBrukerRepository, BrukerRepository>();
+builder.Services.AddScoped<ISakRepository, SakRepository>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

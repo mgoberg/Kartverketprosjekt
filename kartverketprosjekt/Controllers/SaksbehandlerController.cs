@@ -24,18 +24,18 @@ public class SaksbehandlerController : Controller
         _brukerService = brukerService;
     }
 
-    public IActionResult CaseWorkerView()
-    {
-        var brukerEpost = User.Identity.Name;
-        var user = _brukerService.GetUserByEmail(brukerEpost);
+    public async Task<IActionResult> CaseWorkerView()
+{
+    var brukerEpost = User.Identity.Name;
+    var user = await _brukerService.GetUserByEmailAsync(brukerEpost);
 
-        if (user == null || user.tilgangsnivaa_id < 3)
-            return Forbid();
+    if (user == null || user.tilgangsnivaa_id < 3)
+        return Forbid();
 
-        ViewData["Saker"] = _sakService.GetAllSaker();
-        ViewBag.Saksbehandlere = _brukerService.GetSaksbehandlere();
-        return View();
-    }
+    ViewData["Saker"] =  _sakService.GetAllSaker();
+    ViewBag.Saksbehandlere = await _brukerService.GetSaksbehandlereAsync();
+    return View();
+}
 
     [HttpPost]
     public async Task<IActionResult> UpdateStatus(int id, string status)
