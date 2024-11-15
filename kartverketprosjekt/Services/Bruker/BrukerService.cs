@@ -2,7 +2,6 @@
 using kartverketprosjekt.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
@@ -84,6 +83,15 @@ namespace kartverketprosjekt.Services.Bruker
             }
 
             return false; // Indicate that the update failed
+        }
+        public BrukerModel GetUserByEmail(string email)
+        {
+            return _context.Bruker.FirstOrDefault(b => b.epost == email);
+        }
+
+        public List<BrukerModel> GetSaksbehandlere()
+        {
+            return _context.Bruker.Where(b => b.tilgangsnivaa_id == 3 || b.tilgangsnivaa_id == 4).ToList();
         }
     }
 }

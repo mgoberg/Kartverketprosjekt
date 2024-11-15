@@ -15,6 +15,7 @@ using kartverketprosjekt.Services.Sak;
 using kartverketprosjekt.Services.Autentisering;
 using kartverketprosjekt.Services.Bruker;
 using kartverketprosjekt.Services.File;
+using kartverketprosjekt.Services.Kommentar;
 using kartverketprosjekt.Services.Notifikasjon; // Add this
 
 
@@ -25,23 +26,15 @@ builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSet
 
 // Register services and their interfaces
 builder.Services.AddHttpClient<IKommuneInfoService, KommuneInfoService>();
-
 builder.Services.AddScoped<IAutentiseringService, AutentiseringService>();
-
 builder.Services.AddScoped<PasswordHasher<BrukerModel>>();
-
 builder.Services.AddScoped<IBrukerService, BrukerService>();
-
 builder.Services.AddScoped<INotifikasjonService, NotifikasjonService>();
-
 builder.Services.AddScoped<ISakService, SakService>();
-
 builder.Services.AddScoped<IAdminService, AdminService>();
-
 builder.Services.AddScoped<IFileService, FileService>();
-
+builder.Services.AddScoped<IKommentarService, KommentarService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
 builder.Services.AddScoped<IPasswordHasher<BrukerModel>, PasswordHasher<BrukerModel>>();
 
 // Add services to the container.
