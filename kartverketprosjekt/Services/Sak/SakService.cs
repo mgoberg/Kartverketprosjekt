@@ -2,7 +2,7 @@
 using kartverketprosjekt.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace kartverketprosjekt.Services
+namespace kartverketprosjekt.Services.Sak
 {
     public class SakService : ISakService
     {

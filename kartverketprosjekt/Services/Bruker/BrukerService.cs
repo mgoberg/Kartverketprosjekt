@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 
-namespace kartverketprosjekt.Services
+namespace kartverketprosjekt.Services.Bruker
 {
     public class BrukerService : IBrukerService
     {

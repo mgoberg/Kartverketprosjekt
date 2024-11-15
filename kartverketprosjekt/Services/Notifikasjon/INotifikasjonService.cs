@@ -1,4 +1,4 @@
-﻿namespace kartverketprosjekt.Services
+﻿namespace kartverketprosjekt.Services.Notifikasjon
 {
     public interface INotifikasjonService
     {

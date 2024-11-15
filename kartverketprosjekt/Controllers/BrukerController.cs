@@ -6,7 +6,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
-using kartverketprosjekt.Services;
+using kartverketprosjekt.Services.Sak;
+using kartverketprosjekt.Services.Autentisering;
+using kartverketprosjekt.Services.Bruker;
+using kartverketprosjekt.Services.Notifikasjon;
 // ***********************************************************************************************************************
 // ******BrukerController er en controller som håndterer alle funksjoner som kun skal være tilgjengelig for brukere.******
 // ***********************************************************************************************************************

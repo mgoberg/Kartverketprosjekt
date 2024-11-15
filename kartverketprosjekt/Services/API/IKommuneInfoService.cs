@@ -1,6 +1,6 @@
 ﻿using kartverketprosjekt.API_Models;
 
-namespace kartverketprosjekt.Services
+namespace kartverketprosjekt.Services.API
 {
     public interface IKommuneInfoService
     {

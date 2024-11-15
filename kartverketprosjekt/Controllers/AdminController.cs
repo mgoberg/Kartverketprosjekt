@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using kartverketprosjekt.Models;
+using kartverketprosjekt.Services.Admin;
 
 // ****************************************************************************************************************************
 // ******AdminController er en controller som håndterer alle funksjoner som kun skal være tilgjengelig for Administrator.******
@@ -18,144 +19,79 @@ namespace kartverketprosjekt.Controllers
     [Authorize(Roles = "4")]
     public class AdminController : Controller
     {
-        // Dependency injection for å få tilgang til databasen.
-        private readonly KartverketDbContext _context;
+        private readonly IAdminService _adminService;
 
-        // Konstruktør for AdminController
-        public AdminController(KartverketDbContext context)
+        
+        public AdminController(IAdminService adminService)
         {
-            _context = context;
+           
+            _adminService = adminService;
         }
 
         // Metode for å vise admin viewet.
         public IActionResult AdminView()
         {
-            // Henter alle saker fra databasen og teller de.
-            int caseCount = _context.Sak.Count();
+            var stats = _adminService.GetAdminViewStats();
+            ViewData["CaseCount"] = stats.CaseCount;
+            ViewData["UserCount"] = stats.UserCount;
+            ViewData["OpenCasesUnbehandlet"] = stats.OpenCasesUnbehandlet;
+            ViewData["OpenCasesUnderBehandling"] = stats.OpenCasesUnderBehandling;
+            ViewData["OpenCasesAvvist"] = stats.OpenCasesAvvist;
+            ViewData["OpenCasesArkivert"] = stats.OpenCasesArkivert;
+            ViewData["ClosedCases"] = stats.ClosedCases;
 
-            // Henter alle brukere fra databasen og teller de.
-            int userCount = _context.Bruker.Count();
-
-            // Henter ut stats for antall saker i de forskjellige statusene.
-            int openCasesUnbehandlet = _context.Sak.Count(s => s.status == "Ubehandlet");
-            int openCasesUnderBehandling = _context.Sak.Count(s => s.status == "Under Behandling");
-            int openCasesAvvist = _context.Sak.Count(s => s.status == "Avvist");
-            int openCasesArkivert = _context.Sak.Count(s => s.status == "Arkivert");
-            int closedCases = _context.Sak.Count(s => s.status == "Løst");
-
-            // Bruker ViewData for å sende data til viewet.
-            ViewData["CaseCount"] = caseCount;
-            ViewData["UserCount"] = userCount;
-            ViewData["OpenCasesUnbehandlet"] = openCasesUnbehandlet;
-            ViewData["OpenCasesUnderBehandling"] = openCasesUnderBehandling;
-            ViewData["OpenCasesAvvist"] = openCasesAvvist;
-            ViewData["OpenCasesArkivert"] = openCasesArkivert;
-            ViewData["ClosedCases"] = closedCases;
-
-            var users = _context.Bruker.ToList(); // Hent alle brukere fra databasen
-            return View(users); // Send brukerne til viewet
+            return View(stats.Users);
         }
 
         //Metode for å endre tilgangsnivået til en bruker fra admin bruker.
         [HttpPost]
         public IActionResult UpdateAccess(string userId, int newAccessLevel)
         {
-            // Finner Bruker med bruker med id.
-            var user = _context.Bruker.Find(userId);
-            if (user != null)
+            if (_adminService.UpdateUserAccess(userId, newAccessLevel, out var message))
             {
-                user.tilgangsnivaa_id = newAccessLevel; // Oppdater tilgangsnivået
-                _context.SaveChanges(); // Lagre endringene i databasen
-                TempData["SuccessMessage"] = $"Endret tilgangsnivå for {userId} til: {newAccessLevel}"; // Set success message
-
+                TempData["SuccessMessage"] = message;
             }
-            return RedirectToAction("AdminView"); // Naviger tilbake til listen over brukere
+            else
+            {
+                TempData["ErrorMessage"] = message;
+            }
+
+            return RedirectToAction("AdminView");
         }
 
-           // Metode for å slette en bruker fra admin brukeren.
+        // Metode for å slette en bruker fra admin brukeren.
         [HttpPost]
         public IActionResult SlettBruker(string epost)
-        { 
-            // Sjekk om e-post er fylt ut
-            if (string.IsNullOrEmpty(epost))
+        {
+            var loggedInUserEmail = User.Identity.Name;
+            if (_adminService.DeleteUser(epost, loggedInUserEmail, out var errorMessage))
             {
-                return BadRequest("E-post må være oppgitt.");
+                TempData["SuccessMessage"] = errorMessage;
+                return RedirectToAction("AdminView");
             }
 
-            // Hent den innloggede brukerens e-post
-            var innloggetBrukerEpost = User.Identity.Name;
-
-            // Finn brukeren med den gitte e-posten
-            var bruker = _context.Bruker.FirstOrDefault(u => u.epost == epost);
-            if (bruker == null)
-            {
-                return NotFound("Bruker ikke funnet.");
-            }
-
-            // Sjekk om den innloggede brukeren prøver å slette sin egen konto
-            if (bruker.epost == innloggetBrukerEpost)
-            {
-                ViewBag.ErrorMessage = "Du kan ikke slette din egen konto.";
-                var alleBrukere = _context.Bruker.ToList(); // Hent alle brukere for å vise i tabellen
-                return View("AdminView", alleBrukere); // Returner til adminvisningen med alle brukere
-            }
-
-            // Sjekk om brukeren har tilknyttede saker
-            var saker = _context.Sak.Where(s => s.epost_bruker == bruker.epost).ToList();
-
-            if (saker.Any())
-            {
-                // Hvis brukeren har saker, returner til adminvisningen med en feilmelding
-                ViewBag.ErrorMessage = "Brukeren kan ikke slettes fordi det finnes saker knyttet til denne brukeren (benytt saksbehandler view til å fjerne saker).";
-                var alleBrukere = _context.Bruker.ToList(); // Hent alle brukere for å vise i tabellen
-                return View("AdminView", alleBrukere); // Returner til adminvisningen med alle brukere
-            }
-
-            // Hvis brukeren ikke har saker, fjern brukeren fra databasen
-            _context.Bruker.Remove(bruker);
-            _context.SaveChanges(); // Lagre endringene
-
-            TempData["SuccessMessage"] = $"{bruker.epost} ble slettet.";
-
-            return RedirectToAction("AdminView"); // Naviger tilbake til listen over brukere
-
+            ViewBag.ErrorMessage = errorMessage;
+            var users = _adminService.GetAdminViewStats().Users; // Reuse the users list
+            return View("AdminView", users);
         }
+
 
         // Metode for å opprette en ny bruker fra admin brukeren.
         [HttpPost]
         public IActionResult OpprettBruker(string epost, string passord, int tilgangsnivaa, string organisasjon, string? navn)
         {
-            // Sjekk om e-post, passord og organisasjon er fylt ut.
-            if (string.IsNullOrEmpty(epost) || string.IsNullOrEmpty(passord) || string.IsNullOrEmpty(organisasjon))
+            if (_adminService.CreateUser(epost, passord, tilgangsnivaa, organisasjon, navn, out var errorMessage))
             {
-                ViewBag.ErrorMessage = "E-post, passord og organisasjon må fylles ut.";
-                return RedirectToAction("AdminView");
+                TempData["SuccessMessage"] = errorMessage;
             }
-            // Sjekk om e-posten allerede eksisterer i databasen
-            if (_context.Bruker.Any(b => b.epost == epost))
+            else
             {
-                ViewBag.ErrorMessage = "En bruker med denne e-posten eksisterer allerede.";
-                return RedirectToAction("AdminView");
+                TempData["ErrorMessage"] = errorMessage;
             }
 
-            // Hash passordet ved hjelp av PasswordHasher
-            var passwordHasher = new PasswordHasher<BrukerModel>();
-            var nyBruker = new BrukerModel
-            {
-                epost = epost,
-                passord = passwordHasher.HashPassword(null, passord),
-                tilgangsnivaa_id = tilgangsnivaa,
-                organisasjon = organisasjon,
-                navn = navn // Navn kan være null
-            };
-
-            // Legg til ny bruker i databasen
-            _context.Bruker.Add(nyBruker);
-            _context.SaveChanges();
-            // Sett en suksessmelding
-            TempData["SuccessMessage"] = $"Bruker med e-post {epost} ble opprettet.";
             return RedirectToAction("AdminView");
         }
+
     }
 
 

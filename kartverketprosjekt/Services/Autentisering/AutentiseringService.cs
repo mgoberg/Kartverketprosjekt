@@ -8,7 +8,7 @@ using kartverketprosjekt.Data;
 using kartverketprosjekt.API_Models;
 using Microsoft.Extensions.Options;
 
-namespace kartverketprosjekt.Services
+namespace kartverketprosjekt.Services.Autentisering
 {
     public class AutentiseringService : IAutentiseringService
     {

@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Options;
 using System.Text.Json;
 
-namespace kartverketprosjekt.Services
+namespace kartverketprosjekt.Services.API
 {
     public class KommuneInfoService : IKommuneInfoService
     {
