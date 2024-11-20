@@ -78,8 +78,8 @@ namespace kartverketprosjekt.Services.Sak
             }
 
             var caseId = await _sakRepository.RegisterCaseAsync(sak);
-
-            await _discordBot.SendMessageToDiscord($"**En ny sak er opprettet i {sak.Kommunenavn}**\n**Beskrivelse:** {sak.beskrivelse}\n**Opprettet av:** {sak.epost_bruker}");
+            string roleID = "1300573258919182347";
+            await _discordBot.SendMessageToDiscord($"**En ny sak er opprettet i {sak.Kommunenavn}**\n**Beskrivelse:** {sak.beskrivelse}\n**Opprettet av:** {sak.epost_bruker}\n<@&{roleID}> ");
 
             return caseId;
         }
