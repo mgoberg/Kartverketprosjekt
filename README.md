@@ -163,7 +163,7 @@ public async Task SaveChangesAsync()
 ### **Unit Testing:**
   *Ikke enda implementert:*
 - [ ] Kontrollere
-- [ ] API modeller
+- [x] API modeller
 - [ ] Javascript funskjoner
 - [ ] Database initialisering
 - [ ] Docker
