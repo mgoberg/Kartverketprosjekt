@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35208.52
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kartverketprosjekt", "kartverketprosjekt.csproj", "{BCE7BA5A-D50F-4FB9-9841-19A9954FCC54}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kartverketprosjekt", "kartverketprosjekt.csproj", "{BCE7BA5A-D50F-4FB9-9841-19A9954FCC54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testkartverketprosjekt", "..\Testkartverketprosjekt\Testkartverketprosjekt.csproj", "{AE7A8E45-E4ED-4554-A514-3756F812FBD4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{BCE7BA5A-D50F-4FB9-9841-19A9954FCC54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCE7BA5A-D50F-4FB9-9841-19A9954FCC54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCE7BA5A-D50F-4FB9-9841-19A9954FCC54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE7A8E45-E4ED-4554-A514-3756F812FBD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE7A8E45-E4ED-4554-A514-3756F812FBD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE7A8E45-E4ED-4554-A514-3756F812FBD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE7A8E45-E4ED-4554-A514-3756F812FBD4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
