@@ -56,8 +56,7 @@ namespace kartverketprosjekt.API_Models
 
         [JsonPropertyName("kommunenavn")]
         public string? Kommunenavn { get; set; }
-        public string KommuneNavn { get; set; }
-        [JsonPropertyName("kommunenavnNorsk")]
+       
         public string? KommunenavnNorsk { get; set; }
 
         [JsonPropertyName("kommunenummer")]

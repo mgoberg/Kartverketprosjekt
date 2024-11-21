@@ -43,7 +43,7 @@ public class KommuneInfoServiceTests
         // Arrange
         var expectedKommuneInfo = new KommuneInfo
         {
-            KommuneNavn = "Oslo",
+            Kommunenavn = "Oslo",
             Fylkesnavn = "Oslo",
             Kommunenummer = "0301",
             Fylkesnummer = "03"
@@ -59,7 +59,7 @@ public class KommuneInfoServiceTests
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(expectedKommuneInfo.KommuneNavn, result.KommuneNavn);
+        Assert.Equal(expectedKommuneInfo.Kommunenavn, result.Kommunenavn);
         Assert.Equal(expectedKommuneInfo.Fylkesnavn, result.Fylkesnavn);
         Assert.Equal(expectedKommuneInfo.Kommunenummer, result.Kommunenummer);
         Assert.Equal(expectedKommuneInfo.Fylkesnummer, result.Fylkesnummer);
