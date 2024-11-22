@@ -77,6 +77,7 @@ public class KommuneInfoServiceTests
 
         // Assert
         Assert.Null(result);
+
         _loggerMock.Verify(
             log => log.Log(
                 LogLevel.Error,
