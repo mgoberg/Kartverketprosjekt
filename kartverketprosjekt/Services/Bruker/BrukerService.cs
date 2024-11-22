@@ -26,6 +26,13 @@ namespace kartverketprosjekt.Services.Bruker
         {
             if (model == null) return false;
 
+            var existingUser = await _repository.GetUserByEmailAsync(model.epost);
+            if (existingUser != null)
+            {
+                
+                return false;
+            }
+
             var bruker = new BrukerModel
             {
                 passord = _passwordHasher.HashPassword(null, model.passord),
