@@ -23,7 +23,13 @@ namespace kartverketprosjekt.Services.Kommentar
 
         public async Task<List<KommentarModel>> GetComments(int sakId)
         {
+            if (sakId <= 0)
+            {
+                throw new ArgumentException("invalid SakID.");
+            }
+            
             return (List<KommentarModel>)await _kommentarRepository.GetCommentsAsync(sakId);
         }
+
     }
 }
