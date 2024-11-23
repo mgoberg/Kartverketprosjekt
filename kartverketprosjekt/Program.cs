@@ -65,7 +65,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 // Add Discord services
-builder.Services.AddScoped<DiscordBot>(); // Register DiscordBot as scoped
+builder.Services.AddScoped<IDiscordBot, DiscordBot>(); // Register DiscordBot as scoped
 builder.Services.AddSingleton(new DiscordSocketClient()); // Register DiscordSocketClient as singleton
 
 var app = builder.Build();
@@ -92,7 +92,7 @@ app.MapControllerRoute(
 // Initialize the Discord bot within a scope
 using (var scope = app.Services.CreateScope())
 {
-    var discordBot = scope.ServiceProvider.GetRequiredService<DiscordBot>();
+    var discordBot = scope.ServiceProvider.GetRequiredService<IDiscordBot>();
     var discordToken = builder.Configuration["Discord:Token"]; // Get the Discord token from configuration
     await discordBot.StartAsync(discordToken); // Pass the token when starting the bot
 }
