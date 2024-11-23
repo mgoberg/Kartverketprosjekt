@@ -175,17 +175,19 @@ Se egen mappe for dette:
 ---
 ## **Forhåndsvisning av prosjektet**
 
-### **1. Index-side**  
+### **1. Video Demo**
+https://github.com/user-attachments/assets/0218f524-23d1-44e4-9b53-32aff07958f9
+
+### **2. Index-side**  
 ![image](https://github.com/user-attachments/assets/c4890ea1-9d3a-492d-9b81-b1982cf50445)
 
-
-### **2. Innmeldingsside**  
+### **3. Innmeldingsside**  
 ![Innmeldingsside preview](https://github.com/user-attachments/assets/8e177b23-2729-4c4f-baca-30d7b2c3bee4)
 
-### **3. Saksbehandler Dashboard**  
+### **4. Saksbehandler Dashboard**  
 ![Dashboard preview](https://github.com/user-attachments/assets/8ffa36b5-b8a8-493d-91fc-c891d851a5ab)
 
-### **4. Discord/Slack Bot**  
+### **5. Discord/Slack Bot**  
 ![Bot preview](https://github.com/user-attachments/assets/e1738455-0a17-4ef2-bbef-2113d2fc8618)
 
 
