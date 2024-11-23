@@ -15,9 +15,9 @@ namespace kartverketprosjekt.Services.Sak
         private readonly ISakRepository _sakRepository;
         private readonly IKommuneInfoService _kommuneInfoService;
         private readonly IFileService _fileService;
-        private readonly DiscordBot _discordBot;
+        private readonly IDiscordBot _discordBot;
 
-        public SakService(ISakRepository sakRepository, IKommuneInfoService kommuneInfoService, IFileService fileService, DiscordBot discordBot)
+        public SakService(ISakRepository sakRepository, IKommuneInfoService kommuneInfoService, IFileService fileService, IDiscordBot discordBot)
         {
             _sakRepository = sakRepository;
             _kommuneInfoService = kommuneInfoService;
