@@ -7,7 +7,7 @@ namespace kartverketprosjekt.Services.Bruker
         public Task<bool> RegisterUserAsync(RegistrerModel model);
         public Task<bool> UpdateNameAsync(string navn);
         public Task<bool> UpdatePasswordAsync(string password);
-        public BrukerModel GetUserByEmail(string email);
-        public List<BrukerModel> GetSaksbehandlere();
+        public Task<BrukerModel> GetUserByEmailAsync(string email);
+        public Task<List<BrukerModel>> GetSaksbehandlereAsync();
     }
 }

@@ -2,7 +2,7 @@ using Discord.WebSocket;
 using Discord;
 using kartverketprosjekt.Data;
 
-public class DiscordBot
+public class DiscordBot : IDiscordBot
 {
     private readonly DiscordSocketClient _client;
 

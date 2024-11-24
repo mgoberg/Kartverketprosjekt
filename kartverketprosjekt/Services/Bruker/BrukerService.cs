@@ -5,24 +5,33 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
+using kartverketprosjekt.Repositories.Bruker;
 
 namespace kartverketprosjekt.Services.Bruker
 {
     public class BrukerService : IBrukerService
     {
-        private readonly KartverketDbContext _context;
+        private readonly IBrukerRepository _repository;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IPasswordHasher<BrukerModel> _passwordHasher;
 
-        public BrukerService(KartverketDbContext context, IHttpContextAccessor httpContextAccessor, IPasswordHasher<BrukerModel> passwordHasher)
+        public BrukerService(IBrukerRepository repository, IHttpContextAccessor httpContextAccessor, IPasswordHasher<BrukerModel> passwordHasher)
         {
-            _context = context;
+            _repository = repository;
             _httpContextAccessor = httpContextAccessor;
             _passwordHasher = passwordHasher;
         }
+
         public async Task<bool> RegisterUserAsync(RegistrerModel model)
         {
             if (model == null) return false;
+
+            var existingUser = await _repository.GetUserByEmailAsync(model.epost);
+            if (existingUser != null)
+            {
+                
+                return false;
+            }
 
             var bruker = new BrukerModel
             {
@@ -32,8 +41,8 @@ namespace kartverketprosjekt.Services.Bruker
                 tilgangsnivaa_id = 1
             };
 
-            await _context.AddAsync(bruker);
-            await _context.SaveChangesAsync();
+            await _repository.AddUserAsync(bruker);
+            await _repository.SaveChangesAsync();
 
             var claims = new List<Claim>
             {
@@ -46,52 +55,49 @@ namespace kartverketprosjekt.Services.Bruker
 
             return true;
         }
+
         public async Task<bool> UpdateNameAsync(string navn)
         {
-            // Get the email of the logged-in user
             string epost = _httpContextAccessor.HttpContext.User.Identity.Name;
+            var bruker = await _repository.GetUserByEmailAsync(epost);
 
-            // Find the user in the database
-            var bruker = await _context.Bruker.FirstOrDefaultAsync(b => b.epost == epost);
             if (bruker != null)
             {
-                bruker.navn = navn; // Update the user's name
-
-                // Save changes to the database
-                await _context.SaveChangesAsync();
-                return true; // Indicate that the update was successful
+                bruker.navn = navn;
+                await _repository.SaveChangesAsync();
+                return true;
             }
 
-            return false; // Indicate that the update failed
+            return false;
         }
+
         public async Task<bool> UpdatePasswordAsync(string password)
         {
-            // Retrieve the email of the logged-in user
             string epost = _httpContextAccessor.HttpContext.User.Identity.Name;
-
-            // Find the user in the database
-            var bruker = await _context.Bruker.FirstOrDefaultAsync(b => b.epost == epost);
+            var bruker = await _repository.GetUserByEmailAsync(epost);
 
             if (bruker != null)
             {
-                // Hash the new password and update the user's password
                 bruker.passord = _passwordHasher.HashPassword(bruker, password);
-
-                // Save the changes to the database
-                await _context.SaveChangesAsync();
-                return true; // Indicate that the update was successful
+                await _repository.SaveChangesAsync();
+                return true;
             }
 
-            return false; // Indicate that the update failed
-        }
-        public BrukerModel GetUserByEmail(string email)
-        {
-            return _context.Bruker.FirstOrDefault(b => b.epost == email);
+            return false;
         }
 
-        public List<BrukerModel> GetSaksbehandlere()
+        public async Task<BrukerModel> GetUserByEmailAsync(string email)
         {
-            return _context.Bruker.Where(b => b.tilgangsnivaa_id == 3 || b.tilgangsnivaa_id == 4).ToList();
+            return await _repository.GetUserByEmailAsync(email);
         }
+
+        public async Task<List<BrukerModel>> GetSaksbehandlereAsync()
+        {
+            // Assume "3" is the tilgangsnivaa_id for saksbehandlere
+            const int saksbehandlerRole = 3;
+
+            return await _repository.GetUsersByAccessLevelAsync(saksbehandlerRole);
+        }
+
     }
 }

@@ -344,7 +344,9 @@ main {
     height: 40px;
     /* Adjust the height as needed */
 }
-
+.uia-logo {
+    height: 40px;
+}
 #container {
     display: flex;
     flex-direction: column;
@@ -641,6 +643,22 @@ form input[type="file"] {
     box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1), /* Inner shadow for recessed look */
     0 4px 3px rgba(0, 0, 0, 0.1); /* Outer shadow for raised look */
 }
+
+.footer-images {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px; /* Adjust the gap between the images as needed */
+    margin-bottom: 20px;
+}
+
+    .footer-images .vertical-separator {
+        width: 3px;
+        border-radius: 50px;
+        height: 50px; /* Adjust the height of the separator as needed */
+        background-color: #ccc; /* Adjust the color of the separator as needed */
+    }
+
 
 @media (max-width: 1000px) {
     #footerContainer {
@@ -1389,3 +1407,74 @@ h4 {
     font-weight: bold;
     transition: all 0.5s ease;
 }
+
+
+
+.members-container {
+    display: flex;
+    gap: 10px; /* Space between the cards */
+    justify-items: center; /* Center cards horizontally in their grid cells */
+    margin: 20px;
+}
+
+.member-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: var(--box-background-color);
+    width: 250px; /* Reduced card width */
+    color: var(--text-color);
+}
+.member-card h3 {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.member-card-img {
+    width: 124px;
+    height: 124px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 12px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: rgb(210,229,231) 0px 0px 0px 3px;
+}
+
+.contact-info {
+    color: #d8042c;
+    margin-top: auto; /* Push to the bottom */
+
+}
+
+    .contact-info:hover {
+        color: #f14263;
+        cursor: pointer;
+    }
+
+.bxl-linkedin {
+    font-size: 24px;
+    color: #0077b5;
+    transition: color 0.3s;
+    align-self: flex-end; /* Align at flex end */
+    margin-top: auto; /* Push to the bottom */
+}
+
+    .bxl-linkedin:hover {
+        color: #005582;
+        cursor: pointer;
+    }
+.linkedin-link {
+    color: #0077b5;
+    
+}
+
+.linkedin-link:hover {
+    color: #005582;
+    cursor: pointer;
+}   
+

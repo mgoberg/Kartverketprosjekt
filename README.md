@@ -86,27 +86,84 @@ Nå har du en databasecontainer som kjører i Docker. Du kan starte applikasjone
 - **View**: Representerer brukergrensesnittet. Visningen viser data fra modellen til brukeren og sender brukerinput til kontrolleren.
 - **Controller**: Fungerer som en mellommann mellom modellen og visningen. Kontrolleren mottar input fra visningen, behandler den, og returnerer den passende visningen som svar.
   
-  Denne separasjonen av bekymringer gjør applikasjonen mer modulær, enklere å teste og vedlikeholde. Det lar utviklere jobbe med forskjellige deler av applikasjonen samtidig uten å forstyrre hverandre.
+## Controller-Service-Repository mønster
+### Controller _(Ruting)_
+I vårt prosjekt håndterer controlleren HTTP-forespørsler og **kobler sammen brukerens handlinger med applikasjonens forretningslogikk**. En controller er ansvarlig for å motta forespørsler fra brukeren, bearbeide forespørselen ved hjelp av en **service**, og deretter returnere et passende svar.
 
-### Service-basert-arkitektur _(Business layer)_
-På grunnlag av at controllerene var direkte avhengig av databasen for en stor del av metodene, var det nødvendig å ta i bruk en service-basert-arkitektur i tillegg til mvc. Dette ble gjort ved å refaktorere logikken til metodene som krevde database skrivning/lesing inn i en service som ble injisert ved **Dependency Injection (DI)** inn i relevante controller.
+**Eksempel på controller metode:**
 
-Eksempel på dette er **BrukerController** som bruker **AutentiseringService** og **BrukerService** som blir injisert som interfaces. Dette fjerner den direkte avhengigheten av databasen i controlleren men gjør også koden mer gjenbrukbar da man kan bruke services på tvers av controllere. 
+```c#
+[HttpPost]
+public async Task<IActionResult> UpdateAccess(string userId, int newAccessLevel)
+{
+    var (success, message) = await _adminService.UpdateUserAccessAsync(userId, newAccessLevel);
+    if (success)
+    {
+        TempData["SuccessMessage"] = message;
+    }
+    else
+    {
+        TempData["ErrorMessage"] = message;
+    }
+
+    return RedirectToAction("AdminView");
+}
+```
+
+### Service _(Forretningslogikk)_
+Service-laget er **ansvarlig for applikasjonens forretningslogikk**. Dette laget utfører operasjoner som er nødvendige for å oppfylle kravene i applikasjonen, som å **hente**, **oppdatere**, eller **slette data**, samt **interagere med eksterne tjenester eller systemer**. Service-laget er der forretningsreglene implementeres.
+
+**Hva gjør en Service?**
+- **Utføre** forretningslogikk knyttet til applikasjonens spesifikke krav.
+- **Kommunisere** med repository-laget for å hente, lagre eller oppdatere data i databasen.
+- **Integrere** med andre systemer eller tjenester (f.eks. API-er, tredjepartsbiblioteker).
+- **Håndtere** eventuelle feil som kan oppstå under forretningslogikkprosessen.
+- **Returnere** resultater eller feilmeldinger til controlleren.
+
+Service-laget gjør at controlleren kan være enklere og mer fokusert på HTTP-håndtering, samtidig som det holder applikasjonens forretningslogikk samlet og lettere å vedlikeholde og teste.
+
+**Eksempel på Service metode:**
+
+```c#
+public async Task<(bool Success, string Message)> UpdateUserAccessAsync(string userId, int newAccessLevel)
+{
+    var user = await _brukerRepository.GetUserByIdAsync(userId);
+    if (user != null)
+    {
+        user.tilgangsnivaa_id = newAccessLevel;
+        await _brukerRepository.SaveChangesAsync();
+        return (true, $"Endret tilgangsnivå for {userId} til: {newAccessLevel}");
+    }
+
+    return (false, "Bruker ikke funnet.");
+}
+```
+### Repository _(Databaseoperasjoner)_
+I dette prosjektet bruker vi **Repository Pattern** for å **isolere data-adgangslaget fra applikasjonens forretningslogikk**. Dette gir flere fordeler, som **lettere testing**, **bedre struktur** og muligheten til å **bytte ut lagringsmekanismer** 
+
+Repository-laget fungerer som et **mellomledd mellom applikasjonen og datalaget** (f.eks. en database). Det håndterer all interaksjon med databasen, som å **hente, lagre, oppdatere eller slette** data. Ved å bruke repositories kan vi gjøre applikasjonen vår **mer modulær**, noe som gjør det **enklere å teste**, **vedlikeholde** og **endre datatilgangslaget** uten å påvirke resten av applikasjonen.
+
+**Eksempel på Repository metoder:**
+```c#
+public async Task<BrukerModel?> GetUserByIdAsync(string userId)
+{
+    return await _context.Bruker.FindAsync(userId);
+}
+
+public async Task SaveChangesAsync()
+{
+    await _context.SaveChangesAsync();
+}
+```
 
 > [!NOTE]
-> Dette gjør at controllere _**kun**_ har som oppgave å "route" HTTP request og sende informasjon til relevante view.
-
-### Repository-pattern _(Data access layer)_
-- Repositories for å isolere database logikk for testing og utvekslbarhet
-
-> [!WARNING]
-> Refaktorering til **service-basert-arkitektur** er i verks, **repositories** er ikke implementert
+> **Controller**-**Service**-**Repository** mønsteret er _**ikke**_ istedet for MVC, men heller en utvidelse av controllerene for å **øke modularitet**, **skalerbarhet**, **testbarhet** og for å **løsne tette koblinger**.
 ---
 ## **Testing**
 ### **Unit Testing:**
   *Ikke enda implementert:*
 - [ ] Kontrollere
-- [ ] API modeller
+- [x] API modeller
 - [ ] Javascript funskjoner
 - [ ] Database initialisering
 - [ ] Docker
@@ -118,17 +175,19 @@ Se egen mappe for dette:
 ---
 ## **Forhåndsvisning av prosjektet**
 
-### **1. Index-side**  
+### **1. Video Demo**
+https://github.com/user-attachments/assets/0218f524-23d1-44e4-9b53-32aff07958f9
+
+### **2. Index-side**  
 ![image](https://github.com/user-attachments/assets/c4890ea1-9d3a-492d-9b81-b1982cf50445)
 
-
-### **2. Innmeldingsside**  
+### **3. Innmeldingsside**  
 ![Innmeldingsside preview](https://github.com/user-attachments/assets/8e177b23-2729-4c4f-baca-30d7b2c3bee4)
 
-### **3. Saksbehandler Dashboard**  
+### **4. Saksbehandler Dashboard**  
 ![Dashboard preview](https://github.com/user-attachments/assets/8ffa36b5-b8a8-493d-91fc-c891d851a5ab)
 
-### **4. Discord/Slack Bot**  
+### **5. Discord/Slack Bot**  
 ![Bot preview](https://github.com/user-attachments/assets/e1738455-0a17-4ef2-bbef-2113d2fc8618)
 
 
