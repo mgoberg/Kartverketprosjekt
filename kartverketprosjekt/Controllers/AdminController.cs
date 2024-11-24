@@ -37,6 +37,7 @@ namespace kartverketprosjekt.Controllers
 
         // Change a user's access level.
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateAccess(string userId, int newAccessLevel)
         {
             var (success, message) = await _adminService.UpdateUserAccessAsync(userId, newAccessLevel);
@@ -54,6 +55,7 @@ namespace kartverketprosjekt.Controllers
 
         // Delete a user.
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SlettBruker(string epost)
         {
             var loggedInUserEmail = User.Identity.Name;
@@ -72,6 +74,7 @@ namespace kartverketprosjekt.Controllers
 
         // Create a new user.
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> OpprettBruker(string epost, string passord, int tilgangsnivaa, string organisasjon, string? navn)
         {
             var (success, message) = await _adminService.CreateUserAsync(epost, passord, tilgangsnivaa, organisasjon, navn);

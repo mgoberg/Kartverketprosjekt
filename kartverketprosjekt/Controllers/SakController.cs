@@ -25,6 +25,7 @@ namespace kartverketprosjekt.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RegisterAreaChange(SakModel sak, IFormFile vedlegg, double nord, double ost, int koordsys)
         {
             var currentUserEmail = User.Identity?.Name;

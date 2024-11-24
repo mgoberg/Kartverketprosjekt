@@ -15,7 +15,7 @@
 @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
 {
     <div class="alert alert-danger">
-        @ViewBag.ErrorMessage
+        @Html.Encode(ViewBag.ErrorMessage)
     </div>
 }
 
@@ -23,7 +23,7 @@
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success">
-        @TempData["SuccessMessage"]
+        @Html.Encode(TempData["SuccessMessage"])
     </div>
 }
 
@@ -131,6 +131,7 @@
         
         <div style="display: flex; flex-direction: column; align-items: center;">
             <form style="width: 80%;" id="updateAccessForm" asp-controller="Admin" asp-action="UpdateAccess" method="post">
+                @Html.AntiForgeryToken()
                 <input type="hidden" name="userId" id="modalUserId" />
                 <div class="form-group">
                     <label  for="newAccessLevel">Endre tilgangsnivå:</label>
@@ -146,6 +147,7 @@
             </form>
 
             <form style="width: 80%;" id="deleteUserForm" asp-action="SlettBruker" method="post">
+                @Html.AntiForgeryToken()
                 <input type="hidden" name="epost" id="modalUserEmail"/>
                 <button type="submit" class="btn btn-danger" onclick="return confirm('Er du sikker på at du vil slette denne brukeren?');">Slett bruker</button>
             </form>
@@ -156,6 +158,7 @@
 <!-- Opprette ny bruker -->
 <h2 style="text-align: center;">Opprett en ny bruker</h2>
 <form asp-action="OpprettBruker" method="post">
+    @Html.AntiForgeryToken()
     <div class="form-group">
         <label for="epost">E-post:</label>
         <input type="email" name="epost" class="form-control" required />

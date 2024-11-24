@@ -7,13 +7,13 @@
 @if (TempData["Message"] != null)
 {
     <div class="alert alert-success">
-        @TempData["Message"]
+        @Html.Encode(TempData["Message"])
     </div>
 }
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger">
-        @TempData["ErrorMessage"]
+        @Html.Encode(TempData["ErrorMessage"])
     </div>
 }
 
@@ -101,6 +101,7 @@
         <img class="kartverketLogo" src="/images/kartverket-logo.svg"/>
 
         <form asp-controller="Bruker" asp-action="Login" method="post" id="login-form">
+            @Html.AntiForgeryToken()
             <label for="epost">Epost:</label>
             <input type="email" id="epost" name="epost" required>
             <label for="password">Passord:</label>
@@ -108,6 +109,7 @@
             <button type="submit" class="btn-primary">Logg inn</button>
         </form>
         <form asp-controller="Bruker" asp-action="Register" method="post" id="register-form" style="display: none;">
+            @Html.AntiForgeryToken()
             <label for="epost">Epost:</label>
             <input type="email" id="epost" name="Epost" required>
             <label for="navn">Navn:</label>

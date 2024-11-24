@@ -39,6 +39,7 @@ public class SaksbehandlerController : Controller
 }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> UpdateStatus(int id, string status)
     {
         try
@@ -53,6 +54,7 @@ public class SaksbehandlerController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddComment(int sakID, string kommentar)
     {
         try
@@ -87,6 +89,7 @@ public class SaksbehandlerController : Controller
 
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
     {
         try
@@ -101,6 +104,7 @@ public class SaksbehandlerController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> EndreSaksbehandler(int sakId, string saksbehandlerEpost)
     {
         try

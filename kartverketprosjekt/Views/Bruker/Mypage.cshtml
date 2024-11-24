@@ -15,7 +15,7 @@
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success">
-        @TempData["SuccessMessage"]
+        @Html.Encode(TempData["SuccessMessage"])
     </div>
 }
 
@@ -23,7 +23,7 @@
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger">
-        @TempData["ErrorMessage"]
+        @Html.Encode(TempData["ErrorMessage"])
     </div>
 }
 <!-- Dashbord -->
@@ -33,7 +33,7 @@
         <h2>Kontoinstillinger </h2>
         <!-- Form for å oppdatere navnet sitt -->
         <form asp-controller="Bruker" asp-action="UpdateName" method="post">
-            @Html.AntiForgeryToken() <!-- Ensure this is included for security -->
+            @Html.AntiForgeryToken() 
             <label for="Navn">Oppdater navnet ditt</label>
             <input type="text" id="Navn" name="navn" placeholder="Skriv inn nytt navn" required />
             <button type="submit" class="btn-primary">Oppdater Navn</button>
@@ -89,6 +89,7 @@
                                 </ul>
 
                                 <form class="hidden-form" asp-controller="Bruker" asp-action="DeleteCase" method="post">
+                                    @Html.AntiForgeryToken()
                                     <input type="hidden" name="id" value="@sak.id" />
                                     <div class="btn-container">
 
