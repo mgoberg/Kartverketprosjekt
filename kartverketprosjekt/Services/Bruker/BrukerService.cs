@@ -22,6 +22,11 @@ namespace kartverketprosjekt.Services.Bruker
             _passwordHasher = passwordHasher;
         }
 
+        /// <summary>
+        /// Registrerer en ny bruker.
+        /// </summary>
+        /// <param name="model">Modellen som inneholder registreringsinformasjon.</param>
+        /// <returns>True hvis registreringen var vellykket, ellers false.</returns>
         public async Task<bool> RegisterUserAsync(RegistrerModel model)
         {
             if (model == null) return false;
@@ -29,7 +34,6 @@ namespace kartverketprosjekt.Services.Bruker
             var existingUser = await _repository.GetUserByEmailAsync(model.epost);
             if (existingUser != null)
             {
-                
                 return false;
             }
 
@@ -45,10 +49,10 @@ namespace kartverketprosjekt.Services.Bruker
             await _repository.SaveChangesAsync();
 
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, bruker.epost),
-                new Claim(ClaimTypes.Role, bruker.tilgangsnivaa_id.ToString())
-            };
+                {
+                    new Claim(ClaimTypes.Name, bruker.epost),
+                    new Claim(ClaimTypes.Role, bruker.tilgangsnivaa_id.ToString())
+                };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
@@ -56,6 +60,11 @@ namespace kartverketprosjekt.Services.Bruker
             return true;
         }
 
+        /// <summary>
+        /// Oppdaterer navnet til den innloggede brukeren.
+        /// </summary>
+        /// <param name="navn">Det nye navnet.</param>
+        /// <returns>True hvis oppdateringen var vellykket, ellers false.</returns>
         public async Task<bool> UpdateNameAsync(string navn)
         {
             string epost = _httpContextAccessor.HttpContext.User.Identity.Name;
@@ -71,6 +80,11 @@ namespace kartverketprosjekt.Services.Bruker
             return false;
         }
 
+        /// <summary>
+        /// Oppdaterer passordet til den innloggede brukeren.
+        /// </summary>
+        /// <param name="password">Det nye passordet.</param>
+        /// <returns>True hvis oppdateringen var vellykket, ellers false.</returns>
         public async Task<bool> UpdatePasswordAsync(string password)
         {
             string epost = _httpContextAccessor.HttpContext.User.Identity.Name;
@@ -86,18 +100,26 @@ namespace kartverketprosjekt.Services.Bruker
             return false;
         }
 
+        /// <summary>
+        /// Henter en bruker basert på e-postadressen.
+        /// </summary>
+        /// <param name="email">E-postadressen til brukeren.</param>
+        /// <returns>Brukerobjektet hvis det finnes, ellers null.</returns>
         public async Task<BrukerModel> GetUserByEmailAsync(string email)
         {
             return await _repository.GetUserByEmailAsync(email);
         }
 
+        /// <summary>
+        /// Henter alle saksbehandlere.
+        /// </summary>
+        /// <returns>En liste over saksbehandlere.</returns>
         public async Task<List<BrukerModel>> GetSaksbehandlereAsync()
         {
-            // Assume "3" is the tilgangsnivaa_id for saksbehandlere
+            
             const int saksbehandlerRole = 3;
 
             return await _repository.GetUsersByAccessLevelAsync(saksbehandlerRole);
         }
-
     }
 }

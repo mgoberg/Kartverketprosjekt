@@ -11,6 +11,11 @@ public class DiscordBot : IDiscordBot
         _client = client;
     }
 
+    /// <summary>
+    /// Starter Discord-botten asynkront ved å bruke den oppgitte token.
+    /// </summary>
+    /// <param name="token">Tokenet som brukes for å autentisere botten.</param>
+    /// <returns>Task </returns>
     public async Task StartAsync(string token)
     {
         try
@@ -25,7 +30,11 @@ public class DiscordBot : IDiscordBot
         }
     }
 
-    // Metode for å sende en melding til en spesifikk Discord-kanal.
+    /// <summary>
+    /// Sender en melding til en spesifikk Discord-kanal.
+    /// </summary>
+    /// <param name="message">Meldingen som skal sendes.</param>
+    /// <returns>Task</returns>
     public async Task SendMessageToDiscord(string message)
     {
         var channel = _client.GetChannel(1299414535555518494) as ITextChannel; // GetChannel(ID til kanalen)

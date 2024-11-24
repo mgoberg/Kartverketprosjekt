@@ -13,6 +13,9 @@
             EnsureUploadsDirectoryExists();
         }
 
+        /// <summary>
+        /// Sikrer at opplastingsmappen eksisterer. Oppretter mappen hvis den ikke finnes.
+        /// </summary>
         private void EnsureUploadsDirectoryExists()
         {
             if (!Directory.Exists(_uploadsPath))
@@ -21,6 +24,12 @@
             }
         }
 
+        /// <summary>
+        /// Laster opp en fil asynkront og returnerer det unike filnavnet.
+        /// </summary>
+        /// <param name="file">Filen som skal lastes opp.</param>
+        /// <returns>Det unike filnavnet.</returns>
+        /// <exception cref="ArgumentException">Kastes hvis filen er ugyldig.</exception>
         public async Task<string> UploadFileAsync(IFormFile file)
         {
             if (file == null || file.Length == 0)
