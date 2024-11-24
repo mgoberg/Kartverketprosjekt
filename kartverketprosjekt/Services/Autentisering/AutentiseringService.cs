@@ -17,6 +17,18 @@ namespace kartverketprosjekt.Services.Autentisering
             _passwordHasher = passwordHasher;
         }
 
+        /// <summary>
+        /// Forsøker å logge inn brukeren
+        /// </summary>
+        /// <param name="epost"></param>
+        /// <param name="password"></param>
+        /// <returns>returnerer:
+        /// <list type="bullet">
+        /// <item>Success state</item>
+        /// <item>Error message</item>
+        /// <item>ClaimsPrincipal</item>
+        /// </list>
+        /// </returns>
         public async Task<(bool Success, string ErrorMessage, ClaimsPrincipal? Principal)> LoginAsync(string epost, string password)
         {
             var user = await _brukerRepository.GetUserByEmailAsync(epost);
@@ -31,10 +43,10 @@ namespace kartverketprosjekt.Services.Autentisering
                 return (false, "Feil epost eller passord", null);
 
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.epost),
-                new Claim(ClaimTypes.Role, user.tilgangsnivaa_id.ToString())
-            };
+                {
+                    new Claim(ClaimTypes.Name, user.epost),
+                    new Claim(ClaimTypes.Role, user.tilgangsnivaa_id.ToString())
+                };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(claimsIdentity);
@@ -42,6 +54,11 @@ namespace kartverketprosjekt.Services.Autentisering
             return (true, "", principal);
         }
 
+        /// <summary>
+        /// Sjekker om passordet er hashet
+        /// </summary>
+        /// <param name="password"></param>
+        /// <returns>True hvis passord er hashet, eller false</returns>
         public bool IsHashedPassword(string password) => password.Length >= 60;
     }
 }
