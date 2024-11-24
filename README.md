@@ -181,7 +181,7 @@ For å forhindre Cross-Site Scripting (XSS) benyttes ASP.NET Core sitt sanitizin
 ---
 ## **Testing**
 ### **Unit Testing:**
-  *Ikke enda implementert:*
+  
       
 ### **Testing scenarioer:**
 Se egen mappe for dette:
