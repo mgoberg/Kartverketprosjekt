@@ -270,17 +270,28 @@ $('#changeStatus').change(function () {
 
 
 function updateMap(geojson, layerUrl, beskrivelse) {
-    // Kontroller om geojson er en gyldig GeoJSON-streng
+    // Ensure beskrivelse is valid
+    if (typeof beskrivelse !== 'string' || beskrivelse.trim() === '') {
+        beskrivelse = 'Ingen beskrivelse tilgjengelig'; // Default message if beskrivelse is missing or invalid
+    }
+
+    // Validate GeoJSON and parse it if it's a string
     if (typeof geojson === 'string') {
         try {
-            geojson = JSON.parse(geojson); // Prøv å analysere JSON-strengen
+            geojson = JSON.parse(geojson); // Try parsing the GeoJSON string
         } catch (e) {
             console.error("Invalid GeoJSON string:", geojson);
-            return; // Avbryt hvis parsing mislykkes
+            return; // Abort if parsing fails
         }
     }
 
-    // Fjerne eksisterende GeoJSON-lag og markører
+    // Check if the geojson object has the necessary properties
+    if (!geojson || !geojson.geometry || !geojson.geometry.type || !geojson.geometry.coordinates) {
+        console.error("GeoJSON structure is invalid", geojson);
+        return; // Abort if the GeoJSON structure is invalid
+    }
+
+    // Remove existing GeoJSON layers and markers
     if (marker) {
         map.removeLayer(marker);
     }
@@ -289,56 +300,65 @@ function updateMap(geojson, layerUrl, beskrivelse) {
         map.removeLayer(geoJsonLayer);
     }
 
-    // Legg til GeoJSON-laget til kartet
+    // Try to add the GeoJSON layer to the map
     try {
-        geoJsonLayer = L.geoJSON(geojson).addTo(map); // Lagre laget i en variabel
+        geoJsonLayer = L.geoJSON(geojson).addTo(map); // Store the layer in a variable
 
-        // Hent koordinatene fra GeoJSON
+        // Get coordinates from GeoJSON
         var coordinates = geojson.geometry.coordinates;
 
-        // Bestem hvilken type geometri vi har
-        if (geojson.geometry.type === "Point") {
-            var latLng = [coordinates[1], coordinates[0]]; // [latitude, longitude]
-            marker = L.marker(latLng).addTo(map);
-            marker.bindPopup(beskrivelse).openPopup();
-            map.setView(latLng, 13); // Zoom inn på markøren
-        } else if (geojson.geometry.type === "Polygon") {
-            var firstSet = coordinates[0]; // Hent den første sett med koordinater
-            if (firstSet.length > 0) {
-                var latLng = [(firstSet[0][1] + firstSet[firstSet.length - 1][1]) / 2,
-                (firstSet[0][0] + firstSet[firstSet.length - 1][0]) / 2]; // Midtpunkt av første og siste koordinat
-                marker = L.polygon(firstSet.map(coord => [coord[1], coord[0]])).addTo(map);
+        // Determine the geometry type
+        switch (geojson.geometry.type) {
+            case "Point":
+                var latLng = [coordinates[1], coordinates[0]]; // [latitude, longitude]
+                marker = L.marker(latLng).addTo(map);
                 marker.bindPopup(beskrivelse).openPopup();
-                map.setView(latLng, 13); // Zoom inn på midtpunktet
-            }
-        } else if (geojson.geometry.type === "LineString") {
-            // For LineString, vi konverterer alle koordinater til latLng format
-            var latLngs = coordinates.map(coord => [coord[1], coord[0]]);
-            marker = L.polyline(latLngs).addTo(map); // Legger til linjen til kartet
-            marker.bindPopup(beskrivelse).openPopup();
+                map.setView(latLng, 13); // Zoom in on the marker
+                break;
 
-            // Sentrer kartet på midtpunktet av linjen
-            var midPointIndex = Math.floor(latLngs.length / 2);
-            var midLatLng = latLngs[midPointIndex];
-            map.setView(midLatLng, 13); // Zoom inn på midtpunktet av linjen
-        } else if (geojson.geometry.type === "Rectangle") {
-            var bounds = L.latLngBounds(
-                [coordinates[0][1], coordinates[0][0]],
-                [coordinates[1][1], coordinates[1][0]]
-            );
-            marker = L.rectangle(bounds).addTo(map);
-            marker.bindPopup(beskrivelse).openPopup();
-            map.fitBounds(bounds); // Juster kartet til rektangelet
-        } else {
-            console.error("Unsupported GeoJSON geometry type:", geojson.geometry.type);
+            case "Polygon":
+                var firstSet = coordinates[0]; // Get the first set of coordinates
+                if (firstSet.length > 0) {
+                    var latLng = [(firstSet[0][1] + firstSet[firstSet.length - 1][1]) / 2,
+                    (firstSet[0][0] + firstSet[firstSet.length - 1][0]) / 2]; // Midpoint between the first and last coordinates
+                    marker = L.polygon(firstSet.map(coord => [coord[1], coord[0]])).addTo(map);
+                    marker.bindPopup(beskrivelse).openPopup();
+                    map.setView(latLng, 13); // Zoom in on the midpoint
+                }
+                break;
+
+            case "LineString":
+                var latLngs = coordinates.map(coord => [coord[1], coord[0]]);
+                marker = L.polyline(latLngs).addTo(map); // Add the line to the map
+                marker.bindPopup(beskrivelse).openPopup();
+
+                // Center the map on the midpoint of the line
+                var midPointIndex = Math.floor(latLngs.length / 2);
+                var midLatLng = latLngs[midPointIndex];
+                map.setView(midLatLng, 13); // Zoom in on the midpoint of the line
+                break;
+
+            case "Rectangle":
+                var bounds = L.latLngBounds(
+                    [coordinates[0][1], coordinates[0][0]], // Convert coordinates to latLng format
+                    [coordinates[1][1], coordinates[1][0]]
+                );
+                marker = L.rectangle(bounds).addTo(map);
+                marker.bindPopup(beskrivelse).openPopup();
+                map.fitBounds(bounds); // Adjust the map to the bounds of the rectangle
+                break;
+
+            default:
+                console.error("Unsupported GeoJSON geometry type:", geojson.geometry.type);
+                return;
         }
 
-        // Fjerne eksisterende tile layer før vi legger til et nytt
+        // Remove any existing tile layer before adding a new one
         if (tileLayer) {
             map.removeLayer(tileLayer);
         }
 
-        // Legge til nytt tile lag basert på kartlag-URL
+        // Add the new tile layer based on the layerUrl
         tileLayer = L.tileLayer(layerUrl, {
             attribution: '&copy; <a href="https://www.kartverket.no">Kartverket</a>'
         }).addTo(map);
@@ -346,9 +366,8 @@ function updateMap(geojson, layerUrl, beskrivelse) {
     } catch (e) {
         console.error("Error adding GeoJSON to map:", e);
     }
-
-
 }
+
 
 $(document).ready(function () {
     // Sort function
