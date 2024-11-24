@@ -45,8 +45,8 @@ public class BrukerController : Controller
 
     // POST login
     // Metode for å logge inn en bruker.
-    [ValidateAntiForgeryToken]
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(string epost, string password)
     {
         var (success, errorMessage, principal) = await _autentiseringService.LoginAsync(epost, password);
