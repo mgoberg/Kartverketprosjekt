@@ -2,8 +2,7 @@
 ## **For å sette opp prosjektet og koble opp databasen, følg disse trinnene:**
 
 ## 🌿 **Trinn 1: Sørg for å være i riktig branch**  
-- Sjekk at du er på **dev** branch inntil videre. 
-- Dev branch er somregel 20-50 commits foran main.
+Sjekk at du er på **Main** branch 
 
 ## 🛠️ **Trinn 2: Kjør prosjektet i Visual Studio**  
 Start prosjektet i dockerfile modus slik at docker containeren som kjører applikasjonen kjører.
@@ -11,25 +10,27 @@ Start prosjektet i dockerfile modus slik at docker containeren som kjører appli
 ## 🌐 **Trinn 3: Opprett et Docker-nettverk**  
 For å opprette et nettverk, kjør denne kommandoen:
 
-```css
+```ruby
 docker network create kartverket-network
 ```
 
 ## 🔗 **Trinn 4: Koble applikasjonscontaineren til nettverket**  
 Koble webapplikasjonen til nettverket med:'
 
-```css
+```ruby
 docker network connect kartverket-network kartverketprosjekt
 ```
 ## 🚀 **Trinn 5: Start databasen**  
 Bygg og start databasen med:
 
-```css
+```ruby
 docker-compose up --build
 ```
 
 ## 🎊 **Da var alt klart!**  
 Nå har du en databasecontainer som kjører i Docker. Du kan starte applikasjonen og teste all funksjonalitet.
+
+---
 
 > [!WARNING]
 > Hvis det er gjort endringer i database struktur vil du måtte bygge databasen på nytt.
@@ -39,14 +40,13 @@ Nå har du en databasecontainer som kjører i Docker. Du kan starte applikasjone
 >
 > **Merk deg at dette fjerner *alle* tidligere oppføringer i databasen**
 
-
 ---
 
 # **Funksjonalitet**
 
 ## 🔍 **Brukerfunksjoner**
 - **Registrering og innlogging**: Brukere kan opprette en konto og logge inn.
-- **Rapportering av kartfeil**: Brukere kan markere feil i kartet med, legge til beskrivelse og sende inn.
+- **Rapportering av kartfeil**: Brukere kan markere feil i kartet med **Linjer**, **Polygons**, **Flater**, **Punkter** og legge til beskrivelse.
 - **Visning av innmeldte saker**: Brukere kan se egne innmeldte saker med statusoppdateringer og kommentarer fra saksbehandlere.
 - **Sletting av saker**: Brukere kan administrere sine egene saker.
 - **Oppdatering av Navn og Passord**: Brukere kan oppdatere navnet sitt, eller endre passordet sitt.
@@ -66,10 +66,10 @@ Nå har du en databasecontainer som kjører i Docker. Du kan starte applikasjone
 
 ## 🌐 **Geofunksjoner**
 - **Kartintegrasjon med Leaflet[^1]**: Alle saker vises på et interaktivt kart.
-- **GeoJSON-støtte**: Brukerinnsendte data konverteres og vises som GeoJSON på kartet for saksbehandlere.
-- **Eiendomsinndeling[^2]**: Eiendomsgrenser kan toggles i kartet.
-- **Oppmerking av veier[^3]**: Veier kan toggles i kartet.
-- **Kartlag**[^4]: vekslbart kartlag: Topografisk kart som standard, gråtone, turkart og sjøkart.
+- **GeoJSON-støtte**: Brukerinnsendte data konverteres og sendes som GeoJSON for lagring i database
+- **Eiendomsinndeling[^2]**: Matrikkel data kan toggles i kartet.
+- **Oppmerking av veier[^3]**: Vegnett data kan toggles i kartet.
+- **Kartlag**[^4]: vekslbart kartlag: Kartverkets offisielle kartlag som vekslbare lag _(Topografisk kart som standard, gråtone, turkart og sjøkart)_.
 > [!NOTE]
 > **Alle Kartlagstjenester er fra kartverkets datasett og oppdateres jevnlig.**
 
@@ -80,9 +80,9 @@ Nå har du en databasecontainer som kjører i Docker. Du kan starte applikasjone
 # **System arkitektur**
 ## **MVC-modellen i .NET**:
 
-  I dette prosjektet bruker vi *Model-View-Controller (MVC)* mønsteret, som er et designmønster ofte brukt i .NET-applikasjoner. MVC-modellen hjelper til med å skille ansvar innen applikasjonen:
+I dette prosjektet bruker vi *Model-View-Controller (MVC)* mønsteret, som er et designmønster ofte brukt i .NET-applikasjoner. MVC-modellen hjelper til med å skille ansvar innen applikasjonen:
 
-- **Model**: Representerer applikasjonens data og forretningslogikk. Modellen er ansvarlig for å hente data fra databasen, behandle dem og sende dem til kontrolleren.
+- **Model**: Representerer applikasjonens data. Modellen er ansvarlig for å hente data fra databasen, behandle dem og sende dem til kontrolleren.
 - **View**: Representerer brukergrensesnittet. Visningen viser data fra modellen til brukeren og sender brukerinput til kontrolleren.
 - **Controller**: Fungerer som en mellommann mellom modellen og visningen. Kontrolleren mottar input fra visningen, behandler den, og returnerer den passende visningen som svar.
   
@@ -160,6 +160,85 @@ public async Task SaveChangesAsync()
 > [!NOTE]
 > **Controller**-**Service**-**Repository** mønsteret er _**ikke**_ istedet for MVC, men heller en utvidelse av controllerene for å **øke modularitet**, **skalerbarhet**, **testbarhet** og for å **løsne tette koblinger**.
 
+# ORM og Entity Framework i Prosjektet
+
+## Hva er en ORM?
+**Object-Relational Mapping (ORM)** er en teknikk som brukes til å koble objektorientert programmering med relasjonsdatabaser. Ved hjelp av en ORM kan utviklere arbeide med databaser ved å bruke objekter i stedet for rå SQL-spørringer. ORM-verktøy forenkler prosesser som:
+
+- Opprettelse, lesing, oppdatering og sletting av data (CRUD-operasjoner).
+- Konvertering mellom database-tabeller og objektmodeller.
+- Håndtering av relasjoner mellom tabeller.
+
+## Hva er Entity Framework?
+**Entity Framework (EF)** er en ORM for .NET-applikasjoner som lar utviklere arbeide med databasen ved å bruke C#-klasser. EF gir følgende fordeler:
+
+- **Produktivitet**: Reduserer behovet for å skrive SQL manuelt.
+- **Type-sikkerhet**: Data håndteres som sterke typer i C#.
+- **Relasjonsstyring**: Håndterer relasjoner (f.eks. én-til-mange, mange-til-mange) automatisk.
+
+### Modeller i EF
+Entity Framework representerer tabeller som C#-klasser, hvor kolonner blir egenskaper og rader blir objekter. For eksempel:
+
+```csharp
+public class BrukerModel
+{
+    public string epost { get; set; }
+    
+    public string? navn { get; set; }
+   
+    public string passord { get; set; }
+
+    public int tilgangsnivaa_id { get; set; }
+}
+
+```
+
+### Entity Framework uten Migrations
+I prosjektet vårt bruker vi **Entity Framework uten migrations**. Dette betyr at vi ikke lar EF automatisk opprette eller oppdatere databasen. I stedet håndterer vi databaseendringer manuelt. 
+
+#### Begrunnelser for å unngå migrations:
+1. **Kontroll over databasestruktur**:
+   - Ved å bruke scriptede databaseendringer har vi full kontroll over hvordan databasen endres i produksjon.
+   - Migrations kan introdusere uforutsette feil ved komplekse databaseendringer.
+
+2. **Kompatibilitet med eksisterende databaser**:
+   - Hvis databasen allerede er i bruk, unngår vi risikoen for at migrations forårsaker uforenlige endringer.
+
+3. **Kodebase og database synkronisering**:
+   - Vi sikrer at endringer i datamodellene alltid er nøye vurdert og implementert eksplisitt i både kode og database.
+
+4. **Bedre forståelse av databasen**:
+   - Manuell styring av databasen gir utviklere bedre innsikt i hvordan databasen fungerer.
+
+#### Ulemper ved å ikke bruke migrations:
+- Krever mer arbeid ved opprettelse og endring av databasen.
+- Feil kan oppstå dersom scripts og koden ikke holdes i synkronisering.
+
+### Eksempel på opprettelse av tabeller uten migrations
+I stedet for migrations bruker vi SQL-skript for å opprette og oppdatere tabeller. For eksempel:
+
+```sql
+CREATE TABLE Bruker (
+    epost VARCHAR(100) PRIMARY KEY,
+    navn VARCHAR(100) NULL,
+    passord VARCHAR(255) NOT NULL,
+    tilgangsnivaa_id INT,
+    FOREIGN KEY (tilgangsnivaa_id) REFERENCES Tilgangsnivaa(id),
+);
+
+```
+
+### Fordeler med Entity Framework i prosjektet
+- **Enklere dataoperasjoner**: Reduserer kompleksiteten ved CRUD-operasjoner.
+- **Lesbarhet**: Koden er enklere å lese sammenlignet med rå SQL.
+- **Skalerbarhet**: Kan enkelt tilpasses nye datamodeller.
+
+---
+
+### Konklusjon
+Entity Framework gir oss kraftige verktøy for å håndtere data i applikasjonen, samtidig som vi opprettholder kontroll over databaseendringer ved å unngå migrations. Denne balansen gir en robust og fleksibel løsning for prosjektet vårt.
+
+
 ## Sikkerhet: CSRF og XSS-beskyttelse
 I prosjektet håndteres beskyttelse mot Cross-Site Request Forgery (CSRF) ved å bruke ASP.NET Core sitt innebygde CSRF-beskyttelsessystem, som automatisk genererer og validerer CSRF-tokens for alle sensitive POST-forespørsler. Dette sikrer at kun legitime brukere kan sende inn data til applikasjonen.
 
@@ -186,7 +265,7 @@ Enhetstesting er en viktig del av utviklingsprosessen som sikrer at individuelle
 
 ## Teknologier som brukes
 - **xUnit**: For å strukturere og kjøre testene.
-- **Moq**: For mocking av avhengigheter som logger og konfigurasjoner.
+- **Moq**: For mocking av avhengigheter
 - **RichardSzalay.MockHttp**: For å simulere HTTP-forespørsler og -svar uten å koble til eksterne APIer.
 
 ## Eksempel: KommuneInfoService
@@ -259,11 +338,7 @@ For å kjøre testene kan du bruke følgende kommando:
 > dotnet test
 ```
 
-Dette vil kjøre alle enhetstestene i prosjektet og gi deg en rapport om resultatene. Eventuelle feil vil bli logget slik at du enkelt kan feilsøke dem.
-
-Ved å inkludere enhetstester sikrer vi at applikasjonen vår forblir robust og stabil gjennom hele utviklingsprosessen.
-
-
+Dette vil kjøre alle enhetstestene i prosjektet og gi deg en rapport om resultatene. Eventuelle feil vil bli logget slik at du kan feilsøke dem.
       
 ### **Testing scenarioer:**
 Vi har også lagd flere testing scenarioer. Dette er trinnvise tester som gjennomføres manuelt for å sikre forventet oppførsel av systemets funskjoner.
@@ -288,10 +363,7 @@ https://github.com/user-attachments/assets/0218f524-23d1-44e4-9b53-32aff07958f9
 ### **5. Discord/Slack Bot**  
 ![Bot preview](https://github.com/user-attachments/assets/e1738455-0a17-4ef2-bbef-2113d2fc8618)
 
-
 [^1]: Leaflet javascript bilbiotek: [Leaflet](https://leafletjs.com/)
 [^2]: WMS-kartoverleggs-tjeneste (vegnett) [geonorge](https://www.geonorge.no/)
 [^3]: WMS-kartoverleggs-tjeneste (matrikkel) [geonorge](https://kartkatalog.geonorge.no/metadata/matrikkelkart-wms/30dda4c6-2cba-4378-b2e7-26f644df9d99)
 [^4]: WMS-kartlag-tjeneste [Kartverket](https://kartkatalog.geonorge.no/metadata/vegnett2-wms/302fcb0e-a7dc-44f4-a336-8c9ee9709d73?search=vegnett)
-
-
