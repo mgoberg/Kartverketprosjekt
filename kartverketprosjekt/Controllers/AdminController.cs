@@ -9,7 +9,6 @@ namespace kartverketprosjekt.Controllers
 // ******AdminController er en controller som håndterer alle funksjoner som kun skal være tilgjengelig for Administrator.******
 // ****************************************************************************************************************************
 {
-    // AdminController handles functions accessible only to administrators.
     [Authorize(Roles = "4")]
     public class AdminController : Controller
     {
@@ -20,7 +19,6 @@ namespace kartverketprosjekt.Controllers
             _adminService = adminService;
         }
 
-        // Display the admin view.
         public async Task<IActionResult> AdminView()
         {
             var stats = await _adminService.GetAdminViewStatsAsync();
@@ -35,8 +33,8 @@ namespace kartverketprosjekt.Controllers
             return View(stats.Users);
         }
 
-        // Change a user's access level.
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateAccess(string userId, int newAccessLevel)
         {
             var (success, message) = await _adminService.UpdateUserAccessAsync(userId, newAccessLevel);
@@ -52,8 +50,8 @@ namespace kartverketprosjekt.Controllers
             return RedirectToAction("AdminView");
         }
 
-        // Delete a user.
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SlettBruker(string epost)
         {
             var loggedInUserEmail = User.Identity.Name;
@@ -70,8 +68,8 @@ namespace kartverketprosjekt.Controllers
             return View("AdminView", stats.Users);
         }
 
-        // Create a new user.
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> OpprettBruker(string epost, string passord, int tilgangsnivaa, string organisasjon, string? navn)
         {
             var (success, message) = await _adminService.CreateUserAsync(epost, passord, tilgangsnivaa, organisasjon, navn);

@@ -45,6 +45,16 @@ namespace kartverketprosjekt.Services.Sak
             return await _sakRepository.GetCaseworkersAsync();
         }
 
+        /// <summary>
+        /// Registrerer en ny sak med vedlegg og geografisk informasjon.
+        /// </summary>
+        /// <param name="sak">SakModel-objektet som representerer saken som skal registreres.</param>
+        /// <param name="vedlegg">Vedleggsfilen som skal lastes opp.</param>
+        /// <param name="nord">Nord-koordinaten for saken.</param>
+        /// <param name="ost">Øst-koordinaten for saken.</param>
+        /// <param name="koordsys">Koordinatsystemet som brukes.</param>
+        /// <param name="currentUserEmail">E-postadressen til brukeren som oppretter saken.</param>
+        /// <returns>caseId</returns>
         public async Task<int> RegisterCaseAsync(SakModel sak, IFormFile vedlegg, double nord, double ost, int koordsys, string currentUserEmail)
         {
             sak.epost_bruker = currentUserEmail;

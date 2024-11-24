@@ -7,7 +7,7 @@
 @if (TempData["Message"] != null)
 {
     <div class="alert alert-success">
-        @TempData["Message"]
+        @Html.Encode(TempData["Message"])
     </div>
 }
 
@@ -75,7 +75,7 @@
 
             <!-- Beskrivelse (påkrevd) -->
             <label class="ubuntu-regular" for="beskrivelse">Beskrivelse:</label>
-            <textarea class="form-control, ubuntu-light" id="beskrivelse" name="beskrivelse" required placeholder="Maksimum 250 tegn" maxlength="250"></textarea>
+            <textarea class="form-control ubuntu-light" id="beskrivelse" name="beskrivelse" required placeholder="Maksimum 250 tegn" maxlength="250"></textarea>
 
             <!-- Opplastning av vedlegg (valgfritt) -->
             <label class="ubuntu-regular" for="vedlegg">Vedlegg (valgfritt):</label>

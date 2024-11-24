@@ -10,7 +10,11 @@ public class NotifikasjonService : INotifikasjonService
         _notifikasjonRepository = notifikasjonRepository;
     }
 
-    // Check if the user has any status changes to be notified about
+    /// <summary>
+    /// Sjekker om brukeren har noen statusendringer som skal varsles om.
+    /// </summary>
+    /// <param name="brukerEpost">E-postadressen til brukeren.</param>
+    /// <returns>boolsk verdi som indikerer om det er en statusendring.</returns>
     public async Task<bool> HarEndretStatus(string brukerEpost)
     {
         try
@@ -19,22 +23,24 @@ public class NotifikasjonService : INotifikasjonService
 
             if (hasStatusChanged)
             {
-                // Log for debugging purposes
                 Console.WriteLine("Du har en notifikasjon.");
-                return true; // Return true for notification
+                return true; 
             }
 
-            return false; // No notification
+            return false;
         }
         catch (Exception ex)
         {
-            // Log error
             Console.WriteLine($"Feil ved henting av sak: {ex.Message}");
             return false;
         }
     }
 
-    // Reset the notification status for a user
+    /// <summary>
+    /// Tilbakestiller varslingsstatusen for en bruker.
+    /// </summary>
+    /// <param name="brukerEpost">E-postadressen til brukeren.</param>
+    /// <returns>boolsk verdi som indikerer om tilbakestillingen var vellykket.</returns>
     public async Task<bool> ResetNotificationStatus(string brukerEpost)
     {
         try

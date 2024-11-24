@@ -19,6 +19,10 @@ namespace kartverketprosjekt.Services.Admin
             _passwordHasher = new PasswordHasher<BrukerModel>();
         }
 
+        /// <summary>
+        /// Henter statistikk for admin visning.
+        /// </summary>
+        /// <returns>En AdminStats-objekt med statistikkdata.</returns>
         public async Task<AdminStats> GetAdminViewStatsAsync()
         {
             var users = await _brukerRepository.GetAllUsersAsync();
@@ -35,29 +39,43 @@ namespace kartverketprosjekt.Services.Admin
                 Users = users
             };
         }
+
+        /// <summary>
+        /// Oppretter en ny bruker.
+        /// </summary>
+        /// <param name="epost">E-postadressen til brukeren.</param>
+        /// <param name="passord">Passordet til brukeren.</param>
+        /// <param name="tilgangsnivaa">Tilgangsnivået til brukeren.</param>
+        /// <param name="organisasjon">Organisasjonen brukeren tilhører.</param>
+        /// <param name="navn">Navnet til brukeren.</param>
+        /// <returns>En tuple som indikerer suksess og en melding.</returns>
         public async Task<(bool Success, string Message)> CreateUserAsync(string epost, string passord, int tilgangsnivaa, string organisasjon, string? navn)
         {
-            // Check if the email is already registered
             var existingUser = await _brukerRepository.GetUserByEmailAsync(epost);
             if (existingUser != null)
             {
                 return (false, "En bruker med denne e-posten eksisterer allerede.");
             }
 
-            // Create a new user model
             var newUser = new BrukerModel
             {
                 epost = epost,
                 navn = navn,
                 organisasjon = organisasjon,
                 tilgangsnivaa_id = tilgangsnivaa,
-                passord = _passwordHasher.HashPassword(null, passord) // Hash the password
+                passord = _passwordHasher.HashPassword(null, passord)
             };
 
-            // Save the new user
             await _brukerRepository.AddUserAsync(newUser);
             return (true, $"Brukeren {epost} ble opprettet.");
         }
+
+        /// <summary>
+        /// Oppdaterer tilgangsnivået til en bruker.
+        /// </summary>
+        /// <param name="userId">ID-en til brukeren.</param>
+        /// <param name="newAccessLevel">Det nye tilgangsnivået.</param>
+        /// <returns>En tuple som indikerer suksess og en melding.</returns>
         public async Task<(bool Success, string Message)> UpdateUserAccessAsync(string userId, int newAccessLevel)
         {
             var user = await _brukerRepository.GetUserByIdAsync(userId);
@@ -71,6 +89,12 @@ namespace kartverketprosjekt.Services.Admin
             return (false, "Bruker ikke funnet.");
         }
 
+        /// <summary>
+        /// Sletter en bruker.
+        /// </summary>
+        /// <param name="email">E-postadressen til brukeren som skal slettes.</param>
+        /// <param name="loggedInUserEmail">E-postadressen til den innloggede brukeren.</param>
+        /// <returns>En tuple som indikerer suksess og en melding.</returns>
         public async Task<(bool Success, string Message)> DeleteUserAsync(string email, string loggedInUserEmail)
         {
             var user = await _brukerRepository.GetUserByEmailAsync(email);
@@ -94,17 +118,6 @@ namespace kartverketprosjekt.Services.Admin
             return (true, $"{user.epost} ble slettet.");
         }
     }
-
-    public class AdminStats
-    {
-        public int CaseCount { get; set; }
-        public int UserCount { get; set; }
-        public int OpenCasesUnbehandlet { get; set; }
-        public int OpenCasesUnderBehandling { get; set; }
-        public int OpenCasesAvvist { get; set; }
-        public int OpenCasesArkivert { get; set; }
-        public int ClosedCases { get; set; }
-        public List<BrukerModel> Users { get; set; }
-    }
+    
 }
 
