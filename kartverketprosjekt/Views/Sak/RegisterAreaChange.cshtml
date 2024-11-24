@@ -7,7 +7,7 @@
 @if (TempData["Message"] != null)
 {
     <div class="alert alert-success">
-        @TempData["Message"]
+        @Html.Encode(TempData["Message"])
     </div>
 }
 

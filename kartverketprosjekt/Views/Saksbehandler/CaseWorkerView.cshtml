@@ -171,6 +171,7 @@
             <!-- Status dropdown -->
             <div class="dashboard-box">
         <h4 class="ubuntu-light">Endre saksbehandler</h4>
+        @Html.AntiForgeryToken()
         <select class="form-control" id="changeSaksbehandler" onchange="changeSaksbehandler(this)">
             <option disabled selected>Velg saksbehandler</option>
             @foreach (var saksbehandler in ViewBag.Saksbehandlere)
@@ -181,6 +182,7 @@
 
 
                 <h4 class="ubuntu-light">Endre status</h4>
+        @Html.AntiForgeryToken()
                 <select class="form-control" id="changeStatus">
                     <option value="Ubehandlet" selected>Ubehandlet</option>
                     <option value="Under behandling">Under Behandling</option>
@@ -191,6 +193,7 @@
 
                 <!-- Kommentar-seksjon -->
                 <h4 class="ubuntu-light">Legg til kommentar</h4>
+        @Html.AntiForgeryToken()
                 <textarea class="caseComment" rows="4" cols="50" placeholder="Skriv en kommentar..."></textarea><br/>
                 <div class="btn-container">
                     <button class="btn-secondary" id="saveComment">Lagre kommentar</button>
@@ -205,11 +208,12 @@
                     </ul>
                 </div>
                 <div class="btn-container">
+            @Html.AntiForgeryToken()
                     <button class="btn btn-danger" style="margin-top: 70px;" id="slettSakKnapp" onclick="playSound()">Slett sak</button>
 
                     <script>
                         function playSound() {
-                            var audio = new Audio('/images/viktigIkkeSlett.mp3'); // Replace with the path to your sound file
+                            var audio = new Audio('/images/viktigIkkeSlett.mp3'); 
                             audio.play();
                         }
                     </script>

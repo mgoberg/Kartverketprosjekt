@@ -197,6 +197,7 @@ public class BrukerController : Controller
 
     // Metode for å slette en sak.
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteCase(int id)
     {
         var isDeleted = await _sakService.DeleteCaseAsync(id);

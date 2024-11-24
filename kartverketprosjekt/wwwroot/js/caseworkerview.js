@@ -6,25 +6,31 @@ var tileLayer; // Lagrer tile-laget
 
 // Funskjon for å slette sak i db
 $('#slettSakKnapp').click(function () {
-    var sakID = $('#dashboardSakID').text(); // Hent SakID fra dashboardet
+    var sakID = $('#dashboardSakID').text(); // Get SakID from the dashboard
 
     if (sakID === "-") {
         alert("Velg en sak før du sletter!");
         return;
     }
 
-    // Bekreft før sletting
+    // Confirm before deletion
     if (confirm("Er du sikker på at du vil slette denne saken?")) {
+        // Get anti-forgery token value
+        var token = $('input[name="__RequestVerificationToken"]').val();
+
         $.ajax({
-            url: '/Saksbehandler/Delete',  // URL til controllerens Delete-funksjon
+            url: '/Saksbehandler/Delete',  // URL to the Delete controller method
             type: 'POST',
+            headers: {
+                'RequestVerificationToken': token // Include anti-forgery token in headers
+            },
             data: { id: sakID },
             success: function (result) {
                 if (result.success) {
-                    console.log(result.message);  // Viser en melding til brukeren
-                    location.reload();      // Oppdaterer siden for å fjerne slettet sak fra visningen
+                    console.log(result.message);  // Show a message to the user
+                    location.reload();           // Reload the page to remove the deleted case from the view
                 } else {
-                    console.log(result.message);  // Viser en feilmelding 
+                    console.log(result.message);  // Show an error message
                 }
             },
             error: function () {
@@ -34,25 +40,32 @@ $('#slettSakKnapp').click(function () {
     }
 });
 
+
 // Legge til ny kommentar i listen
 $('#saveComment').click(function () {
-    var commentText = $('.caseComment').val();  // Hente innholdet fra tekstområdet
+    var commentText = $('.caseComment').val();  // Get content from textarea
 
     if (commentText.trim() !== "") {
-        // Hent sakID fra dashboardet
+        // Get sakID from the dashboard
         var sakID = $('#dashboardSakID').text();
 
         if (sakID !== "-") {
-            // Legg til ny kommentar til listen på klientsiden
+            // Add the new comment to the list on the client side
             $('.commentsList').append('<li>' + commentText + '</li>');
 
-            // Tømme kommentarfeltet etter at kommentaren er lagt til
+            // Clear the comment field after adding the comment
             $('.caseComment').val('');
 
-            // Send kommentar til backend for å lagre den
+            // Get anti-forgery token value
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            // Send the comment to the backend to save it
             $.ajax({
-                url: '/Saksbehandler/AddComment',  // URL til controllerens AddComment-funksjon
+                url: '/Saksbehandler/AddComment',  // URL to the AddComment controller method
                 type: 'POST',
+                headers: {
+                    'RequestVerificationToken': token // Include anti-forgery token in headers
+                },
                 data: {
                     sakID: sakID,
                     kommentar: commentText
@@ -75,6 +88,7 @@ $('#saveComment').click(function () {
         alert("Kommentarfeltet er tomt.");
     }
 });
+
 
 
 
@@ -214,9 +228,15 @@ $('#changeStatus').change(function () {
     var newStatus = $(this).val(); // Get new status from dropdown
 
     if (sakID !== "-") {
+        // Get anti-forgery token value
+        var token = $('input[name="__RequestVerificationToken"]').val();
+
         $.ajax({
             url: '/Saksbehandler/UpdateStatus', // Path to UpdateStatus method
             type: 'POST',
+            headers: {
+                'RequestVerificationToken': token // Include anti-forgery token in headers
+            },
             data: {
                 id: sakID,
                 status: newStatus
@@ -246,6 +266,7 @@ $('#changeStatus').change(function () {
         alert("Velg en sak før du endrer status.");
     }
 });
+
 
 
 function updateMap(geojson, layerUrl, beskrivelse) {
@@ -428,10 +449,16 @@ function changeSaksbehandler(element) {
         return;
     }
 
+    // Get anti-forgery token value
+    const token = $('input[name="__RequestVerificationToken"]').val();
+
     // AJAX request to update saksbehandler
     $.ajax({
         url: '/Saksbehandler/EndreSaksbehandler', // Path to EndreSaksbehandler method
         type: 'POST',
+        headers: {
+            'RequestVerificationToken': token // Include anti-forgery token in the headers
+        },
         data: {
             sakId: sakID,
             saksbehandlerEpost: saksbehandlerEpost
