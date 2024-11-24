@@ -6,21 +6,26 @@ namespace kartverketprosjekt.Services.API
 {
     public class KommuneInfoService : IKommuneInfoService
     {
-        // Service for å hente kommune og fylke info
         private readonly HttpClient _httpClient;
         private readonly ILogger<KommuneInfoService> _logger;
         private readonly ApiSettings _apiSettings;
 
         public KommuneInfoService(HttpClient httpClient, ILogger<KommuneInfoService> logger, IOptions<ApiSettings> apisettings)
         {
-            // Constructor for KommuneInfoService
             _httpClient = httpClient;
             _logger = logger;
             _apiSettings = apisettings.Value;
         }
+
+        /// <summary>
+        /// Kaller Kartverkets Kommuneinfo API: <see href="https://api.kartverket.no/kommuneinfo/v1/"/> (get_punkt)
+        /// </summary>
+        /// <param name="nord"> nord/latitude-koordinaten</param>
+        /// <param name="ost"> øst/longitude-koordinaten</param>
+        /// <param name="koordsys"> Koordinatsystemet til koordinatene du søker med. Angis som en SRID, for eksempel 4258 eller 25833.</param>
+        /// <returns>kommuneinfo som json-streng</returns>
         public async Task<KommuneInfo> GetKommuneInfoAsync(double nord, double ost, int koordsys)
         {
-            // Metode for å hente kommune og fylke info
             try
             {
                 var response = await _httpClient.GetAsync($"{_apiSettings.KommuneInfoApiBaseUrl}punkt?nord={nord}&ost={ost}&koordsys={koordsys}");

@@ -10,6 +10,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="TestControllers\**" />
+    <Compile Remove="TestRepositories\**" />
+    <EmbeddedResource Remove="TestControllers\**" />
+    <EmbeddedResource Remove="TestRepositories\**" />
+    <None Remove="TestControllers\**" />
+    <None Remove="TestRepositories\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
@@ -24,11 +33,6 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="TestRepositories\" />
-    <Folder Include="TestControllers\" />
   </ItemGroup>
 
 </Project>
