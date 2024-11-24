@@ -94,6 +94,7 @@ I vårt prosjekt håndterer controlleren HTTP-forespørsler og **kobler sammen b
 
 ```c#
 [HttpPost]
+[ValidateAntiForgeryToken]
 public async Task<IActionResult> UpdateAccess(string userId, int newAccessLevel)
 {
     var (success, message) = await _adminService.UpdateUserAccessAsync(userId, newAccessLevel);
@@ -158,15 +159,29 @@ public async Task SaveChangesAsync()
 
 > [!NOTE]
 > **Controller**-**Service**-**Repository** mønsteret er _**ikke**_ istedet for MVC, men heller en utvidelse av controllerene for å **øke modularitet**, **skalerbarhet**, **testbarhet** og for å **løsne tette koblinger**.
+
+### Sikkerhet: CSRF og XSS-beskyttelse
+I prosjektet håndteres beskyttelse mot Cross-Site Request Forgery (CSRF) ved å bruke ASP.NET Core sitt innebygde CSRF-beskyttelsessystem, som automatisk genererer og validerer CSRF-tokens for alle sensitive POST-forespørsler. Dette sikrer at kun legitime brukere kan sende inn data til applikasjonen.
+
+```c#
+[ValidateAntiForgeryToken]
+```
+```js
+headers: {
+    'RequestVerificationToken': token
+}
+```
+```js
+const token = $('input[name="__RequestVerificationToken"]').val();
+```
+For å forhindre Cross-Site Scripting (XSS) benyttes ASP.NET Core sitt sanitizing-system, som automatisk rømmer farlige HTML-tegntokens i brukerinndata før de vises i nettleseren. I tillegg brukes "Content Security Policy" (CSP) for å beskytte mot ondsinnet scriptkjøring fra eksterne kilder.
+```c#
+@Html.Encode(TempData["Message"])
+```
 ---
 ## **Testing**
 ### **Unit Testing:**
   *Ikke enda implementert:*
-- [ ] Kontrollere
-- [x] API modeller
-- [ ] Javascript funskjoner
-- [ ] Database initialisering
-- [ ] Docker
       
 ### **Testing scenarioer:**
 Se egen mappe for dette:
