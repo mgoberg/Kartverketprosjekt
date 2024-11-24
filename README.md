@@ -1,34 +1,34 @@
 # 🚀 **Kartverket Prosjektet for Gruppe 14!** 🚀
 ## **For å sette opp prosjektet og koble opp databasen, følg disse trinnene:**
 
-### 🌿 **Trinn 1: Sørg for å være i riktig branch**  
+## 🌿 **Trinn 1: Sørg for å være i riktig branch**  
 - Sjekk at du er på **dev** branch inntil videre. 
 - Dev branch er somregel 20-50 commits foran main.
 
-### 🛠️ **Trinn 2: Kjør prosjektet i Visual Studio**  
+## 🛠️ **Trinn 2: Kjør prosjektet i Visual Studio**  
 Start prosjektet i dockerfile modus slik at docker containeren som kjører applikasjonen kjører.
 
-### 🌐 **Trinn 3: Opprett et Docker-nettverk**  
+## 🌐 **Trinn 3: Opprett et Docker-nettverk**  
 For å opprette et nettverk, kjør denne kommandoen:
 
 ```css
 docker network create kartverket-network
 ```
 
-### 🔗 **Trinn 4: Koble applikasjonscontaineren til nettverket**  
+## 🔗 **Trinn 4: Koble applikasjonscontaineren til nettverket**  
 Koble webapplikasjonen til nettverket med:'
 
 ```css
 docker network connect kartverket-network kartverketprosjekt
 ```
-### 🚀 **Trinn 5: Start databasen**  
+## 🚀 **Trinn 5: Start databasen**  
 Bygg og start databasen med:
 
 ```css
 docker-compose up --build
 ```
 
-### 🎊 **Da var alt klart!**  
+## 🎊 **Da var alt klart!**  
 Nå har du en databasecontainer som kjører i Docker. Du kan starte applikasjonen og teste all funksjonalitet.
 
 > [!WARNING]
@@ -42,9 +42,9 @@ Nå har du en databasecontainer som kjører i Docker. Du kan starte applikasjone
 
 ---
 
-## **Funksjonalitet**
+# **Funksjonalitet**
 
-### 🔍 **Brukerfunksjoner**
+## 🔍 **Brukerfunksjoner**
 - **Registrering og innlogging**: Brukere kan opprette en konto og logge inn.
 - **Rapportering av kartfeil**: Brukere kan markere feil i kartet med, legge til beskrivelse og sende inn.
 - **Visning av innmeldte saker**: Brukere kan se egne innmeldte saker med statusoppdateringer og kommentarer fra saksbehandlere.
@@ -52,19 +52,19 @@ Nå har du en databasecontainer som kjører i Docker. Du kan starte applikasjone
 - **Oppdatering av Navn og Passord**: Brukere kan oppdatere navnet sitt, eller endre passordet sitt.
 - **Notifikasjoner**: Brukere som har fått en endring på saken sin vil få en varsel og en notifikasjon på meny knappen.
 
-### 🛠️ **Saksbehandlerfunksjoner**
+## 🛠️ **Saksbehandlerfunksjoner**
 - **Administrering av saker**: Saksbehandlere kan se, endre status, deligere og slette saker.
 - **Tilbakemelding**: Saksbehandlere kan gi brukere tilbakemelding i et kommentarfelt.
 - **Automatisk sakstildeling**: Saker blir automatisk tildelt saksbehandler med færrest saker, og kan videre deligeres derfra.
 - **Visning av vedlegg**: Saksbehandler kan enkelt se vedlegg som ligger knyttet til en sak.
 
-### 🛠️ **Administratorfunksjoner**
+## 🛠️ **Administratorfunksjoner**
 - **Saksbehandling**: Administratorer har all funksjonalitet en saksbehandler har.
 - **Brukeradministrasjon**: Administrator kan oppdatere tilgangsnivå til bruker, og slette brukere.
 - **Oppretting av brukere**: Administrator kan opprette brukere.
 - **System stats**: Administrator har tilgang på et stats-bord som innholder all statistikk for systemet.
 
-### 🌐 **Geofunksjoner**
+## 🌐 **Geofunksjoner**
 - **Kartintegrasjon med Leaflet[^1]**: Alle saker vises på et interaktivt kart.
 - **GeoJSON-støtte**: Brukerinnsendte data konverteres og vises som GeoJSON på kartet for saksbehandlere.
 - **Eiendomsinndeling[^2]**: Eiendomsgrenser kan toggles i kartet.
@@ -73,12 +73,12 @@ Nå har du en databasecontainer som kjører i Docker. Du kan starte applikasjone
 > [!NOTE]
 > **Alle Kartlagstjenester er fra kartverkets datasett og oppdateres jevnlig.**
 
-### 🤖 **Ekstra funksjonalitet**
+## 🤖 **Ekstra funksjonalitet**
 - **Slack/Discord Bot**: Automatiske oppdateringer sendes til en kanal når nye saker blir rapportert.
 - **Dashboard**: Oversikt over alle rapporterte saker, med søk og filtrering
 ---
-## **System arkitektur**
-### **MVC-modellen i .NET**:
+# **System arkitektur**
+## **MVC-modellen i .NET**:
 
   I dette prosjektet bruker vi *Model-View-Controller (MVC)* mønsteret, som er et designmønster ofte brukt i .NET-applikasjoner. MVC-modellen hjelper til med å skille ansvar innen applikasjonen:
 
@@ -86,8 +86,8 @@ Nå har du en databasecontainer som kjører i Docker. Du kan starte applikasjone
 - **View**: Representerer brukergrensesnittet. Visningen viser data fra modellen til brukeren og sender brukerinput til kontrolleren.
 - **Controller**: Fungerer som en mellommann mellom modellen og visningen. Kontrolleren mottar input fra visningen, behandler den, og returnerer den passende visningen som svar.
   
-## Controller-Service-Repository mønster
-### Controller _(Ruting)_
+# Controller-Service-Repository mønster
+## Controller _(Ruting)_
 I vårt prosjekt håndterer controlleren HTTP-forespørsler og **kobler sammen brukerens handlinger med applikasjonens forretningslogikk**. En controller er ansvarlig for å motta forespørsler fra brukeren, bearbeide forespørselen ved hjelp av en **service**, og deretter returnere et passende svar.
 
 **Eksempel på controller metode:**
@@ -111,7 +111,7 @@ public async Task<IActionResult> UpdateAccess(string userId, int newAccessLevel)
 }
 ```
 
-### Service _(Forretningslogikk)_
+## Service _(Forretningslogikk)_
 Service-laget er **ansvarlig for applikasjonens forretningslogikk**. Dette laget utfører operasjoner som er nødvendige for å oppfylle kravene i applikasjonen, som å **hente**, **oppdatere**, eller **slette data**, samt **interagere med eksterne tjenester eller systemer**. Service-laget er der forretningsreglene implementeres.
 
 **Hva gjør en Service?**
@@ -139,7 +139,7 @@ public async Task<(bool Success, string Message)> UpdateUserAccessAsync(string u
     return (false, "Bruker ikke funnet.");
 }
 ```
-### Repository _(Databaseoperasjoner)_
+## Repository _(Databaseoperasjoner)_
 I dette prosjektet bruker vi **Repository Pattern** for å **isolere data-adgangslaget fra applikasjonens forretningslogikk**. Dette gir flere fordeler, som **lettere testing**, **bedre struktur** og muligheten til å **bytte ut lagringsmekanismer** 
 
 Repository-laget fungerer som et **mellomledd mellom applikasjonen og datalaget** (f.eks. en database). Det håndterer all interaksjon med databasen, som å **hente, lagre, oppdatere eller slette** data. Ved å bruke repositories kan vi gjøre applikasjonen vår **mer modulær**, noe som gjør det **enklere å teste**, **vedlikeholde** og **endre datatilgangslaget** uten å påvirke resten av applikasjonen.
@@ -160,7 +160,7 @@ public async Task SaveChangesAsync()
 > [!NOTE]
 > **Controller**-**Service**-**Repository** mønsteret er _**ikke**_ istedet for MVC, men heller en utvidelse av controllerene for å **øke modularitet**, **skalerbarhet**, **testbarhet** og for å **løsne tette koblinger**.
 
-### Sikkerhet: CSRF og XSS-beskyttelse
+## Sikkerhet: CSRF og XSS-beskyttelse
 I prosjektet håndteres beskyttelse mot Cross-Site Request Forgery (CSRF) ved å bruke ASP.NET Core sitt innebygde CSRF-beskyttelsessystem, som automatisk genererer og validerer CSRF-tokens for alle sensitive POST-forespørsler. Dette sikrer at kun legitime brukere kan sende inn data til applikasjonen.
 
 ```c#
@@ -179,12 +179,95 @@ For å forhindre Cross-Site Scripting (XSS) benyttes ASP.NET Core sitt sanitizin
 @Html.Encode(TempData["Message"])
 ```
 ---
-## **Testing**
-### **Unit Testing:**
-  
+# **Testing**
+## **Enhetstesting (Unit Testing):**
+
+Enhetstesting er en viktig del av utviklingsprosessen som sikrer at individuelle deler av applikasjonen fungerer som forventet. I dette prosjektet har vi brukt enhetstester til å validere logikken i våre tjenester, inkludert API-integrasjoner. Dette hjelper oss å identifisere feil tidlig i utviklingssyklusen og sikrer pålitelighet.
+
+## Teknologier som brukes
+- **xUnit**: For å strukturere og kjøre testene.
+- **Moq**: For mocking av avhengigheter som logger og konfigurasjoner.
+- **RichardSzalay.MockHttp**: For å simulere HTTP-forespørsler og -svar uten å koble til eksterne APIer.
+
+## Eksempel: KommuneInfoService
+En av tjenestene vi tester er `KommuneInfoService`, som henter informasjon om kommune og fylke fra et Kartverkets API basert på et geografisk punkt.
+
+### Positivt Scenario
+Vi tester at `GetKommuneInfoAsync` returnerer riktig informasjon når API-svaret er vellykket. Ved hjelp av `MockHttpMessageHandler` simulerer vi et gyldig JSON-svar fra APIet og verifiserer at tjenesten parser dette korrekt.
+
+```csharp
+[Fact]
+public async Task GetKommuneInfoAsync_ReturnsKommuneInfo_WhenApiResponseIsSuccessful()
+{
+    // Arrange
+    var expectedKommuneInfo = new KommuneInfo
+    {
+        KommuneNavn = "Oslo",
+        Fylkesnavn = "Oslo",
+        Kommunenummer = "0301",
+        Fylkesnummer = "03"
+    };
+
+    var jsonResponse = JsonSerializer.Serialize(expectedKommuneInfo);
+
+    _httpMessageHandlerMock.When("http://example.com/punkt*")
+                           .Respond("application/json", jsonResponse);
+
+    // Act
+    var result = await _kommuneInfoService.GetKommuneInfoAsync(1000, 2000, 1);
+
+    // Assert
+    Assert.NotNull(result);
+    Assert.Equal(expectedKommuneInfo.KommuneNavn, result.KommuneNavn);
+    Assert.Equal(expectedKommuneInfo.Fylkesnavn, result.Fylkesnavn);
+    Assert.Equal(expectedKommuneInfo.Kommunenummer, result.Kommunenummer);
+    Assert.Equal(expectedKommuneInfo.Fylkesnummer, result.Fylkesnummer);
+}
+```
+
+### Negativt Scenario
+Vi tester at `GetKommuneInfoAsync` returnerer `null` og logger en feil når API-svaret mislykkes (f.eks. HTTP 500).
+
+```csharp
+[Fact]
+public async Task GetKommuneInfoAsync_ReturnsNull_WhenApiResponseFails()
+{
+    // Arrange
+    _httpMessageHandlerMock.When("http://example.com/punkt*")
+                           .Respond(HttpStatusCode.InternalServerError);
+
+    // Act
+    var result = await _kommuneInfoService.GetKommuneInfoAsync(1000, 2000, 1);
+
+    // Assert
+    Assert.Null(result);
+    _loggerMock.Verify(
+        log => log.Log(
+            LogLevel.Error,
+            It.IsAny<EventId>(),
+            It.IsAny<It.IsAnyType>(),
+            It.IsAny<Exception>(),
+            (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
+        Times.Once);
+}
+```
+
+## Hvordan kjøre testene
+For å kjøre testene kan du bruke følgende kommando:
+
+```bash
+> dotnet test
+```
+
+Dette vil kjøre alle enhetstestene i prosjektet og gi deg en rapport om resultatene. Eventuelle feil vil bli logget slik at du enkelt kan feilsøke dem.
+
+Ved å inkludere enhetstester sikrer vi at applikasjonen vår forblir robust og stabil gjennom hele utviklingsprosessen.
+
+
       
 ### **Testing scenarioer:**
-Se egen mappe for dette:
+Vi har også lagd flere testing scenarioer. Dette er trinnvise tester som gjennomføres manuelt for å sikre forventet oppførsel av systemets funskjoner.
+#### Se egen mappe for dette:
 [Testing scenarioer](kartverketprosjekt/docs/)
 
 ---
