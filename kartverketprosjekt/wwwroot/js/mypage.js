@@ -7,38 +7,35 @@
     }
 });
 $(document).ready(function () {
-    // Loop through each comment section and fetch comments dynamically
+    // Gå gjennom hver kommentarseksjon og hent kommentarer dynamisk
     $('[class^="commentsSection"]').each(function () {
-        var sakID = $(this).data('sakid'); // Get sakId from data attribute
-        var commentsListId = '.commentsList#' + sakID; // Correct the selector for the specific ul element
+        var sakID = $(this).data('sakid'); // Hent sakId fra data-attributt
+        var commentsListId = '.commentsList#' + sakID; // Korriger selektoren for det spesifikke ul-elementet
 
         $.ajax({
-            url: '/Bruker/GetComments',  // Controller's GetComments method
+            url: '/Bruker/GetComments',  // Controllerens GetComments-metode
             type: 'GET',
-            data: { sakId: sakID },  // Pass sakId to the request
+            data: { sakId: sakID },  // Send sakId til forespørselen
             success: function (result) {
                 if (result.success) {
-                    // Clear the comment list before adding new comments
+                    // Tøm kommentarliste før nye kommentarer legges til
                     $(commentsListId).empty();
 
-                    // Add each comment to the list
+                    // Legg til hver kommentar i listen
                     result.kommentarer.forEach(function (kommentar) {
                         var commentText = kommentar.tekst;
                         var commentDate = kommentar.dato;
                         var commentAuthor = kommentar.epost;
                         var truncatedText = truncateText(commentText, 50);
 
-
                         var commentInfoElement = '<li class="commentInfo">' + commentDate + ' av ' + commentAuthor + '</li>';
                         $(commentsListId).append(commentInfoElement);
 
                         var commentElement = $('<li class="comment comment-collapsed"></li>')
                             .text(truncatedText)
-                            .data('fullText', commentText); // Store full text in data-fullText attribute
+                            .data('fullText', commentText); // Lagre full tekst i data-fullText-attributt
 
                         $(commentsListId).append(commentElement);
-
-
                     });
                 } else {
                     console.log('Kunne ikke hente kommentarer: ' + result.message);
@@ -51,7 +48,7 @@ $(document).ready(function () {
     });
 });
 
-// Truncate text function
+// Funksjon for å forkorte tekst
 function truncateText(text, length) {
     return text.length > length ? text.substring(0, length) + '...' : text;
 }

@@ -1,11 +1,11 @@
 ﻿function showModal() {
-    // Show the login modal when "Til Kartet" is clicked and the user is not logged in
+    // vis modal og overlay når bruker klikker på Til kartet-knappen
     document.getElementById('modal').style.display = 'block';
     document.getElementById('overlay').style.display = 'block';
 }
 
 function toggleForm() {
-    // Toggle between login and register forms
+    // toggle mellom logg inn og registrer skjema
     var loginForm = document.getElementById("login-form");
     var registerForm = document.getElementById("register-form");
     var modalTitle = document.getElementById("modal-title");
@@ -21,7 +21,7 @@ function toggleForm() {
     }
 }
 
-// Close modal when clicking outside the modal content
+// lukke modal og overlay når bruker klikker utenfor modalen
 window.onclick = function (event) {
     var modal = document.getElementById("modal");
     var overlay = document.getElementById("overlay");

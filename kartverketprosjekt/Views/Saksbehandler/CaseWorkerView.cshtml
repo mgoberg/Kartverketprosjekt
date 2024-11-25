@@ -209,14 +209,8 @@
                 </div>
                 <div class="btn-container">
             @Html.AntiForgeryToken()
-                    <button class="btn btn-danger" style="margin-top: 70px;" id="slettSakKnapp" onclick="playSound()">Slett sak</button>
-
-                    <script>
-                        function playSound() {
-                            var audio = new Audio('/images/viktigIkkeSlett.mp3'); 
-                            audio.play();
-                        }
-                    </script>
+                    <button class="btn btn-danger" style="margin-top: 70px;" id="slettSakKnapp">Slett sak</button>
+                    
             <!--    <button class="btn-primary" id="lagreKnapp">Lagre endringer</button>   Denne knappen har ingen funksjon. -->
                 </div>
             </div>

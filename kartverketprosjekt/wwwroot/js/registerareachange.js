@@ -14,9 +14,6 @@ document.addEventListener('DOMContentLoaded', function () {
     changeToLand();
 });
 
-
-
-
 var searchControl = new L.esri.Controls.Geosearch().addTo(map); // Add the geocoding searchbar
 document.querySelector('.geocoder-control').style.zIndex = '2000';
 
@@ -50,7 +47,6 @@ map.on(L.Draw.Event.CREATED, function (e) {
 
     if (currentStep == 0) {
         goToNextStep();
-
     }
 
     var geoJsonData = layer.toGeoJSON();
@@ -188,15 +184,13 @@ closeBtn.addEventListener("click", function () {
     modal.style.display = "none"; // Skjul modalen
 });
 
-
-
 function updateProgressBar() {
     let progress = (currentStep / totalSteps) * 100;
     document.getElementById("progressBar").style.width = progress + "%";
     updateStepTitle();
 }
 
-// Call updateProgressBar() when the user moves to the next step.
+// kall updateProgressBar() for å oppdatere progressbar
 function goToNextStep() {
     if (currentStep < totalSteps) {
         currentStep++;
