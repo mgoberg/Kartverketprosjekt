@@ -90,9 +90,6 @@ $('#saveComment').click(function () {
 });
 
 
-
-
-
 $(document).ready(function () {
     $('#casesTable tbody tr').click(function () {
         // Fjern 'selected-row' klasse fra alle rader
@@ -219,23 +216,19 @@ $(document).ready(function () {
     });
 });
 
-
-
-
-// Endre status event
 $('#changeStatus').change(function () {
-    var sakID = $('#dashboardSakID').text().trim(); // Get SakID from dashboard
-    var newStatus = $(this).val(); // Get new status from dropdown
+    var sakID = $('#dashboardSakID').text().trim(); // Hent SakID fra dashboardet
+    var newStatus = $(this).val(); // Hent ny status fra dropdown
 
     if (sakID !== "-") {
         // Get anti-forgery token value
         var token = $('input[name="__RequestVerificationToken"]').val();
 
         $.ajax({
-            url: '/Saksbehandler/UpdateStatus', // Path to UpdateStatus method
+            url: '/Saksbehandler/UpdateStatus', // Kaller UpdateStatus metoden fra saksbehandler kontrolleren
             type: 'POST',
             headers: {
-                'RequestVerificationToken': token // Include anti-forgery token in headers
+                'RequestVerificationToken': token // Inkluder anti-forgery token i header
             },
             data: {
                 id: sakID,
@@ -243,16 +236,16 @@ $('#changeStatus').change(function () {
             },
             success: function (result) {
                 if (result.success) {
-                    console.log('Status oppdatert!'); // Feedback
+                    console.log('Status oppdatert!'); 
 
-                    // Dynamically update status in the clicked row of the table
+                    // oppdater status i tabellen
                     $('#casesTable tbody tr').each(function () {
                         if ($(this).data('sakid') == sakID) {
-                            $(this).find('td:eq(5)').text(newStatus); // Update status column
+                            $(this).find('td:eq(5)').text(newStatus); 
                         }
                     });
 
-                    // Also update dashboard status dynamically
+                    // oppdater dashboard med ny status
                     $('#dashboardStatus').text(newStatus);
                 } else {
                     alert('Kunne ikke oppdatere status.');
@@ -270,28 +263,28 @@ $('#changeStatus').change(function () {
 
 
 function updateMap(geojson, layerUrl, beskrivelse) {
-    // Ensure beskrivelse is valid
+    // Sjekker at beskrivelsen er en streng
     if (typeof beskrivelse !== 'string' || beskrivelse.trim() === '') {
         beskrivelse = 'Ingen beskrivelse tilgjengelig'; // Default message if beskrivelse is missing or invalid
     }
 
-    // Validate GeoJSON and parse it if it's a string
+    // sjekk at geojson er en av type streng og parse
     if (typeof geojson === 'string') {
         try {
-            geojson = JSON.parse(geojson); // Try parsing the GeoJSON string
+            geojson = JSON.parse(geojson); 
         } catch (e) {
             console.error("Invalid GeoJSON string:", geojson);
-            return; // Abort if parsing fails
+            return; 
         }
     }
 
-    // Check if the geojson object has the necessary properties
+    // Sjekker om geoJSON inneholder nødvendig informasjon
     if (!geojson || !geojson.geometry || !geojson.geometry.type || !geojson.geometry.coordinates) {
         console.error("GeoJSON structure is invalid", geojson);
-        return; // Abort if the GeoJSON structure is invalid
+        return; 
     }
 
-    // Remove existing GeoJSON layers and markers
+    // fjerner eksisterende markør og lag fra kartet
     if (marker) {
         map.removeLayer(marker);
     }
@@ -300,52 +293,50 @@ function updateMap(geojson, layerUrl, beskrivelse) {
         map.removeLayer(geoJsonLayer);
     }
 
-    // Try to add the GeoJSON layer to the map
-    try {
-        geoJsonLayer = L.geoJSON(geojson).addTo(map); // Store the layer in a variable
+    // fjerne eksisterende kartlag 
+    if (tileLayer) {
+        map.removeLayer(tileLayer);
+    }
 
-        // Get coordinates from GeoJSON
+    // Legg til GeoJSON til kartet
+    try {
+        geoJsonLayer = L.geoJSON(geojson).addTo(map); 
+
         var coordinates = geojson.geometry.coordinates;
 
-        // Determine the geometry type
+        // Håndterer forskjellige geometrityper for å kunne behandle sentrering og beskrivelse popup riktig for forksjellige typer
         switch (geojson.geometry.type) {
             case "Point":
                 var latLng = [coordinates[1], coordinates[0]]; // [latitude, longitude]
                 marker = L.marker(latLng).addTo(map);
                 marker.bindPopup(beskrivelse).openPopup();
-                map.setView(latLng, 13); // Zoom in on the marker
+                map.fitBounds(L.latLngBounds(latLng, latLng)); 
                 break;
 
             case "Polygon":
-                var firstSet = coordinates[0]; // Get the first set of coordinates
-                if (firstSet.length > 0) {
-                    var latLng = [(firstSet[0][1] + firstSet[firstSet.length - 1][1]) / 2,
-                    (firstSet[0][0] + firstSet[firstSet.length - 1][0]) / 2]; // Midpoint between the first and last coordinates
-                    marker = L.polygon(firstSet.map(coord => [coord[1], coord[0]])).addTo(map);
-                    marker.bindPopup(beskrivelse).openPopup();
-                    map.setView(latLng, 13); // Zoom in on the midpoint
-                }
+                var bounds = geoJsonLayer.getBounds();
+                var center = bounds.getCenter();
+                marker = L.polygon(geoJsonLayer.getLayers()[0].getLatLngs()).addTo(map);
+                marker.bindPopup(beskrivelse).openPopup();
+                map.fitBounds(bounds); 
                 break;
 
             case "LineString":
-                var latLngs = coordinates.map(coord => [coord[1], coord[0]]);
-                marker = L.polyline(latLngs).addTo(map); // Add the line to the map
+                var bounds = geoJsonLayer.getBounds();
+                var center = bounds.getCenter();
+                marker = L.polyline(geoJsonLayer.getLayers()[0].getLatLngs()).addTo(map);
                 marker.bindPopup(beskrivelse).openPopup();
-
-                // Center the map on the midpoint of the line
-                var midPointIndex = Math.floor(latLngs.length / 2);
-                var midLatLng = latLngs[midPointIndex];
-                map.setView(midLatLng, 13); // Zoom in on the midpoint of the line
+                map.fitBounds(bounds); 
                 break;
 
             case "Rectangle":
                 var bounds = L.latLngBounds(
-                    [coordinates[0][1], coordinates[0][0]], // Convert coordinates to latLng format
+                    [coordinates[0][1], coordinates[0][0]], // latLng format
                     [coordinates[1][1], coordinates[1][0]]
                 );
                 marker = L.rectangle(bounds).addTo(map);
                 marker.bindPopup(beskrivelse).openPopup();
-                map.fitBounds(bounds); // Adjust the map to the bounds of the rectangle
+                map.fitBounds(bounds); 
                 break;
 
             default:
@@ -353,12 +344,7 @@ function updateMap(geojson, layerUrl, beskrivelse) {
                 return;
         }
 
-        // Remove any existing tile layer before adding a new one
-        if (tileLayer) {
-            map.removeLayer(tileLayer);
-        }
-
-        // Add the new tile layer based on the layerUrl
+        // legge til nytt kartlag (layerUrl)
         tileLayer = L.tileLayer(layerUrl, {
             attribution: '&copy; <a href="https://www.kartverket.no">Kartverket</a>'
         }).addTo(map);
@@ -451,11 +437,6 @@ document.getElementById('modalOverlay').addEventListener('click', function () {
     closeVedleggModal();
 });
 
-// TODO: Fjern denne funksjonen
-function playSound() {
-    var audio = new Audio('/images/viktigIkkeSlett.mp3'); // path til lydfil
-    audio.play();
-}
 
 // Function to change saksbehandler
 function changeSaksbehandler(element) {
@@ -504,7 +485,3 @@ function changeSaksbehandler(element) {
         }
     });
 }
-
-
-
-        

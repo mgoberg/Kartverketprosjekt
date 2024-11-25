@@ -1,12 +1,12 @@
-﻿//SETUP
+﻿//OPPSETT
 
-// Initial map position and zoom-level
+// Initial kartposisjon og zoom-nivå
 var map = L.map('map').setView([65, 12], 4);
 
-// Initial tile layer
+// Initial flislag
 L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png', { attribution: '&copy; <a href="http://www.kartverket.no/">Kartverket</a>' }).addTo(map);
 
-//adds scale to map
+//legger til skala på kartet
 L.control.scale().addTo(map);
 
 const layerErrorTypes = {
@@ -17,7 +17,7 @@ const layerErrorTypes = {
 };
 
 
-//FUNCTIONS
+//FUNKSJONER
 
 // Funksjon for å oppdatere feiltype i dropdown
 function updateErrorTypeDropdown(layerName) {
@@ -44,38 +44,38 @@ var matrikkelkartWMSLayer;
 var vegnettWMSLayer;
 
 
-// Function to change the tile layer and update button styles
+// Funksjon for å endre kartlag og oppdatere knappestiler
 function changeTileLayer(layerUrl, attribution, buttonId, layerName) {
-    // Remove all existing layers except the Matrikkelkart WMS layer (if it's active)
+    // Fjern alle eksisterende lag bortsett fra Matrikkelkart WMS-laget (hvis det er aktivt)
     map.eachLayer(function (layer) {
         if (!(layer instanceof L.FeatureGroup) && layer !== matrikkelkartWMSLayer) {
             map.removeLayer(layer);
         }
     });
 
-    // Add the new tile layer
+    // Legg til det nye kartlaget
     L.tileLayer(layerUrl, { attribution: attribution, maxZoom: 18 }).addTo(map);
 
-    // Update button styles when selected
+    // Oppdater knappestiler når valgt
     var buttons = document.querySelectorAll('button');
     buttons.forEach(function (button) {
         button.classList.remove('selected');
     });
     document.getElementById(buttonId).classList.add('selected');
 
-    // Update the displayed layer name
+    // Oppdater det viste lagnavnet
     document.getElementById('layerName').textContent = layerName;
 
     updateErrorTypeDropdown(layerName);
 }
 
-// Function to toggle the Matrikkelkart WMS layer visibility
+// Funksjon for å veksle Matrikkelkart WMS-lagets synlighet
 function toggleMatrikkelkartLayer() {
-    // Check if the layer already exists
+    // Sjekk om laget allerede eksisterer
     if (!matrikkelkartWMSLayer) {
-        // Create and add the Matrikkelkart WMS layer if it doesn't exist
+        // Opprett og legg til Matrikkelkart WMS-laget hvis det ikke eksisterer
         matrikkelkartWMSLayer = L.tileLayer.wms("https://wms.geonorge.no/skwms1/wms.matrikkelkart", {
-            layers: 'matrikkelkart',  // Adjust layer name if needed
+            layers: 'matrikkelkart',
             format: 'image/png',
             transparent: true,
             version: '1.3.0',
@@ -84,25 +84,25 @@ function toggleMatrikkelkartLayer() {
 
         matrikkelkartWMSLayer.bringToFront();
     } else {
-        // Toggle the visibility of the Matrikkelkart WMS layer
+        // Veksle synligheten til Matrikkelkart WMS-laget
         if (map.hasLayer(matrikkelkartWMSLayer)) {
-            map.removeLayer(matrikkelkartWMSLayer); // Remove layer if it's already visible
+            map.removeLayer(matrikkelkartWMSLayer); // Fjern laget hvis det allerede er synlig
         } else {
-            map.addLayer(matrikkelkartWMSLayer); // Add layer if it's not visible
+            map.addLayer(matrikkelkartWMSLayer); // Legg til laget hvis det ikke er synlig
         }
     }
     document.getElementById('matrikkelkartToggleButton').classList.toggle('active');
 }
 
-// Button event listener for the toggle
+// Knapp event-listener for veksling
 document.getElementById('matrikkelkartToggleButton').addEventListener('click', toggleMatrikkelkartLayer);
 
 function toggleVegnettLayer() {
-    // Check if the Vegnett WMS layer already exists
+    // Sjekk om Vegnett WMS-laget allerede eksisterer
     if (!vegnettWMSLayer) {
-        // Create and add the Vegnett WMS layer if it doesn't exist
+        // Opprett og legg til Vegnett WMS-laget hvis det ikke eksisterer
         vegnettWMSLayer = L.tileLayer.wms("https://openwms.statkart.no/skwms1/wms.vegnett2", {
-            layers: 'vegnett2',  // Adjust layer name if needed
+            layers: 'vegnett2', 
             format: 'image/png',
             transparent: true,
             version: '1.3.0',
@@ -111,19 +111,19 @@ function toggleVegnettLayer() {
 
         vegnettWMSLayer.bringToFront();
     } else {
-        // Toggle the visibility of the Vegnett WMS layer
+        // Veksle synligheten til Vegnett WMS-laget
         if (map.hasLayer(vegnettWMSLayer)) {
-            map.removeLayer(vegnettWMSLayer); // Remove layer if it's already visible
+            map.removeLayer(vegnettWMSLayer); // Fjern laget hvis det allerede er synlig
         } else {
-            map.addLayer(vegnettWMSLayer); // Add layer if it's not visible
-            vegnettWMSLayer.bringToFront(); // Ensure it's on top if re-added
+            map.addLayer(vegnettWMSLayer); // Legg til laget hvis det ikke er synlig
+            vegnettWMSLayer.bringToFront(); // Sørg for at det er på toppen hvis det legges til igjen
         }
     }
     document.getElementById('vegnettToggleButton').classList.toggle('active');
 }
 
 document.getElementById('vegnettToggleButton').addEventListener('click', toggleVegnettLayer);
-// functions called by pressing the map-layer buttons
+// funksjoner kalt ved å trykke på kartlagsknappene
 function changeToLand() {
     changeTileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png', '&copy; <a href="http://www.kartverket.no/">Kartverket</a>', 'btn-changeToLand', 'Topografisk');
 }
@@ -149,21 +149,22 @@ document.getElementById('toggleButton').addEventListener('click', function () {
     document.getElementById('toggleButton').classList.toggle('active');
 });
 
+// geolokator knapp som sentrerer kartet på brukerens posisjon
 document.getElementById('geolocateButton').addEventListener('click', function () {
 
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
             var lat = position.coords.latitude;
             var lng = position.coords.longitude;
-            map.flyTo([lat, lng], 13); // Center the map on the user's location
+            map.flyTo([lat, lng], 13);
         }, function (error) {
-            console.error("Geolocation error: " + error.message);
+            console.error("Geolokasjonsfeil: " + error.message);
         });
     } else {
-        alert("Geolocation is not supported by this browser.");
+        alert("Geolokasjon støttes ikke av denne nettleseren.");
     }
 });
-// Fullscreen support for popular browsers, trigger with fullscreen button
+// Fullskjermstøtte for populære nettlesere, utløses med fullskjermknapp
 document.getElementById('fullscreenButton').addEventListener('click', function () {
     var mapElement = document.getElementById('map');
     if (!document.fullscreenElement) {
@@ -171,7 +172,7 @@ document.getElementById('fullscreenButton').addEventListener('click', function (
             mapElement.requestFullscreen();
         } else if (mapElement.mozRequestFullScreen) { // Firefox
             mapElement.mozRequestFullScreen();
-        } else if (mapElement.webkitRequestFullscreen) { // Chrome, Safari and Opera
+        } else if (mapElement.webkitRequestFullscreen) { // Chrome, Safari og Opera
             mapElement.webkitRequestFullscreen();
         } else if (mapElement.msRequestFullscreen) { // IE/Edge
             mapElement.msRequestFullscreen();
@@ -181,7 +182,7 @@ document.getElementById('fullscreenButton').addEventListener('click', function (
             document.exitFullscreen();
         } else if (document.mozCancelFullScreen) { // Firefox
             document.mozCancelFullScreen();
-        } else if (document.webkitExitFullscreen) { // Chrome, Safari and Opera
+        } else if (document.webkitExitFullscreen) { // Chrome, Safari og Opera
             document.webkitExitFullscreen();
         } else if (document.msExitFullscreen) { // IE/Edge
             document.msExitFullscreen();
@@ -189,13 +190,9 @@ document.getElementById('fullscreenButton').addEventListener('click', function (
     }
 });
 
-// Ensure elements with higher z-index receive pointer events and those with lower isn't also interacted with
+// Sørg for at elementer med høyere z-indeks mottar pekerehendelser og de med lavere ikke også blir interagert med
 document.querySelectorAll('#verticalButtonContainer button, #buttonContainer button').forEach(function (button) {
     button.addEventListener('click', function (event) {
-        event.stopPropagation(); // Prevent the map from receiving the click event
+        event.stopPropagation(); // Forhindre at kartet mottar klikkhendelsen
     });
 });
-
-
-
-
