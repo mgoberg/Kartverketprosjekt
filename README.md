@@ -240,10 +240,6 @@ CREATE TABLE Bruker (
 
 ---
 
-### Konklusjon
-Entity Framework gir oss kraftige verktøy for å håndtere data i applikasjonen, samtidig som vi opprettholder kontroll over databaseendringer ved å unngå migrations. Denne balansen gir en robust og fleksibel løsning for prosjektet vårt.
-
-
 ## Sikkerhet: CSRF og XSS-beskyttelse
 I prosjektet håndteres beskyttelse mot Cross-Site Request Forgery (CSRF) ved å bruke ASP.NET Core sitt innebygde CSRF-beskyttelsessystem, som automatisk genererer og validerer CSRF-tokens for alle sensitive POST-forespørsler. Dette sikrer at kun legitime brukere kan sende inn data til applikasjonen.
 
