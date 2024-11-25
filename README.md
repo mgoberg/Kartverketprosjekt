@@ -29,6 +29,11 @@ docker-compose up --build
 
 ## 🎊 **Da var alt klart!**  
 Nå har du en databasecontainer som kjører i Docker. Du kan starte applikasjonen og teste all funksjonalitet.
+Det finnes 4 test-brukere i systemet.
+- **testbruker@example.com** med passord: **Test**
+- **testadmin@example.com** med passord: **Test**
+- **testsaksbehandler@example.com** med passord: **Test**
+- **testprio@example.com** med passord: **Test**
 
 ---
 
