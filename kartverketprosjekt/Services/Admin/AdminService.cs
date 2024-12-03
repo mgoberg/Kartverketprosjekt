@@ -23,11 +23,11 @@ namespace kartverketprosjekt.Services.Admin
         /// Henter statistikk for admin visning.
         /// </summary>
         /// <returns>En AdminStats-objekt med statistikkdata.</returns>
-        public async Task<AdminStats> GetAdminViewStatsAsync()
+        public async Task<AdminPageViewModel> GetAdminViewStatsAsync()
         {
             var users = await _brukerRepository.GetAllUsersAsync();
 
-            return new AdminStats
+            return new AdminPageViewModel
             {
                 CaseCount = await _sakRepository.GetCaseCountAsync(),
                 UserCount = await _brukerRepository.GetUserCountAsync(),
