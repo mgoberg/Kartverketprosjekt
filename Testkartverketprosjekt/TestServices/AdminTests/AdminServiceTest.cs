@@ -46,7 +46,7 @@ namespace Testkartverketprosjekt.TestServices.AdminTests
             Assert.Equal(1, result.OpenCasesAvvist);
             Assert.Equal(0, result.OpenCasesArkivert);
             Assert.Equal(1, result.ClosedCases);
-            Assert.Equal(2, result.Users.Count);
+            Assert.Equal(2, result.Users.Count());
         }
 
         [Fact]

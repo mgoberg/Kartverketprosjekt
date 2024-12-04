@@ -6,10 +6,12 @@ using kartverketprosjekt.Services.Sak;
 using kartverketprosjekt.Services.Autentisering;
 using kartverketprosjekt.Services.Bruker;
 using kartverketprosjekt.Services.Notifikasjon;
+using Microsoft.AspNetCore.Authorization;
 
 // ***********************************************************************************************************************
 // ******BrukerController er en controller som håndterer alle funksjoner som kun skal være tilgjengelig for brukere.******
 // ***********************************************************************************************************************
+
 
 public class BrukerController : Controller
 {
@@ -27,7 +29,7 @@ public class BrukerController : Controller
         _sakService = sakService;
     }
 
-    // Viser min side.
+    [Authorize(Roles = "1")]
     public async Task<IActionResult> MyPage()
     {
         var bruker = User.Identity.Name;
@@ -43,8 +45,7 @@ public class BrukerController : Controller
         return View(saker);
     }
 
-    // POST login
-    // Metode for å logge inn en bruker.
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(string epost, string password)
@@ -93,6 +94,7 @@ public class BrukerController : Controller
 
 
     // Metode for å oppdatere passordet til en bruker / Endre passord.
+    [Authorize(Roles = "1")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> UpdatePassword(string password)
@@ -112,6 +114,7 @@ public class BrukerController : Controller
     }
 
     // Metode for å oppdatere navnet til en bruker.
+    [Authorize(Roles = "1")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> UpdateName(string navn)
@@ -130,72 +133,9 @@ public class BrukerController : Controller
         return RedirectToAction("Mypage");
     }
 
-    //DENNE METODEN BLIR ALDRI BRUKT. HVIS DEN SKAL BRUKES MÅ DEN OPPDATERES TIL Å BRUKE BRUKERSERVICE
-
-    // Metode for å slette en bruker.     
-    //[HttpPost]
-    //public async Task<IActionResult> DeleteUser(string passord)
-    //{
-
-    //    // Prøver å slette brukeren.
-    //    try
-    //    {
-    //        // Hent e-post fra den påloggede brukeren.
-    //        string epost = User.Identity.Name;
-
-    //        // Finn brukeren i databasen.
-    //        var bruker = await _context.Bruker.FirstOrDefaultAsync(b => b.epost == epost);
-    //        if (bruker == null)
-    //        {
-    //            TempData["ErrorMessage"] = "Bruker finnes ikke.";
-    //            Console.WriteLine("User not found"); // DEBUG
-    //            return RedirectToAction("Mypage");
-    //        }
-
-    //        // Sjekk om passordet er korrekt
-    //        var passwordHasher = new PasswordHasher<BrukerModel>();
-    //        bool isPasswordValid;
-
-    //        if (IsHashedPassword(bruker.passord))
-    //        {
-    //            // Verfier det hashede passordet.
-    //            var result = passwordHasher.VerifyHashedPassword(bruker, bruker.passord, passord);
-    //            isPasswordValid = result == PasswordVerificationResult.Success;
-    //        }
-    //        else
-    //        {
-    //            // Samenlikner klartekst passord.
-    //            isPasswordValid = bruker.passord == passord;
-    //        }
-
-    //        // Hvis passordet er feil, vis feilmelding.
-    //        if (!isPasswordValid)
-    //        {
-    //            TempData["ErrorMessage"] = "Feil passord. Vennligst prøv igjen.";
-    //            Console.WriteLine("Invalid password");
-    //            return RedirectToAction("Mypage");
-    //        }
-
-    //        // Slett brukeren
-    //        _context.Bruker.Remove(bruker);
-    //        await _context.SaveChangesAsync();
-    //        Console.WriteLine("User deleted successfully");
-    //        // Logg ut brukeren.
-    //        await HttpContext.SignOutAsync();
-
-    //        TempData["SuccessMessage"] = "Brukeren er slettet.";
-    //        return RedirectToAction("Index", "Home"); // Redirect til ønsket side etter sletting
-    //    }
-    //    // Håndter eventuelle feil.
-    //    catch (Exception ex)
-    //    {
-    //        Console.WriteLine($"Error deleting user: {ex.Message}");
-    //        TempData["ErrorMessage"] = "Det oppstod en feil ved sletting av brukeren.";
-    //        return RedirectToAction("Mypage");
-    //    }
-    //}
 
     // Metode for å slette en sak.
+    [Authorize(Roles = "1")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteCase(int id)

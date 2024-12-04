@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using kartverketprosjekt.Services.Admin;
 using System.Threading.Tasks;
+using kartverketprosjekt.Models;
 
 namespace kartverketprosjekt.Controllers
 
@@ -22,15 +23,19 @@ namespace kartverketprosjekt.Controllers
         public async Task<IActionResult> AdminView()
         {
             var stats = await _adminService.GetAdminViewStatsAsync();
-            ViewData["CaseCount"] = stats.CaseCount;
-            ViewData["UserCount"] = stats.UserCount;
-            ViewData["OpenCasesUnbehandlet"] = stats.OpenCasesUnbehandlet;
-            ViewData["OpenCasesUnderBehandling"] = stats.OpenCasesUnderBehandling;
-            ViewData["OpenCasesAvvist"] = stats.OpenCasesAvvist;
-            ViewData["OpenCasesArkivert"] = stats.OpenCasesArkivert;
-            ViewData["ClosedCases"] = stats.ClosedCases;
+            var viewModel = new AdminPageViewModel
+            {
+                CaseCount = stats.CaseCount,
+                UserCount = stats.UserCount,
+                OpenCasesUnbehandlet = stats.OpenCasesUnbehandlet,
+                OpenCasesUnderBehandling = stats.OpenCasesUnderBehandling,
+                OpenCasesAvvist = stats.OpenCasesAvvist,
+                OpenCasesArkivert = stats.OpenCasesArkivert,
+                ClosedCases = stats.ClosedCases,
+                Users = stats.Users
+            };
 
-            return View(stats.Users);
+            return View(viewModel);
         }
 
         [HttpPost]

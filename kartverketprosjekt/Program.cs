@@ -77,6 +77,43 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+
+app.UseCsp(options => options
+    .DefaultSources(s => s.Self())
+    .ScriptSources(s => s.Self()
+        .CustomSources("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+            "https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js",
+            "https://cdn-geoweb.s3.amazonaws.com/esri-leaflet/0.0.1-beta.5/esri-leaflet.js",
+            "https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js",
+            "https://code.jquery.com/jquery-3.6.0.min.js",
+            "https://unpkg.com/leaflet@1.7.1/dist/leaflet.js")
+        .UnsafeInline())
+    .StyleSources(s => s.Self()
+        .CustomSources("https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css",
+            "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+            "https://unpkg.com/leaflet@1.7.1/dist/leaflet.css",
+            "https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.css",
+            "https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css",
+            "https://fonts.googleapis.com",
+            "https://fonts.gstatic.com")
+        .UnsafeInline())
+    .FontSources(s => s.Self()
+        .CustomSources("https://fonts.googleapis.com", "https://fonts.gstatic.com", "https://unpkg.com"))
+    .ImageSources(s => s.Self()
+        .CustomSources("data:", "https://cache.kartverket.no",
+            "https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/img/search.png",
+            "https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/images/spritesheet.svg",
+            "https://unpkg.com",
+            "https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/img/loading.gif",
+            "https://openwms.statkart.no",
+            "https://wms.geonorge.no"))
+    .ConnectSources(s => s.Self()
+        .CustomSources("https://github.com/mgoberg/kartverketprosjekt",
+            "https://geocode.arcgis.com"))
+    .FrameSources(s => s.Self())
+);
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
