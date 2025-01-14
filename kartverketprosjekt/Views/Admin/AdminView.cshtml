@@ -1,4 +1,4 @@
-﻿@model IEnumerable<kartverketprosjekt.Models.BrukerModel>
+﻿@model kartverketprosjekt.Models.AdminPageViewModel
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Administrator side";
@@ -32,7 +32,7 @@
     <div style class="search-bar2">
         <input type="text" id="searchInput" placeholder="Skriv inn for å søke..." />
     </div>
-        </div>    
+</div>    
 
 <!-- Statistikk -->
 <div class="stats-table-container">
@@ -44,75 +44,71 @@
             </tr>
             <tr>
                 <td>Antall brukere</td>
-                <td>@ViewData["UserCount"]</td>
+                <td>@Model.UserCount</td>
             </tr>
             <tr>
                 <td>Total saker</td>
-                <td>@ViewData["CaseCount"]</td>
+                <td>@Model.CaseCount</td>
             </tr>
             <tr>
                 <td>Ubehandlede saker</td>
-                <td>@ViewData["OpenCasesUnbehandlet"]</td>
+                <td>@Model.OpenCasesUnbehandlet</td>
             </tr>
             <tr>
                 <td>Saker under behandling</td>
-                <td>@ViewData["OpenCasesUnderBehandling"]</td>
+                <td>@Model.OpenCasesUnderBehandling</td>
             </tr>
             <tr>
                 <td>Avviste saker </td>
-                <td>@ViewData["OpenCasesAvvist"]</td>
+                <td>@Model.OpenCasesAvvist</td>
             </tr>
             <tr>
                 <td>Arkiverte saker </td>
-                <td>@ViewData["OpenCasesArkivert"]</td>
+                <td>@Model.OpenCasesArkivert</td>
             </tr>
             <tr>
                 <td>Lukkede saker</td>
-                <td>@ViewData["ClosedCases"]</td>
+                <td>@Model.ClosedCases</td>
             </tr>
         </table>
-
     </div>
 
     <!-- Brukere -->
-<div class="table-container">
-
+    <div class="table-container">
         <table id="brukerTable" class="styled-table">
-
             <thead> 
-            <tr>
-                <th>E-post</th>
-                <th>Tilgangsnivå</th>
-                <th>Organisasjon</th>
-            
-            </tr>
+                <tr>
+                    <th>E-post</th>
+                    <th>Tilgangsnivå</th>
+                    <th>Organisasjon</th>
+                </tr>
             </thead>
             <tbody>
-            @foreach (var bruker in Model)
-            {
-                <tr data-toggle="modal" data-target="#userModal" data-epost="@bruker.epost" data-tilgangsnivaa="@bruker.tilgangsnivaa_id" data-organisasjon="@bruker.organisasjon">
-                    <td>@bruker.epost</td>
-                    <td>
-                        @if (bruker.tilgangsnivaa_id == 1)
-                        {
-                            <text>Bruker (1)</text>
-                        }
-                        else if (bruker.tilgangsnivaa_id == 2)
-                        {
-                            <text>Prioritert bruker (2)</text>
-                        }
-                        else if (bruker.tilgangsnivaa_id == 3)
-                        {
-                            <text>Saksbehandler (3)</text>
-                        }
-                        else if (bruker.tilgangsnivaa_id == 4)
-                        {
-                            <text>Administrator (4)</text>
-                        }
-                    </td>
-                    <td>@bruker.organisasjon</td>
-                </tr>
-            }
+                @foreach (var bruker in Model.Users)
+                {
+                    <tr data-toggle="modal" data-target="#userModal" data-epost="@bruker.epost" data-tilgangsnivaa="@bruker.tilgangsnivaa_id" data-organisasjon="@bruker.organisasjon">
+                        <td>@bruker.epost</td>
+                        <td>
+                            @if (bruker.tilgangsnivaa_id == 1)
+                            {
+                                <text>Bruker (1)</text>
+                            }
+                            else if (bruker.tilgangsnivaa_id == 2)
+                            {
+                                <text>Prioritert bruker (2)</text>
+                            }
+                            else if (bruker.tilgangsnivaa_id == 3)
+                            {
+                                <text>Saksbehandler (3)</text>
+                            }
+                            else if (bruker.tilgangsnivaa_id == 4)
+                            {
+                                <text>Administrator (4)</text>
+                            }
+                        </td>
+                        <td>@bruker.organisasjon</td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
@@ -187,5 +183,5 @@
     <button type="submit" class="btn btn-primary">Opprett bruker</button>
 </form>
 <!-- Scripts -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="/js/adminview.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/js/adminview.js"></script>

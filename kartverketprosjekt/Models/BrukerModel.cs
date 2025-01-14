@@ -5,7 +5,6 @@ namespace kartverketprosjekt.Models
     public class BrukerModel
     {
 
-        // Modell for en bruker
         [Key]
         [EmailAddress]
         public string epost { get; set; }
@@ -14,10 +13,9 @@ namespace kartverketprosjekt.Models
         [Required]
         public string passord { get; set; }
 
-        public int tilgangsnivaa_id { get; set; } = 1; // Standard verd i 1
+        public int tilgangsnivaa_id { get; set; } = 1; 
 
-        public string? organisasjon { get; set; } = "Ingen"; // Standard verdi er Kartverket
-
+        public string? organisasjon { get; set; } = "Ingen"; 
        
     }
 }
